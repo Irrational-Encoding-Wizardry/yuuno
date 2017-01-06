@@ -26,6 +26,6 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     install_requires=[
-        'jupyter', 'markdown'
+        'jupyter', 'Pillow'
     ]
 )
