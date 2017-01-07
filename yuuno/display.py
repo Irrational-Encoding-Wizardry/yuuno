@@ -38,26 +38,12 @@ def diff_frames(*clips, frameno=0, cap_size=True):
     if len(clips) < 3:
         return _diff_frames_2(*clips, frameno=frameno)
 
-    image = widgets.HTML()
+    image = widgets.Image(layout=widgets.Layout(max_width="100%", height="auto"))
 
     def _set_image(clip):
         def _handler(*args, **kwargs):
-            image.value = _generate_html(frame2image(clip, frameno=frameno))
+            image.value = image2bytes(frame2image(clip, frameno=frameno))
         return _handler
-
-    def _generate_html(image):
-        return "".join(['''
-<div>
-<style scoped>
-div.vs-diff-container.vs-diff-multi-frames > img {
-   margin-top: 0 !important;
-   ''',("max-width: 100%; height: auto;" if cap_size else ""),'''
-}
-</style>
-<div class="vs-diff-container vs-diff-multi-frames">
-<img class="vs-scaler-image" src="''',get_bytelink(image2bytes(image)),'''">
-</div>'''
-        ])
 
     _set_image(clips[0])()
 
@@ -72,7 +58,7 @@ div.vs-diff-container.vs-diff-multi-frames > img {
 
 def inspect_frame(
         clip,
-        sizes={0.5:'50%', 1:'100%', 2:'200%', 3:'300%'},
+        sizes=((0.5,'50%'), (1,'100%'), (2,'200%'), (3,'300%')),
         default=1,
         frameno=0,
         max_size=(960, 540)):
@@ -140,7 +126,9 @@ div.vs-scaler > div > img {
     set_size(default)()
 
     buttons = []
-    for size, name in sizes.items():
+    if isinstance(sizes, dict):
+        sizes = sizes.items()
+    for size, name in sizes:
         button = widgets.Button(description=name)
         button.on_click(set_size(size))
         buttons.append(button)
@@ -170,7 +158,11 @@ def frame_step(*clips):
             value=image2bytes(frame2image(clip[0])),
             format="png",
             width = clip.width,
-            height = clip.height
+            height = clip.height,
+            layout=widgets.Layout(
+                max_width="100%",
+                height="auto"
+            )
         )))
     slider = widgets.IntSlider(
         value=0,
