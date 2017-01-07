@@ -19,7 +19,8 @@ def get_plane(frame, planeno):
     buffer = bytearray(len(ary)*len(ary[0]))
     for stride_no, stride in enumerate(ary):
         buffer[stride_no*len(stride):(stride_no+1)*len(stride)] = stride
-    return Image.frombuffer('L', (width, height), buffer, "raw", "L", len(stride), 1)
+    return Image.frombytes('L', (width, height), bytes(buffer), "raw", "L", len(stride), 1)
+
 
 def frame2image(clip, frameno=0):
     """
@@ -30,7 +31,7 @@ def frame2image(clip, frameno=0):
     if clip.format.color_family != vapoursynth.RGB:
         clip = mvsfunc.ToRGB(clip)
     clip = mvsfunc.Depth(clip, 8)
-    
+
     # Extract metadata from the clip.
     width, height = clip.width, clip.height
     colorformat = clip.format
