@@ -7,23 +7,34 @@ from setuptools import setup
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    if os.path.exists("README.md"):
+        return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return ""
 
 setup(
     name = "yuuno",
-    version = "0.0.1",
+    version = "0.0.5",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = ("Glue for jupyter and vapoursynth"),
     license = "MIT",
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
-    packages=['yuuno'],
+    packages=['yuuno', 'yuuno.vendor'],
     long_description=read('README.md'),
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Topic :: Utilities",
+        "Development Status :: 2 - Pre-Alpha",
+
         "License :: OSI Approved :: MIT License",
+        "Environment :: Web Environment",
+        
+        "Topic :: Utilities",
+        
+        "Topic :: Multimedia :: Video",
+        "Topic :: Multimedia :: Video :: Conversion",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: 3 :: Only",
+        "Framework :: IPython"
     ],
     install_requires=[
         'jupyter', 'Pillow'
