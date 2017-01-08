@@ -51,8 +51,7 @@ def ensure_rgb24(clip: vs.VideoNode, *, matrix="709") -> vs.VideoNode:
         clip = mvsfunc.ToRGB(clip, matrix=matrix)
 
     if clip.format.bits_per_sample != 8:
-        # Disable Dithering made by fmtc.bitdepth to make the images comparable.
-        clip = core.fmtc.bitdepth(clip, bits=8, dmode=1)
+        clip = core.fmtc.bitdepth(clip, bits=8)
 
     return clip
 

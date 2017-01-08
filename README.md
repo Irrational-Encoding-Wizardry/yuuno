@@ -1,7 +1,7 @@
 Yuuno
 =====
 
-Yuuno allows the Jupyther Kernel to show frames from VapourSynth VideoNodes.
+Yuuno allows the Jupyter Kernel to show frames from VapourSynth VideoNodes.
 
 ## Installation
 

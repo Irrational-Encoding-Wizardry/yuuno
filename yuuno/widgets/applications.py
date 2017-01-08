@@ -3,7 +3,7 @@ from IPython.display import Image as IPyImage, HTML, display
 from PIL.Image import NEAREST
 
 from yuuno.glue import convert_clip, image_to_bytes
-from yuuno.widgets.image import Image, BaseImageChooser
+from yuuno.widgets.image import Image, BaseImageChooser, ImageChooser
 from yuuno.widgets.widget import Widget
 
 
@@ -97,13 +97,26 @@ class inspect(BaseImageChooser):
     lets you compare mutliple files.
     """
 
+    @staticmethod
+    def _convert_size_iter(sizes):
+        if isinstance(sizes, dict):
+            sizes = sizes.items
+
+        for size in sizes:
+            if not isinstance(size, (list, tuple)):
+                yield size, str(size)
+            else:
+                yield size
+
     def __init__(self, clip,
                  sizes=((1, '100%'), (2, '200%'), (5, '500%')),
                  frame_no=0, converter=convert_clip,
                  **kwargs):
+
         self.converter = converter
         self.frame_no = frame_no
         self._clip = self.converter(clip, frame_no=self.frame_no)
+        sizes = tuple(self._convert_size_iter(sizes))
         self.sizes = dict((size[1], size[0]) for size in sizes)
         super(inspect, self).__init__(tuple(size[1] for size in sizes), self.change_clip, tiled=True, **kwargs)
         self.clip = clip
