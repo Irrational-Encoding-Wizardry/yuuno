@@ -1,5 +1,6 @@
 import math
 import ipywidgets as widgets
+import vapoursynth as vs
 from IPython import display
 from PIL.Image import NEAREST
 
@@ -7,7 +8,8 @@ from yuuno.vsimg import frame2image, image2bytes, get_bytelink
 
 TILE_SIZE = 500
 
-def _diff_frames_2(f1, f2=None, frameno=0, cap_size=True):
+
+def _diff_frames_2(f1, f2=None, frameno=0, cap_size=True, force_width=None):
     if f2 is None:
         f2 = f1[1:]
     f1 = image2bytes(frame2image(f1[frameno]))
@@ -20,6 +22,7 @@ div.vs-diff-container.vs-diff-two-frames > img {
    display: none;
    margin-top: 0 !important;
    ''',("max-width: 100%; height: auto;" if cap_size else ""),'''
+   ''',(("width: %s" % force_width) if force_width is not None else ""), '''
 }
 
 div.vs-diff-container.vs-diff-two-frames:not(:hover) > img.vs-diff-first,
@@ -34,21 +37,26 @@ div.vs-diff-container.vs-diff-two-frames:hover > img.vs-diff-second {
 </div>
 '''])))
 
-def diff_frames(*clips, frameno=0, cap_size=True):
-    if len(clips) < 3:
-        return _diff_frames_2(*clips, frameno=frameno)
+def diff_frames(*clips, frameno=0, **kwargs):
+    if len(clips) == 0:
+        clips = tuple(vs._stored_outputs.items())
+    elif len(clips) < 3:
+        return _diff_frames_2(*clips, frameno=frameno, **kwargs)
+    else:
+        clips = tuple(enumerate(clips))
 
     image = widgets.Image(layout=widgets.Layout(max_width="100%", height="auto"))
 
     def _set_image(clip):
+        img = image2bytes(frame2image(clip, frameno=frameno))
         def _handler(*args, **kwargs):
-            image.value = image2bytes(frame2image(clip, frameno=frameno))
+            image.value = img
         return _handler
 
-    _set_image(clips[0])()
+    _set_image(clips[0][0])()
 
     buttons = []
-    for i, clip in enumerate(clips):
+    for i, clip in clips:
         button = widgets.Button(description=str(i))
         button.on_click(_set_image(clip))
         buttons.append(button)

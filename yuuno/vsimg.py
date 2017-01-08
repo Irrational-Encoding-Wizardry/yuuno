@@ -29,8 +29,11 @@ def frame2image(clip, frameno=0):
     core = vapoursynth.get_core()
 
     if clip.format.color_family != vapoursynth.RGB:
-        clip = mvsfunc.ToRGB(clip)
-    clip = mvsfunc.Depth(clip, 8)
+        clip = mvsfunc.ToRGB(clip, matrix="709")
+
+    if clip.format.bits_per_sample == 8:
+        # Disable Dithering made by fmtc.bitdepth to make the images comparable.
+        clip = core.fmtc.bitdepth(clip, bits=8, dmode=1)
 
     # Extract metadata from the clip.
     width, height = clip.width, clip.height
