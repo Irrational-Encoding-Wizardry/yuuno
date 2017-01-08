@@ -1,10 +1,9 @@
-from PIL.Image import Image, new
 import vapoursynth as vs
+from PIL.Image import Image, new
 from vapoursynth import VideoNode, Core, Format
-
-from yuuno.vsimg import frame2image, image2bytes
 from yuuno.inlinemgr import inlines
 
+from yuuno.old.vsimg import frame2image, image2bytes
 
 inlines.register(Image, format="image/png")(image2bytes)
 

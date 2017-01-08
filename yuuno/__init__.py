@@ -1,12 +1,13 @@
-from yuuno.inlinemgr import inlines as inlines
-from yuuno import vsinspect
-from yuuno.display import *
-import yuuno.display
-import yuuno.pil_inline
+from yuuno.formatters import inlines
+from yuuno.glue import convert_clip
+import yuuno.inspection as inspection
 
-def install():
-    inlines.install()
-    vsinspect.install()
+
+def install(*, inspections=True, inline=True):
+    if inspections:
+        inspection.install()
+    if inline:
+        inlines.install()
     
 
-__all__ = ["install"] + yuuno.display.__all__
+__all__ = ["install", "convert_clip"]

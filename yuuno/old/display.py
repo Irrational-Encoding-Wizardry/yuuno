@@ -1,10 +1,11 @@
 import math
+
 import ipywidgets as widgets
 import vapoursynth as vs
 from IPython import display
 from PIL.Image import NEAREST
 
-from yuuno.vsimg import frame2image, image2bytes, get_bytelink
+from yuuno.old.vsimg import frame2image, image2bytes, get_bytelink
 
 TILE_SIZE = 500
 
@@ -86,7 +87,7 @@ def inspect_frame(
                 yield '<div class="vs-scaler-tile-row">'
                 for column in range(math.ceil(width/TILE_SIZE)):
                     img = _tile_at(resized, TILE_SIZE, column, row)
-                    yield ''.join([
+                    yield from [
                         '<img class="vs-scaler-tile vs-scaler-tile-row-',
                         str(row),
                         ' vs-scaler-tile-column-',
@@ -94,7 +95,7 @@ def inspect_frame(
                         '" src="',
                         get_bytelink(image2bytes(img)),
                         '">'
-                    ])
+                    ]
                 yield '</div>'
         resized = frame.resize((int(width), int(height)), NEAREST)
         tiled = width > 5*1920 or height > 5*1080
@@ -143,6 +144,7 @@ div.vs-scaler > div > img {
     buttons.append(tiled_label)
     buttonrow = widgets.HBox(buttons)
     display.display(widgets.VBox([buttonrow, current]))
+
 
 def show_clip(clip, *, lots_of_frames=False):
     if len(clip) > 20 and not lots_of_frames:
