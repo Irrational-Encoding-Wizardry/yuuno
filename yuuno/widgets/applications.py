@@ -45,9 +45,9 @@ div.vs-diff-simple-container:hover > img.vs-diff-second {
 </div>
 '''
 
-    def __init__(self, clip1, clip2, converter=convert_clip, cap_size=True, frame_no=0):
-        self.clip1 = image_to_bytes(converter(clip1, frame_no=frame_no))
-        self.clip2 = image_to_bytes(converter(clip2, frame_no=frame_no))
+    def __init__(self, normal, hover, converter=convert_clip, cap_size=True, frame_no=0):
+        self.clip1 = image_to_bytes(converter(normal, frame_no=frame_no))
+        self.clip2 = image_to_bytes(converter(hover, frame_no=frame_no))
         self.cap_size = cap_size
 
     def generate_styles(self):
@@ -193,3 +193,13 @@ class preview(Widget):
 
     def get_widget(self):
         return self.main_box
+
+
+def interact(clip, renderer, *args, frame_no=0, converter=convert_clip, **kwargs):
+    fno_slider = ipywidgets.IntSlider(min=0, max=len(clip)-1, value=frame_no)
+    kwargs["frame_no"] = fno_slider
+    def render(*args, frame_no=0, **kwargs):
+        nclip = renderer(clip, *args, **kwargs)
+        fno_slider.max = len(nclip)-1
+        return converter(nclip[frame_no])
+    return ipywidgets.interact(render, *args, **kwargs)

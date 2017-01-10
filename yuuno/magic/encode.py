@@ -1,12 +1,15 @@
+import io
 import ast
 import sys
 import shlex
+import base64
 import signal
 import subprocess
 from threading import Thread
 
 import vapoursynth
 from IPython import get_ipython
+from IPython.display import HTML
 from yuuno.magic.util import line_cell_magic
 
 
@@ -58,22 +61,32 @@ class OutputReader(Thread):
     Shows the output
     """
 
-    def __init__(self, pipe, file):
+    def __init__(self, pipe, file, decode):
         super(OutputReader, self).__init__()
         self.pipe = pipe
         self.file = file
+        self.decode = decode
         self.alive = False
 
     def run(self):
         self.alive = True
         while self.alive:
             ld = self.pipe.read(1)
-            if not ld:
-                continue
-            print(ld.decode('utf-8').replace("\r\n", ""), end="", file=self.file)
+            if self.decode:
+                if not ld:
+                    continue
+                print(ld.decode('utf-8'), end="", file=self.file)
+            else:
+                self.file.write(ld)
 
     def stop_serving(self):
         self.alive = False
+
+    def last_pass(self):
+        if self.decode:
+            print(self.pipe.read().decode('utf-8'), file=self.file)
+        else:
+            self.file.write(self.pipe.read())
 
 if sys.platform == "win32":
     def popen(*args, **kwargs):
@@ -91,7 +104,7 @@ else:
         process.send_signal(signal.CTRL_C_EVENT)
 
 
-def run_encoder(clip, cmd):
+def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=True, decode_stderr=True):
     """
     Starts the encoding process...
     """
@@ -99,15 +112,15 @@ def run_encoder(clip, cmd):
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     d_thread = ClipPiper(clip, process)
-    o_thread = OutputReader(process.stdout, sys.stdout)
-    e_thread = OutputReader(process.stderr, sys.stderr)
+    o_thread = OutputReader(process.stdout, stdout, decode_stdout)
+    e_thread = OutputReader(process.stderr, stderr, decode_stderr)
 
     d_thread.start()
     o_thread.start()
     e_thread.start()
 
     try:
-        while True:
+        while process.poll() is None:
             d_thread.join(timeout=.5)
             o_thread.join(timeout=.5)
             e_thread.join(timeout=.5)
@@ -128,44 +141,22 @@ def run_encoder(clip, cmd):
 
     finally:
         d_thread.stop_serving()
+        process.wait()
+
         o_thread.stop_serving()
         e_thread.stop_serving()
 
-        process.wait()
         d_thread.join()
         o_thread.join()
         e_thread.join()
 
-        try:
-            print(process.stdout.read().decode('utf-8'), end="")
-        except ValueError:
-            pass
-        try:
-            print(process.stderr.read().decode('utf-8'), end="")
-        except ValueError:
-            pass
+        o_thread.last_pass()
+        e_thread.last_pass()
 
     return process.returncode
 
 
-@line_cell_magic
-def encode(line, cell=None, local_ns=None):
-    """
-    Encodes a clip given by the first word in the first line.
-
-    The encoder receives y4m output.
-        >>> %encode clip x264 --y4m - ...
-        y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
-        x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
-        x264 [info]: profile High, level 3.0
-    or
-        >>> %%encode x264 --y4m - ...
-        ... clip
-        y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
-        x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
-        x264 [info]: profile High, level 3.0
-
-    """
+def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True):
     if cell is not None:
         cmd = line
         expr = cell
@@ -180,7 +171,29 @@ def encode(line, cell=None, local_ns=None):
     if not isinstance(clip, vapoursynth.VideoNode):
         try:
             clip = vapoursynth.get_output(clip)
-        except KeyError as e:
+        except KeyError:
             return "The expression must compute to a VideoNode not '%r'." % clip
 
-    return run_encoder(clip, cmd)
+    return run_encoder(clip, cmd, stderr=stderr, stdout=stdout, decode_stdout=decode_stdout, decode_stderr=decode_stderr)
+
+
+@line_cell_magic
+def encode(line, cell=None, local_ns=None):
+    """
+    Encodes a clip given by the first word in the first line and produces a live output of
+    the console.
+
+    The encoder receives y4m output.
+        >>> %encode clip x264 --y4m - ...
+        y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
+        x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
+        x264 [info]: profile High, level 3.0
+    or
+        >>> %%encode x264 --y4m - ...
+        ... clip
+        y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
+        x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
+        x264 [info]: profile High, level 3.0
+
+    """
+    return do_encode(line, cell, local_ns)
