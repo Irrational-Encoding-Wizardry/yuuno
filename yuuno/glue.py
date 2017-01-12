@@ -100,11 +100,8 @@ def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709") -> Image.Image
     :param matrix:
     :return:
     """
-    if clip.format.color_family == vs.YUV:
-        return
-    else:
-        rgbclip = ensure_rgb24(clip, matrix=matrix)
-        return convert_frame(rgbclip.get_frame(frame_no))
+    rgbclip = ensure_rgb24(clip, matrix=matrix)
+    return convert_frame(rgbclip.get_frame(frame_no))
 
 
 def image_to_bytes(im: Image.Image) -> bytes:
