@@ -1,9 +1,9 @@
 Yuuno
 =====
 
-.. image:: //img.shields.io/badge/version-0.1.5-blue.svg?style=flat-square
-.. image:: //img.shields.io/badge/vapoursynth-R36-brightgreen.svg?style=flat-square
-.. image:: //img.shields.io/badge/vapoursynth-R35-green.svg?style=flat-square
+.. image:: https://img.shields.io/badge/version-0.1.5-blue.svg?style=flat-square
+.. image:: https://img.shields.io/badge/vapoursynth-R36-brightgreen.svg?style=flat-square
+.. image:: https://img.shields.io/badge/vapoursynth-R35-green.svg?style=flat-square
 
 
 Yuuno connects `VapourSynth <http://vapoursynth.com>`_ with the `Jupyter Notebook <http://jupyter.org>`_. It allows you to write your filters and preview them over the browser.
