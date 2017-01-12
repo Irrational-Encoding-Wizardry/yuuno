@@ -37,6 +37,6 @@ setup(
         "Framework :: IPython"
     ],
     install_requires=[
-        'jupyter', 'Pillow'
+        'notebook', 'Pillow'
     ]
 )
