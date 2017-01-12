@@ -32,6 +32,12 @@ class _InlineManager(object):
             formatters[format].for_type(type, func)
 
 
+_converter = convert_clip
+def set_converter(converter=lambda clip:convert_clip(clip, frame_no=0)):
+    global _converter
+    _converter = converter
+
+
 inlines = _InlineManager()
 
 
@@ -40,7 +46,7 @@ inlines.register(Image, format="image/png")(image_to_bytes)
 
 @inlines.register(VideoNode, format="image/png")
 def format_video(video):
-    return image_to_bytes(convert_clip(video, frame_no=0))
+    return image_to_bytes(_converter(video, frame_no=0))
 
 
 @inlines.register(Format, format="text/plain")

@@ -7,6 +7,12 @@ from yuuno.widgets.image import Image, BaseImageChooser, ImageChooser
 from yuuno.widgets.widget import Widget
 
 
+class _show(Image):
+
+    def __init__(self, clip, converter=convert_clip, frame_no=0, **kwargs):
+        super(_show, self).__init__(converter(clip, frame_no=frame_no), **kwargs)
+
+
 def dump(clip, converter=convert_clip, *, lots_of_frames=False):
     if len(clip) > 20 and not lots_of_frames:
         display(HTML("<span style='color: red'>"
@@ -61,6 +67,9 @@ div.vs-diff-simple-container:hover > img.vs-diff-second {
             Image.get_bytelink(self.clip1),
             Image.get_bytelink(self.clip2)
         )
+
+    def get_widget(self):
+        return ipywidgets.HTML(value=self._repr_html_())
 
     def __getattribute__(self, item):
         if item == "_ipython_display_":
@@ -195,11 +204,12 @@ class preview(Widget):
         return self.main_box
 
 
-def interact(clip, renderer, *args, frame_no=0, converter=convert_clip, **kwargs):
+def interact(clip, renderer, frame_no=0, converter=convert_clip, widget=_show, **kwargs):
     fno_slider = ipywidgets.IntSlider(min=0, max=len(clip)-1, value=frame_no)
     kwargs["frame_no"] = fno_slider
     def render(*args, frame_no=0, **kwargs):
         nclip = renderer(clip, *args, **kwargs)
         fno_slider.max = len(nclip)-1
-        return converter(nclip[frame_no])
-    return ipywidgets.interact(render, *args, **kwargs)
+        return widget(nclip[frame_no], converter=converter)
+    return ipywidgets.interact(render, **kwargs)
+

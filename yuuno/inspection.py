@@ -3,6 +3,7 @@
 ############################
 import builtins as __builtin__
 import vapoursynth as vs
+import sys
 
 
 class Plugin(object):
@@ -49,7 +50,10 @@ def _overridden_dict(obj):
 
 __dir__ = dir
 def install():
-    __builtin__.dir = _overridden_dict
+    import vapoursynth
+    if not hasattr(vapoursynth, "construct_signature"):
+        __builtin__.dir = _overridden_dict
+        print("Vapoursynth Pre-R36 detected... Monkey-Patching autocompletion.", file=sys.stderr)
 
 
 @_for_class(vs.Core)

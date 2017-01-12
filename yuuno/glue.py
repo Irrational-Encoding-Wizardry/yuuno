@@ -1,3 +1,4 @@
+import ctypes
 import functools
 from io import BytesIO
 
@@ -8,7 +9,40 @@ import vapoursynth as vs
 from yuuno.vendor import mvsfunc
 
 
-def get_plane(frame: vs.VideoFrame, planeno: int) -> Image.Image:
+def retrieve_size(frame: vs.VideoFrame, planeno: int) -> (int, int):
+    """
+    Calculates the size of the plane.
+    :param frame:   The frame
+    :param planeno: The plane.
+    :return: The size of the returned plane.
+    """
+
+    width, height = frame.width, frame.height
+    if planeno != 0:
+        width >>= frame.format.subsampling_w
+        height >>= frame.format.subsampling_h
+    return width, height
+
+
+def get_plane_fast(frame: vs.VideoFrame, planeno: int) -> Image.Image:
+    """
+    Faster implementation of get_plane.
+
+    Experimental.
+
+    :param frame:    The frame
+    :param planeno:  The planeno
+    :return: The returned frame.
+    """
+    width, height = retrieve_size(frame, planeno)
+    stride = frame.get_stride(planeno)
+    s_plane = height*stride
+    buf = (ctypes.c_byte*s_plane)()
+    ctypes.memmove(buf, frame.get_read_ptr(planeno), s_plane)
+    return Image.frombytes('L', (width, height), bytes(buf), "raw", "L", stride, 1)
+
+
+def get_plane_slow(frame: vs.VideoFrame, planeno: int) -> Image.Image:
     """
     Returns a plane as an PIL image
 
@@ -16,10 +50,11 @@ def get_plane(frame: vs.VideoFrame, planeno: int) -> Image.Image:
     :param planeno:  The plane number.
     :return: A grayscale-image with the given plane.
     """
+    width, height = retrieve_size(frame, planeno)
 
-    width, height = frame.width, frame.height
     array = frame.get_read_array(planeno)
     buffer = bytearray(len(array)*len(array[0]))
+    assert len(array) > 0
     for stride_no, stride in enumerate(array):
         buffer[stride_no * len(stride):(stride_no + 1) * len(stride)] = stride
     return Image.frombytes('L', (width, height), bytes(buffer), "raw", "L", len(stride), 1)
@@ -33,7 +68,7 @@ def convert_frame(frame: vs.VideoFrame) -> Image.Image:
     :return:
     """
     return Image.merge("RGB", tuple(map(
-        functools.partial(get_plane, frame),
+        functools.partial(get_plane_fast, frame),
         range(frame.format.num_planes)
     )))
 
@@ -65,8 +100,11 @@ def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709") -> Image.Image
     :param matrix:
     :return:
     """
-    rgbclip = ensure_rgb24(clip, matrix=matrix)
-    return convert_frame(rgbclip.get_frame(frame_no))
+    if clip.format.color_family == vs.YUV:
+        return
+    else:
+        rgbclip = ensure_rgb24(clip, matrix=matrix)
+        return convert_frame(rgbclip.get_frame(frame_no))
 
 
 def image_to_bytes(im: Image.Image) -> bytes:
@@ -83,3 +121,15 @@ def image_to_bytes(im: Image.Image) -> bytes:
         im = im.convert("RGB")
     im.save(f, format="png")
     return f.getvalue()
+
+
+def image_to_clip(im: Image.Image, *args, **kwargs) -> vs.VideoNode:
+    """
+    Converts an Image to a VideoNode.
+
+    This function will create a
+    :param im:
+    :param args: The args passed to the BlankClip-Operator
+    :param args: The kwargs passed to the BlankClip-Operator
+    :return:
+    """
