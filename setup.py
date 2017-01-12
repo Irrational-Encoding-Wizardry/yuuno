@@ -7,7 +7,7 @@ from setuptools import setup
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def read(fname):
-    if os.path.exists("README.md"):
+    if os.path.exists("README.rst"):
         return open(os.path.join(os.path.dirname(__file__), fname)).read()
     return ""
 
@@ -21,7 +21,7 @@ setup(
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
     packages=['yuuno', 'yuuno.vendor', 'yuuno.widgets', 'yuuno.magic'],
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
 
