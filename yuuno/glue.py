@@ -37,27 +37,8 @@ def get_plane_fast(frame: vs.VideoFrame, planeno: int) -> Image.Image:
     width, height = retrieve_size(frame, planeno)
     stride = frame.get_stride(planeno)
     s_plane = height*stride
-    buf = (ctypes.c_byte*s_plane)()
-    ctypes.memmove(buf, frame.get_read_ptr(planeno), s_plane)
-    return Image.frombytes('L', (width, height), bytes(buf), "raw", "L", stride, 1)
-
-
-def get_plane_slow(frame: vs.VideoFrame, planeno: int) -> Image.Image:
-    """
-    Returns a plane as an PIL image
-
-    :param frame:    The frame.
-    :param planeno:  The plane number.
-    :return: A grayscale-image with the given plane.
-    """
-    width, height = retrieve_size(frame, planeno)
-
-    array = frame.get_read_array(planeno)
-    buffer = bytearray(len(array)*len(array[0]))
-    assert len(array) > 0
-    for stride_no, stride in enumerate(array):
-        buffer[stride_no * len(stride):(stride_no + 1) * len(stride)] = stride
-    return Image.frombytes('L', (width, height), bytes(buffer), "raw", "L", len(stride), 1)
+    buf = (ctypes.c_byte*s_plane).from_address(frame.get_read_ptr(planeno).value)
+    return Image.frombuffer('L', (width, height), buf, "raw", "L", stride, 1)
 
 
 def convert_frame(frame: vs.VideoFrame) -> Image.Image:

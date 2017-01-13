@@ -2,7 +2,7 @@ from IPython import get_ipython
 # noinspection PyUnresolvedReferences
 from PIL.Image import Image, new
 
-from vapoursynth import VideoNode, Core, Format
+from vapoursynth import VideoProps, VideoNode, Core, Format
 import vapoursynth as vs
 
 from yuuno.glue import convert_clip, image_to_bytes
@@ -46,13 +46,22 @@ inlines.register(Image, format="image/png")(image_to_bytes)
 
 @inlines.register(VideoNode, format="image/png")
 def format_video(video):
-    return image_to_bytes(_converter(video, frame_no=0))
+    return image_to_bytes(_converter(video, frame_no=0)), {'width': video.width, 'height': video.height, 'unconfined': True}
 
 
 @inlines.register(Format, format="text/plain")
 def format_format(f, p, cycle):
     p.text(str(f))
 
+@inlines.register(VideoProps, format="text/plain")
+def format_format(f, p, cycle):
+    result = ["VideoProps:"]
+    for val in dir(f):
+        if val.startswith("__") and val.endswith("__"):
+            continue
+
+        result.append("\t%s: %r" % (val, getattr(f, val)))
+    p.text("\n".join(result))
 
 @inlines.register(Core, format="image/png")
 def format_core(core):

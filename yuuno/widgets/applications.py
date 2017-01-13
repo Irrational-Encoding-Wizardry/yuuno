@@ -3,14 +3,8 @@ from IPython.display import Image as IPyImage, HTML, display
 from PIL.Image import NEAREST
 
 from yuuno.glue import convert_clip, image_to_bytes
-from yuuno.widgets.image import Image, BaseImageChooser, ImageChooser
+from yuuno.widgets.image import Image, BaseImageChooser
 from yuuno.widgets.widget import Widget
-
-
-class _show(Image):
-
-    def __init__(self, clip, converter=convert_clip, frame_no=0, **kwargs):
-        super(_show, self).__init__(converter(clip, frame_no=frame_no), **kwargs)
 
 
 def dump(clip, converter=convert_clip, *, lots_of_frames=False):
@@ -148,7 +142,7 @@ class inspect(BaseImageChooser):
 
 class preview(Widget):
 
-    def __init__(self, *clips, converter=convert_clip, initial=0, initial_speed=500):
+    def __init__(self, *clips, converter=convert_clip, initial=0):
         self.converter = converter
         self.frames = []
         for clip in clips:
@@ -159,36 +153,26 @@ class preview(Widget):
         frames_container = ipywidgets.VBox([frame[1].get_widget() for frame in self.frames])
 
         minlength = len(min(clips, key=len))
-        slider = ipywidgets.IntSlider(
+        self.slider = ipywidgets.IntSlider(
             value=initial,
             min=0,
             max=minlength - 1,
             step=1,
             orientation="horizontal"
         )
-        play = ipywidgets.Play(
-            value=initial,
-            min=0,
-            max=minlength - 1,
-            step=1
-        )
-        speed_slider = ipywidgets.IntSlider(
-            value=initial_speed,
-            min=100,
-            max=2000,
-            step=20
-        )
 
-        speed_container = ipywidgets.HBox([ipywidgets.Label("Speed"), speed_slider])
-        position_container = ipywidgets.HBox([ipywidgets.Label("Frame"), play, slider])
-        controls = ipywidgets.VBox([speed_container, position_container])
+        prev = ipywidgets.Button(icon="fa-step-backward", layout=ipywidgets.Layout(width="50px"))
+        prev.on_click(lambda s: self.step(-1))
+        next = ipywidgets.Button(icon="fa-step-forward", layout=ipywidgets.Layout(width="50px"))
+        next.on_click(lambda s: self.step(1))
+        controls = ipywidgets.HBox([prev, next, self.slider])
         self.main_box = ipywidgets.VBox([controls, frames_container])
 
-        ipywidgets.jslink((play, "value"), (slider, "value"))
-        ipywidgets.jslink((speed_slider, "value"), (play, "interval"))
-
-        slider.observe(self.do_step, names="value")
+        self.slider.observe(self.do_step, names="value")
         self.do_step({'new': initial})
+
+    def step(self, interval):
+        self.slider.value += interval
 
     def do_step(self, val):
         val = val['new']
@@ -204,12 +188,12 @@ class preview(Widget):
         return self.main_box
 
 
-def interact(clip, renderer, frame_no=0, converter=convert_clip, widget=_show, **kwargs):
+def interact(clip, renderer, frame_no=0, converter=convert_clip, **kwargs):
     fno_slider = ipywidgets.IntSlider(min=0, max=len(clip)-1, value=frame_no)
     kwargs["frame_no"] = fno_slider
     def render(*args, frame_no=0, **kwargs):
         nclip = renderer(clip, *args, **kwargs)
         fno_slider.max = len(nclip)-1
-        return widget(nclip[frame_no], converter=converter)
-    return ipywidgets.interact(render, **kwargs)
+        return converter(nclip, frame_no=frame_no)
+    ipywidgets.interact(render, **kwargs)
 
