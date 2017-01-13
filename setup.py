@@ -16,14 +16,14 @@ setup(
     version = "0.2.0",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
-    description = ("Glue for jupyter and vapoursynth"),
+    description = "Glue for jupyter and vapoursynth",
     license = "MIT",
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
     packages=['yuuno', 'yuuno.vendor', 'yuuno.widgets', 'yuuno.magic'],
     long_description=read('README.rst'),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
 
         "License :: OSI Approved :: MIT License",
         "Environment :: Web Environment",
