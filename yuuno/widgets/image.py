@@ -120,12 +120,6 @@ class Image(ImageWidget):
         yield '<div class="vs-image-tiled">'
         yield '''
         <style scoped>
-        .vs-image-tiled-wrapper {
-            max-width: %s;
-            max-height: %s;
-            overflow: auto;
-        }
-
         .vs-image-tiled-wrapper > .vs-image-tiled-row {
             white-space: nowrap;
         }
@@ -137,7 +131,7 @@ class Image(ImageWidget):
             display: inline;
         }
         </style>
-        '''%self.viewport
+        '''
         yield '<div class="vs-image-tiled-wrapper">'
 
         for r in range(row_count):

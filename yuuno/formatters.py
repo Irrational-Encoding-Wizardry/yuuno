@@ -1,3 +1,6 @@
+"""
+This file registers the formatters for the vapoursynth-types.
+"""
 from IPython import get_ipython
 # noinspection PyUnresolvedReferences
 from PIL.Image import Image, new
@@ -39,9 +42,6 @@ def set_converter(converter=lambda clip:convert_clip(clip, frame_no=0)):
 
 
 inlines = _InlineManager()
-
-
-inlines.register(Image, format="image/png")(image_to_bytes)
 
 
 @inlines.register(VideoNode, format="image/png")
