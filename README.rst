@@ -1,7 +1,7 @@
 Yuuno
 =====
 
-.. image:: https://img.shields.io/badge/version-0.1.5-blue.svg?style=flat-square
+.. image:: https://img.shields.io/badge/version-0.2.0-blue.svg?style=flat-square
 .. image:: https://img.shields.io/badge/vapoursynth-R36-brightgreen.svg?style=flat-square
 .. image:: https://img.shields.io/badge/vapoursynth-R35-green.svg?style=flat-square
 
@@ -13,10 +13,10 @@ Installation
 
 The installation is easy. Just use those two commands.
 
-.. code:: bash
+.. code:: batch
 
-   $ python -m pip install yuuno
-   $ python -m jupyter nbextension enable --py --sys-prefix widgetsnbextension
+   $ py -3.5 -m pip install yuuno
+   $ py -3.6 -m notebook.nbextensions enable --py --sys-prefix widgetsnbextension
 
 .. note::
 
@@ -33,7 +33,7 @@ Start Jupyter by executing this command.
 
   .. code:: bash
 
-     $ python -m jupyter notebook
+     $ py -3.5 -m notebook
 
   Create a notebook at the destination of your choice. Note that the code will be executed in the directory the notebook is saved in.
 

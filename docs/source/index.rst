@@ -14,16 +14,16 @@ Installing and running
 
 To install Yuuno, run these two commands in your console.
 
-.. code:: bash
+.. code:: batch
 
-   $ pip install yuuno
-   $ jupyter nbextension enable --py --sys-prefix widgetsnbextension
+   $ py -3.5 -m pip install yuuno
+   $ py -3.5 -m notebook.nbextensions enable --py --sys-prefix widgetsnbextension
 
 To run it:
 
-.. code:: bash
+.. code:: batch
 
-   $ jupyter notebook
+   $ py -3.5 -m notebook
 
 .. note::
 
@@ -38,9 +38,9 @@ Initiating Yuuno
 .. code:: python
 
    >>> from yuuno import *
-   >>> yuuno.install()
+   >>> install()
 
-For the rest, please refer to the `tutorial here</tutorial.html>`_.
+For the rest, please refer to the `tutorial here <https://yuuno.encode.moe/tutorial.html>`_.
 
 
 API Documentation

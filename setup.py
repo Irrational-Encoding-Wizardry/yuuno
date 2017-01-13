@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "yuuno",
-    version = "0.2.0",
+    version = "0.2.0.2",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = "Glue for jupyter and vapoursynth",
@@ -38,6 +38,6 @@ setup(
     ],
 
     install_requires=[
-        'notebook', 'Pillow'
+        'notebook', 'Pillow', "ipywidgets"
     ]
 )
