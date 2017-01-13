@@ -40,7 +40,7 @@ Initiating Yuuno
    >>> from yuuno import *
    >>> yuuno.install()
 
-
+For the rest, please refer to the `tutorial here</tutorial.html>`_.
 
 
 API Documentation
