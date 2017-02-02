@@ -13,14 +13,14 @@ def read(fname):
 
 setup(
     name = "yuuno",
-    version = "0.2.0.2",
+    version = "0.3.0a0.dev1",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = "Glue for jupyter and vapoursynth",
     license = "MIT",
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
-    packages=['yuuno', 'yuuno.vendor', 'yuuno.widgets', 'yuuno.magic'],
+    packages=['yuuno', 'yuuno.widgets', 'yuuno.magic'],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",

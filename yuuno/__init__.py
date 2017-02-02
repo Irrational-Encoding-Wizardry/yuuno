@@ -22,4 +22,6 @@ def install(*, inspections=True, inline=True, magic=True):
         cellmagic.install()
     
 
+version = (0, 3, "0a1", "dev1")
+__version__ = ".".join(version)
 __all__ = ["install", "convert_clip",  "diff", "compare", "inspect", "preview", "dump", "interact"]

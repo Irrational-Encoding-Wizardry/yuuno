@@ -24,7 +24,7 @@ def retrieve_size(frame: vs.VideoFrame, planeno: int) -> (int, int):
     return width, height
 
 
-def get_plane_fast(frame: vs.VideoFrame, planeno: int) -> Image.Image:
+def get_plane_fast(frame: vs.VideoFrame, planeno: int, *, compat=False) -> Image.Image:
     """
     Faster implementation of get_plane.
 
@@ -38,41 +38,67 @@ def get_plane_fast(frame: vs.VideoFrame, planeno: int) -> Image.Image:
     stride = frame.get_stride(planeno)
     s_plane = height*stride
     buf = (ctypes.c_byte*s_plane).from_address(frame.get_read_ptr(planeno).value)
-    return Image.frombuffer('L', (width, height), buf, "raw", "L", stride, 1)
+    
+    if not compat:
+        return Image.frombuffer('L', (width, height), buf, "raw", "L", stride, 1)
+    else:
+        return Image.frombuffer('RGB', (width, height), buf, "raw", "BGRX", stride, -1)
 
 
-def convert_frame(frame: vs.VideoFrame) -> Image.Image:
+def convert_frame(frame: vs.VideoFrame, *, compat=False) -> Image.Image:
     """
     Converts all planes of a frame to an image.
     :param frame:
     :param frameno:
     :return:
     """
+    if compat:
+        return get_plane_fast(frame, 0, compat=True)
+    
     return Image.merge("RGB", tuple(map(
         functools.partial(get_plane_fast, frame),
         range(frame.format.num_planes)
     )))
 
 
-def ensure_rgb24(clip: vs.VideoNode, *, matrix="709") -> vs.VideoNode:
+def ensure_rgb24(clip: vs.VideoNode, *, matrix="709", compat=False) -> vs.VideoNode:
     """
     Converts the clip to a RGB24 colorspace
-    :param clip:
-    :param matrix:
-    :return:
+    :param clip:    The clip to convert
+    :param matrix:  The matrix to use when converting from YUV to RGB
+    :return: An RGB24-Clip
     """
-    core = vs.get_core()
-
-    if clip.format.color_family != vs.RGB:
-        clip = mvsfunc.ToRGB(clip, matrix=matrix)
-
-    if clip.format.bits_per_sample != 8:
-        clip = core.fmtc.bitdepth(clip, bits=8)
+    # DRY the code by just adding a flag when the conversion into RGB24
+    # has not been completed and will require a last resize operation
+    # that will complete the conversion into RGB24
+    requires_post_conversion = False
+    
+    
+    if clip.format.color_family == vs.YUV:           # Matrix on YUV
+        clip = clip.resize.Spline36(
+            format=vs.RGB24,
+            matrix_in_s=matrix
+        )
+        
+    if clip.format.color_family != vs.RGB:           # RGB
+        requires_post_conversion = True
+    if clip.format.bits_per_sample != 8:             # 8bit colordepth
+        requires_post_conversion = True
+        
+    if requires_post_conversion:
+        clip = clip.resize.Spline36(
+            format=vs.RGB24
+        )
+        
+    if compat:
+        clip = clip.resize.Spline36(
+            format=vs.COMPATBGR32
+        )
 
     return clip
 
 
-def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709") -> Image.Image:
+def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709", compat=True) -> Image.Image:
     """
     Converts a clip to an image with the given frame with the given matrix.
 
@@ -81,8 +107,8 @@ def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709") -> Image.Image
     :param matrix:
     :return:
     """
-    rgbclip = ensure_rgb24(clip, matrix=matrix)
-    return convert_frame(rgbclip.get_frame(frame_no))
+    rgbclip = ensure_rgb24(clip, matrix=matrix, compat=compat)
+    return convert_frame(rgbclip.get_frame(frame_no), compat=compat)
 
 
 def image_to_bytes(im: Image.Image) -> bytes:
