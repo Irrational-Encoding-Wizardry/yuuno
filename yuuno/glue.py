@@ -123,15 +123,3 @@ def image_to_bytes(im: Image.Image) -> bytes:
         im = im.convert("RGB")
     im.save(f, format="png")
     return f.getvalue()
-
-
-def image_to_clip(im: Image.Image, *args, **kwargs) -> vs.VideoNode:
-    """
-    Converts an Image to a VideoNode.
-
-    This function will create a
-    :param im:
-    :param args: The args passed to the BlankClip-Operator
-    :param args: The kwargs passed to the BlankClip-Operator
-    :return:
-    """
