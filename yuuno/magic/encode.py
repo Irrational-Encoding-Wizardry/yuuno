@@ -31,16 +31,17 @@ class ClipPiper(Thread):
     Handles
     """
 
-    def __init__(self, clip, process):
+    def __init__(self, clip, process, y4m=False):
         super(ClipPiper, self).__init__()
         self.clip = clip
         self.process = process
         self.alive = False
+        self.y4m = y4m
 
     def run(self):
         self.alive = True
         try:
-            self.clip.output(self.process.stdin, y4m=True, progress_update=self.ensure_dealive)
+            self.clip.output(self.process.stdin, y4m=y4m, progress_update=self.ensure_dealive)
         except Exception:
             if not self.alive:
                 return
@@ -104,14 +105,14 @@ else:
         process.send_signal(signal.CTRL_C_EVENT)
 
 
-def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=True, decode_stderr=True):
+def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=True, decode_stderr=True, y4m=True):
     """
     Starts the encoding process...
     """
     process = popen(shlex.split(cmd),
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    d_thread = ClipPiper(clip, process)
+    d_thread = ClipPiper(clip, process, y4m=y4m)
     o_thread = OutputReader(process.stdout, stdout, decode_stdout)
     e_thread = OutputReader(process.stderr, stderr, decode_stderr)
 
@@ -156,7 +157,7 @@ def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=T
     return process.returncode
 
 
-def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True):
+def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True, y4m=True):
     if cell is not None:
         cmd = line
         expr = cell
@@ -174,26 +175,44 @@ def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdo
         except KeyError:
             return "The expression must compute to a VideoNode not '%r'." % clip
 
-    return run_encoder(clip, cmd, stderr=stderr, stdout=stdout, decode_stdout=decode_stdout, decode_stderr=decode_stderr)
+    return run_encoder(clip, cmd, stderr=stderr, stdout=stdout, decode_stdout=decode_stdout, decode_stderr=decode_stderr, y4m=y4m)
 
 
 @line_cell_magic
 def encode(line, cell=None, local_ns=None):
     """
-    Encodes a clip given by the first word in the first line and produces a live output of
-    the console.
+    Encodes a clip. It will produce the y4m-output and pipe said output
+    into an encoder process. The output of the encoder-process is piped
+    back to the shell.
+    
+    *as line-magic*:
+    Encodes a clip given by the first word in the first line.
+    All following words are parsed as the command line passed to the process.
+    
+    *as cell-magic*:
+    Encodes a clip that is evaluated by the cell. The arguments are the command
+    line command for the encoder.
 
     The encoder receives y4m output.
-        >>> %encode clip x264 --y4m - ...
+        >>> %encode clip x264 --demuxer y4m - ...
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
     or
-        >>> %%encode x264 --y4m - ...
+        >>> %%encode x264 --demuxer y4m - ...
         ... clip
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
-
     """
-    return do_encode(line, cell, local_ns)
+    return do_encode(line, cell, local_ns, y4m=True)
+
+@line_cell_magic
+def encode_raw(line, cell=None, local_ns=None):
+    """
+    Encodes a clip given by the first word in the first line and produes a live output of the
+    console.
+    
+    Behaves like the `%%encode`-Magic. However the output will be as raw instead of y4m.
+    """
+    return do_encode(line, cell, local_ns, y4m=False)
