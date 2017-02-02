@@ -38,7 +38,7 @@ Initiating Yuuno
 .. code:: python
 
    >>> from yuuno import *
-   >>> install()
+   >>> %yuuno
 
 For the rest, please refer to the `tutorial here <https://yuuno.encode.moe/tutorial.html>`_.
 

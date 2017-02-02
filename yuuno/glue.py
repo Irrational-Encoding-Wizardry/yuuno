@@ -6,8 +6,6 @@ from io import BytesIO
 from PIL import Image
 import vapoursynth as vs
 
-from yuuno.vendor import mvsfunc
-
 
 def retrieve_size(frame: vs.VideoFrame, planeno: int) -> (int, int):
     """
