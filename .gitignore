@@ -115,3 +115,6 @@ pip-selfcheck.json
 # End of https://www.gitignore.io/api/python,virtualenv,git
 
 testnotebooks
+
+### CodeTasty Online IDE ###
+.codetasty/
