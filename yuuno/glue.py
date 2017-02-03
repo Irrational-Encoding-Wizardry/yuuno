@@ -66,24 +66,14 @@ def ensure_rgb24(clip: vs.VideoNode, *, matrix="709", compat=False) -> vs.VideoN
     :param matrix:  The matrix to use when converting from YUV to RGB
     :return: An RGB24-Clip
     """
-    # DRY the code by just adding a flag when the conversion into RGB24
-    # has not been completed and will require a last resize operation
-    # that will complete the conversion into RGB24
-    requires_post_conversion = False
-    
-    
+
     if clip.format.color_family == vs.YUV:           # Matrix on YUV
         clip = clip.resize.Spline36(
             format=vs.RGB24,
             matrix_in_s=matrix
         )
         
-    if clip.format.color_family != vs.RGB:           # RGB
-        requires_post_conversion = True
-    if clip.format.bits_per_sample != 8:             # 8bit colordepth
-        requires_post_conversion = True
-        
-    if requires_post_conversion:
+    if clip.format.color_family != vs.RGB or clip.format.bits_per_sample != 8:
         clip = clip.resize.Spline36(
             format=vs.RGB24
         )
