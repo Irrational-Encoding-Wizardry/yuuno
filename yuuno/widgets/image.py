@@ -63,9 +63,7 @@ class Image(ImageWidget):
         self.viewport = tile_viewport
 
         self.image_layout = ipywidgets.Layout(display="none")
-        self.html_layout = ipywidgets.Layout(
-            display="none", overflow="scroll", max_width=tile_viewport[0], max_height=tile_viewport[1]
-        )
+        self.html_layout = ipywidgets.Layout(display="none")
 
         if self.scale:
             self.image_layout.height = "auto"
@@ -120,6 +118,11 @@ class Image(ImageWidget):
         yield '<div class="vs-image-tiled">'
         yield '''
         <style scoped>
+        .vs-image-tiled-main {
+            overflow: scroll;
+            max-width: %s;
+            max-height: %s;
+        }
         .vs-image-tiled-wrapper > .vs-image-tiled-row {
             white-space: nowrap;
         }
@@ -131,8 +134,8 @@ class Image(ImageWidget):
             display: inline;
         }
         </style>
-        '''
-        yield '<div class="vs-image-tiled-wrapper">'
+        '''%(self.viewport[0], self.viewport[1])
+        yield '<div class="vs-image-tiled-main"><div class="vs-image-tiled-wrapper">'
 
         for r in range(row_count):
             yield '<div class="vs-image-tiled-row">'
@@ -143,6 +146,7 @@ class Image(ImageWidget):
                 ])
             yield '</div>'
 
+        yield '</div>'
         yield '</div>'
         yield '</div>'
 
