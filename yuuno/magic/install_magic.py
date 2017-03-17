@@ -19,22 +19,34 @@ def yuuno(line):
     * `inline`: Inline rendering of clips
     * `magic`: Enable additional cell and line magic
     * `inspection`: Pre R35: Better inspections
+    * `variables`: Adds commonly used variables to the environment
     
     Example: Only enable inlines
-    >>> %yuuno !all inlines
+    >>> %yuuno install !all inlines
     
     Example: Only include everything except inspections
-    >>> %yuuno !inspections
+    >>> %yuuno install !inspections
     """
-    features = {}
-    for feature in line.split(" "):
-        val = feature.startswith("!")
-        if val:
-            feature=feature[1:]
-        features[feature] = not val
+    command, *line = line.split(" ", 2)
+    if len(line) == 0:
+        line = ""
+    else:
+        line = line[0]
         
-    from yuuno import install
-    install(**features)
+    if command == "install":
+        features = {}
+        for feature in line.split(" "):
+            val = feature.startswith("!")
+            if val:
+                feature=feature[1:]
+            features[feature] = not val
+            
+        from yuuno import install
+        install(**features)
+
+    elif command == "version":
+        from yuuno import __version__
+        return __version__
 
 
 def install_yuuno_command():

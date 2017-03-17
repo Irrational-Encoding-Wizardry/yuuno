@@ -1,3 +1,4 @@
+import os
 import ctypes
 import functools
 from io import BytesIO
@@ -99,6 +100,16 @@ def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709", compat=True) -
     return convert_frame(rgbclip.get_frame(frame_no), compat=compat)
 
 
+def open_icc(name="bt709"):
+    """
+    Opens the ICC-Color profile to attach to the file.
+    """
+    
+    this_dir, this_filename = os.path.split(__file__)
+    path = os.path.join(this_dir, "data", name+".icc")
+    with open(path, "rb") as f:
+        return f.read()
+
 def image_to_bytes(im: Image.Image) -> bytes:
     """
     Saves the image as PNG into a bytes object.
@@ -111,5 +122,5 @@ def image_to_bytes(im: Image.Image) -> bytes:
     f = BytesIO()
     if im.mode not in ("RGB", "1", "L", "P"):
         im = im.convert("RGB")
-    im.save(f, format="png")
+    im.save(f, format="png", icc_profile=open_icc())
     return f.getvalue()
