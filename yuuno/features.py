@@ -1,6 +1,7 @@
 from functools import wraps
 
 from yuuno import inspection
+from yuuno import variables
 from yuuno import magic
 from yuuno.magic import install_magic
 from yuuno.formatters import inlines
@@ -15,6 +16,7 @@ class FeatureManager(object):
     def __init__(self):
         self.installed = set()
         self.features = {}
+        self.ipy = None
         self.auto = []
     
     def feature(self, name=None, *, auto=False):
@@ -36,7 +38,8 @@ class FeatureManager(object):
             return func
         return _decorator
         
-    def initialize(self):
+    def initialize(self, ipy=None):
+        self.ipy = ipy
         for name in self.auto:
             self.features[name]()
             self.installed.add(name)
@@ -70,11 +73,12 @@ install = FeatureManager()
 install.feature("inspection")(inspection.install)
 install.feature("magic")(magic.install)
 install.feature("inline")(inlines.install)
+install.feature("variables")(variables.install)
 
 # Autoregister the Yuuno-Command
 install.feature("yuuno", auto=True)(install_magic.install_yuuno_command)
 
-install.initialize()
+
 
 __all__ = ["install"]
             
