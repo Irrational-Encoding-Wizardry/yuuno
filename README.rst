@@ -15,7 +15,7 @@ The installation is easy. Just use those two commands.
 
 .. code:: batch
 
-   $ py -3.5 -m pip install yuuno
+   $ py -3.6 -m pip install yuuno
    $ py -3.6 -m notebook.nbextensions enable --py --sys-prefix widgetsnbextension
 
 .. note::
@@ -33,7 +33,7 @@ Start Jupyter by executing this command.
 
   .. code:: bash
 
-     $ py -3.5 -m notebook
+     $ py -3.6 -m notebook
 
   Create a notebook at the destination of your choice. Note that the code will be executed in the directory the notebook is saved in.
 
@@ -43,4 +43,5 @@ Start Jupyter by executing this command.
 
   .. code:: python
 
-    import yuuno; yuuno.install()
+    %load_ext yuuno
+    %yuuno install
