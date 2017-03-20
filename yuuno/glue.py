@@ -3,9 +3,10 @@ import ctypes
 import functools
 from io import BytesIO
 
-# noinspection PyUnresolvedReferences
 from PIL import Image
 import vapoursynth as vs
+
+from yuuno.settings import settings
 
 
 def retrieve_size(frame: vs.VideoFrame, planeno: int) -> (int, int):
@@ -60,13 +61,16 @@ def convert_frame(frame: vs.VideoFrame, *, compat=False) -> Image.Image:
     )))
 
 
-def ensure_rgb24(clip: vs.VideoNode, *, matrix="709", compat=False) -> vs.VideoNode:
+def ensure_rgb24(clip: vs.VideoNode, *, matrix=None, compat=False) -> vs.VideoNode:
     """
     Converts the clip to a RGB24 colorspace
     :param clip:    The clip to convert
     :param matrix:  The matrix to use when converting from YUV to RGB
     :return: An RGB24-Clip
     """
+
+    if matrix is None:
+        matrix = settings.yuv_matrix
 
     if clip.format.color_family == vs.YUV:           # Matrix on YUV
         clip = clip.resize.Spline36(
@@ -87,7 +91,7 @@ def ensure_rgb24(clip: vs.VideoNode, *, matrix="709", compat=False) -> vs.VideoN
     return clip
 
 
-def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709", compat=True) -> Image.Image:
+def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix=None, compat=True) -> Image.Image:
     """
     Converts a clip to an image with the given frame with the given matrix.
 
@@ -100,10 +104,12 @@ def convert_clip(clip: vs.VideoNode, *, frame_no=0, matrix="709", compat=True) -
     return convert_frame(rgbclip.get_frame(frame_no), compat=compat)
 
 
-def open_icc(name="bt709"):
+def open_icc(name=None):
     """
     Opens the ICC-Color profile to attach to the file.
     """
+    if name is None:
+        name = settings.csp
     
     this_dir, this_filename = os.path.split(__file__)
     path = os.path.join(this_dir, "data", name+".icc")
