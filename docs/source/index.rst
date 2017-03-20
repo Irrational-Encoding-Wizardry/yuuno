@@ -16,14 +16,14 @@ To install Yuuno, run these two commands in your console.
 
 .. code:: batch
 
-   $ py -3.5 -m pip install yuuno
-   $ py -3.5 -m notebook.nbextensions enable --py --sys-prefix widgetsnbextension
+   $ py -3.6 -m pip install yuuno
+   $ py -3.6 -m notebook.nbextensions enable --py --sys-prefix widgetsnbextension
 
 To run it:
 
 .. code:: batch
 
-   $ py -3.5 -m notebook
+   $ py -3.6 -m notebook
 
 .. note::
 
@@ -37,8 +37,11 @@ Initiating Yuuno
 
 .. code:: python
 
-   >>> from yuuno import *
-   >>> %yuuno
+   >>> %load_ext yuuno
+   >>> %yuuno install
+
+The module `vapoursynth` will automatically made available as the variable `vs` and the current core instance is
+made available with the variable `core`.
 
 For the rest, please refer to the `tutorial here <https://yuuno.encode.moe/tutorial.html>`_.
 
