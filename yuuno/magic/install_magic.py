@@ -9,7 +9,7 @@ class _CommandManager(object):
     def register(self, name):
         def _decorator(func):
             self.commands[name] = func
-			return func
+            return func
         return _decorator
 
     def get_description(self, name):
