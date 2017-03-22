@@ -2,7 +2,7 @@ import math
 import base64
 import ipywidgets
 from yuuno.widgets.widget import Widget
-from yuuno.glue import image_to_bytes
+from yuuno.converter import image_to_bytes
 
 
 TILE_SIZE = 540

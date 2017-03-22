@@ -2,9 +2,11 @@ import ipywidgets
 from IPython.display import Image as IPyImage, HTML, display
 from PIL.Image import NEAREST
 
-from yuuno.glue import convert_clip, image_to_bytes
+from yuuno.converter import image_to_bytes, convert_clip
+
 from yuuno.widgets.image import Image, BaseImageChooser
 from yuuno.widgets.widget import Widget
+
 
 
 def dump(clip, converter=convert_clip, *, lots_of_frames=False):

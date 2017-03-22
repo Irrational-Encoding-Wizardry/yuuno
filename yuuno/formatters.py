@@ -5,10 +5,9 @@ from IPython import get_ipython
 from PIL.Image import Image, new
 
 import vapoursynth as vs
-from vapoursynth import VideoProps, VideoNode, Core, Format
+from vapoursynth import VideoProps, VideoFrame, VideoNode, Core, Format
 
-from yuuno.glue import convert_clip, image_to_bytes
-
+from yuuno.converter import converters, image_to_bytes
 
 class _InlineManager(object):
     """
@@ -19,10 +18,10 @@ class _InlineManager(object):
         self.inlines = []
 
     def register(self, type, format="text/plain"):
-        def _wrapper(func):
+        def _decorator(func):
             self.inlines.append((type, format, func))
             return func
-        return _wrapper
+        return _decorator
 
     def install(self):
         ipython = get_ipython()
@@ -34,19 +33,17 @@ class _InlineManager(object):
             formatters[format].for_type(type, func)
 
 
-_converter = convert_clip
-def set_converter(converter=lambda clip:convert_clip(clip, frame_no=0)):
-    global _converter
-    _converter = converter
-
-
 inlines = _InlineManager()
 
-
 @inlines.register(VideoNode, format="image/png")
-def format_video(video):
-    return image_to_bytes(_converter(video, frame_no=0)), {'width': video.width, 'height': video.height, 'unconfined': True}
-
+@inlines.register(VideoFrame, format="image/png")
+def video_converter(obj):
+    img = converters.convert(obj, frame_no=0)
+    return image_to_bytes(img), {
+        'width': img.width,
+        'height': img.height,
+        'unconfined': True
+    }
 
 @inlines.register(Format, format="text/plain")
 def format_format(f, p, cycle):
@@ -65,7 +62,7 @@ def format_format(f, p, cycle):
 @inlines.register(Core, format="image/png")
 def format_core(core):
     try:
-        return format_video(vs.get_output(0))
+        return video_converter(vs.get_output(0))
     except KeyError:
         return b""
 
