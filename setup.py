@@ -20,7 +20,17 @@ setup(
     license = "MIT",
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
-    packages=['yuuno', 'yuuno.widgets', 'yuuno.magic', 'yuuno.data', 'yuuno.converter'],
+    packages=[
+        'yuuno',
+        'yuuno.data',
+
+        'yuuno.ipython',
+        'yuuno.ipython.widgets',
+        'yuuno.ipython.magic',
+
+        'yuuno.core',
+        'yuuno.core.converter',
+    ],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",
