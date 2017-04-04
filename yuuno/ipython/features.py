@@ -2,7 +2,6 @@ from functools import wraps
 
 from yuuno.ipython.formatters import inlines
 
-from yuuno.ipython import inspection
 from yuuno.ipython import variables
 from yuuno.ipython import magic
 from yuuno.ipython.magic import yuuno_command
@@ -73,7 +72,6 @@ class FeatureManager(object):
 install = FeatureManager()
 
 # Default-Features are defined here
-install.feature("inspection")(inspection.install)
 install.feature("magic")(magic.install)
 install.feature("inline")(inlines.install)
 install.feature("variables")(variables.install)
