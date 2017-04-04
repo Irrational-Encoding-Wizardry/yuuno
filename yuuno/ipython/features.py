@@ -29,8 +29,6 @@ class FeatureManager(object):
             def _wrapper(*args, **kwargs):
                 if feature not in self.installed:
                     self.installed.add(feature)
-                import inspect
-                print(inspect.getsourcefile(func))
                 return func(*args, **kwargs)
             
             self.features[feature] = _wrapper
