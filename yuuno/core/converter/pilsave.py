@@ -19,8 +19,12 @@ def open_icc(name=None):
     
     this_dir, this_filename = os.path.split(__file__)
     path = os.path.join(this_dir, '..', "data", name+".icc")
-    with open(path, "rb") as f:
-        return f.read()
+    try:
+        with open(path, "rb") as f:
+            return f.read()
+    except IOError as e:
+        print(e)
+        return b''
 
 def image_to_bytes(im: Image.Image) -> bytes:
     """
