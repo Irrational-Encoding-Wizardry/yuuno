@@ -1,11 +1,11 @@
-import math
 import base64
+import math
+
 import ipywidgets
-from yuuno.widgets.widget import Widget
-from yuuno.converter import image_to_bytes
 
-
-TILE_SIZE = 540
+from yuuno.core.converter import image_to_bytes
+from yuuno.core.settings import settings
+from yuuno.ipython.widgets.widget import Widget
 
 
 class ImageWidget(Widget):
@@ -102,7 +102,8 @@ class Image(ImageWidget):
 
         self.html_widget.value = ''.join(self._render_tiled_image())
 
-    def get_tile(self, row, column, *, size=TILE_SIZE):
+    def get_tile(self, row, column, *, size=None):
+        size = self.convert_tile_size(size)
         pos_x = column * size
         pos_y = row * size
         return self.image.crop((
@@ -110,7 +111,8 @@ class Image(ImageWidget):
             min(pos_x + size, self.image.width), min(pos_y + size, self.image.height)
         ))
 
-    def get_tile_count(self, *, size=TILE_SIZE):
+    def get_tile_count(self, *, size=None):
+        size = self.convert_tile_size(size)
         return math.ceil(self.image.height/size), math.ceil(self.image.width/size)
 
     def _render_tiled_image(self):
@@ -162,6 +164,12 @@ class Image(ImageWidget):
             return self.tiled
 
         return self.image.width > 5*1920 or self.image.height > 5*1080
+
+    @staticmethod
+    def convert_tile_size(size=None):
+        if size is None:
+            return int(settings.tile_size)
+        return size
 
 
 #################################################################################################

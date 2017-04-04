@@ -6,7 +6,9 @@ import os
 from io import BytesIO
 
 from PIL import Image
-from yuuno.settings import settings
+
+from yuuno.core.settings import settings
+
 
 def open_icc(name=None):
     """

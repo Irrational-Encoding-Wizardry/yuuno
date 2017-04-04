@@ -1,20 +1,5 @@
-from yuuno.magic.install_magic import commands
-
-class SettingsContainer(object):
-
-    DEFAULTS = {
-        'yuv_matrix': '709',
-        'csp': 'bt709'
-    }
-
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        for k, v in SettingsContainer.DEFAULTS.items():
-            setattr(self, k, v)
-
-settings = SettingsContainer()
+from yuuno.ipython.magic.yuuno_command import commands
+from yuuno.core.settings import settings, SettingsContainer
 
 
 @commands.register("get")
@@ -30,12 +15,16 @@ def get_setting(line):
     |                 clips from YUV to RGB.
     * `csp`:          The ICC-Profile to add to the PNG-files generated
     |                 by Yuuno.
+    * `tile_size`:    Large images are split into smaller tiles to prevent
+    |                 the browser from crashing. This setting defines the
+    |                 size of each tile.
     """
     if not line:
         return "Existing settings: %s"%(
             ", ".join(SettingsContainer.DEFAULTS.keys())
         )
     return getattr(settings, line.split(" ")[0], "<unset>")
+
 
 @commands.register("set")
 def set_settings(line):

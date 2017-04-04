@@ -1,6 +1,6 @@
 def install():
     import vapoursynth
-    from yuuno.features import install as install_mgr
+    from yuuno.ipython.features import install as install_mgr
     
     if hasattr(vapoursynth, "core"):
         core = vapoursynth.core

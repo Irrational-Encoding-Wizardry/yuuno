@@ -31,6 +31,7 @@ class _CommandManager(object):
 
 commands = _CommandManager()
 
+
 @commands.register("install")
 def install(line):
     """Installs features of Yuuno to the current IPython-Interpreter
@@ -72,6 +73,7 @@ def version(line):
     """Returns the version of yuuno."""
     from yuuno import __version__
     return __version__
+
 
 @commands.register("help")
 def help(line):

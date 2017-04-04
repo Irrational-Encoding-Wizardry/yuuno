@@ -2,12 +2,11 @@
 This file registers the formatters for the vapoursynth-types.
 """
 from IPython import get_ipython
-from PIL.Image import Image, new
 
 import vapoursynth as vs
 from vapoursynth import VideoProps, VideoFrame, VideoNode, Core, Format
 
-from yuuno.converter import converters, image_to_bytes
+from yuuno.core.converter import converters, image_to_bytes
 
 class _InlineManager(object):
     """

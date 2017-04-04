@@ -1,6 +1,8 @@
-from yuuno.features import install
-from yuuno.widgets.applications import diff, compare, inspect, preview, dump, interact
-from yuuno.settings import settings as _settings
+from yuuno.ipython.features import install
+
+from yuuno.core.settings import settings as _settings
+from yuuno.ipython.widgets.applications import diff, compare, inspect, preview, dump, interact
+
 
 def load_ipython_extension(ipython):
     install.initialize(ipython)

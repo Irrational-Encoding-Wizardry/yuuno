@@ -1,16 +1,14 @@
-import io
 import ast
-import sys
 import shlex
-import base64
 import signal
 import subprocess
+import sys
 from threading import Thread
 
 import vapoursynth
 from IPython import get_ipython
-from IPython.display import HTML
-from yuuno.magic.util import line_cell_magic
+
+from yuuno.ipython.magic.util import line_cell_magic
 
 
 def retrieve_clip(expr, local_ns=None):
