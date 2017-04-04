@@ -155,7 +155,18 @@ def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=T
     return process.returncode
 
 
-def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True, y4m=True):
+def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True):
+    flags = ""
+    if line.startswith("!"):
+        flags, *line = line.split(" ", 1)
+        flags = flags[1:].split(",")
+
+        if not line:
+            return "No command given"
+        line = line[0]
+
+    y4m = "raw" not in flags
+
     if cell is not None:
         cmd = line
         expr = cell
@@ -192,25 +203,26 @@ def encode(line, cell=None, local_ns=None):
     line command for the encoder.
 
     The encoder receives y4m output.
+    
         >>> %encode clip x264 --demuxer y4m - ...
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
     or
+    
         >>> %%encode x264 --demuxer y4m - ...
         ... clip
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
-    """
-    return do_encode(line, cell, local_ns, y4m=True)
 
-@line_cell_magic
-def encode_raw(line, cell=None, local_ns=None):
-    """
-    Encodes a clip given by the first word in the first line and produes a live output of the
-    console.
+    To modify the exact details of the output, you can pass flags to this magic like this:
     
-    Behaves like the `%%encode`-Magic. However the output will be as raw instead of y4m.
+        >>> %encode !raw clip x264 --demuxer raw - ...
+        
+    When the first word after the word starts with a `!`, a comma-separated list of flags
+    will be read. The rest of the line will behave as if the flags were not passed.
+    
+    Currently there is only one flag, `raw`, which causes raw frames to be passed into the subprocess.
     """
-    return do_encode(line, cell, local_ns, y4m=False)
+    return do_encode(line, cell, local_ns)
