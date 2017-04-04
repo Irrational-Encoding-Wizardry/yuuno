@@ -8,6 +8,7 @@ from io import BytesIO
 from PIL import Image
 
 from yuuno.core.settings import settings
+from yuuno.util import get_data_file
 
 
 def open_icc(name=None):
@@ -16,9 +17,9 @@ def open_icc(name=None):
     """
     if name is None:
         name = settings.csp
-    
-    this_dir, this_filename = os.path.split(__file__)
-    path = os.path.join(this_dir, '..', "data", name+".icc")
+
+    path = get_data_file(name + '.icc')
+
     try:
         with open(path, "rb") as f:
             return f.read()

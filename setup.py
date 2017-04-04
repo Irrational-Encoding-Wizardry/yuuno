@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -13,24 +13,20 @@ def read(fname):
 
 setup(
     name = "yuuno",
-    version = "0.3.1",
+    version = "0.4.0a0",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = "Glue for jupyter and vapoursynth",
     license = "MIT",
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
-    packages=[
-        'yuuno',
-        'yuuno.data',
 
-        'yuuno.ipython',
-        'yuuno.ipython.widgets',
-        'yuuno.ipython.magic',
+    packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        'yuuno': ['data/*.icc'],
+    },
 
-        'yuuno.core',
-        'yuuno.core.converter',
-    ],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -48,6 +44,6 @@ setup(
     ],
 
     install_requires=[
-        'notebook', 'Pillow', "ipywidgets"
+        'notebook', 'Pillow', "ipywidgets", 'setuptools-git'
     ]
 )
