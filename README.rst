@@ -2,6 +2,7 @@ Yuuno
 =====
 
 .. image:: https://img.shields.io/badge/version-0.3.1-blue.svg?style=flat-square
+.. image:: https://img.shields.io/badge/vapoursynth-R38-orange.svg?style=flat-square
 .. image:: https://img.shields.io/badge/vapoursynth-R37-brightgreen.svg?style=flat-square
 .. image:: https://img.shields.io/badge/vapoursynth-R36-green.svg?style=flat-square
 
