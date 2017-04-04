@@ -79,7 +79,4 @@ install.feature("variables")(variables.install)
 # Autoregister the Yuuno-Command
 install.feature("yuuno", auto=True)(yuuno_command.install_yuuno_command)
 
-
-
 __all__ = ["install"]
-            
