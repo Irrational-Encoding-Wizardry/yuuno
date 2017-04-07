@@ -41,7 +41,7 @@ class ClipPiper(Thread):
     def run(self):
         self.alive = True
         try:
-            self.clip.output(self.process.stdin, y4m=y4m, progress_update=self.ensure_dealive)
+            self.clip.output(self.process.stdin, y4m=self.y4m, progress_update=self.ensure_dealive)
         except Exception:
             if not self.alive:
                 return
