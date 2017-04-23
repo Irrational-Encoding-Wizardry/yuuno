@@ -39,7 +39,7 @@ class ClipPiper(Thread):
     def run(self):
         self.alive = True
         try:
-            self.clip.output(self.process.stdin, y4m=y4m, progress_update=self.ensure_dealive)
+            self.clip.output(self.process.stdin, y4m=self.y4m, progress_update=self.ensure_dealive)
         except Exception:
             if not self.alive:
                 return
@@ -193,23 +193,23 @@ def encode(line, cell=None, local_ns=None):
     Encodes a clip. It will produce the y4m-output and pipe said output
     into an encoder process. The output of the encoder-process is piped
     back to the shell.
-    
+
     *as line-magic*:
     Encodes a clip given by the first word in the first line.
     All following words are parsed as the command line passed to the process.
-    
+
     *as cell-magic*:
     Encodes a clip that is evaluated by the cell. The arguments are the command
     line command for the encoder.
 
     The encoder receives y4m output.
-    
+
         >>> %encode clip x264 --demuxer y4m - ...
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
     or
-    
+
         >>> %%encode x264 --demuxer y4m - ...
         ... clip
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
@@ -217,12 +217,12 @@ def encode(line, cell=None, local_ns=None):
         x264 [info]: profile High, level 3.0
 
     To modify the exact details of the output, you can pass flags to this magic like this:
-    
+
         >>> %encode !raw clip x264 --demuxer raw - ...
-        
+
     When the first word after the word starts with a `!`, a comma-separated list of flags
     will be read. The rest of the line will behave as if the flags were not passed.
-    
+
     Currently there is only one flag, `raw`, which causes raw frames to be passed into the subprocess.
     """
     return do_encode(line, cell, local_ns)

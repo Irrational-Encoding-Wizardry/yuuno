@@ -33,9 +33,9 @@ setup(
 
         "License :: OSI Approved :: MIT License",
         "Environment :: Web Environment",
-        
+
         "Topic :: Utilities",
-        
+
         "Topic :: Multimedia :: Video",
         "Topic :: Multimedia :: Video :: Conversion",
         "Programming Language :: Python :: Implementation :: CPython",
