@@ -62,16 +62,18 @@ class Image(ImageWidget):
         self.aperture = aperture
         self.viewport = tile_viewport
 
-        self.image_layout = ipywidgets.Layout(display="none")
-        self.html_layout = ipywidgets.Layout(display="none")
+        self.image_layout = ipywidgets.Layout()
+        self.html_layout = ipywidgets.Layout()
 
         if self.scale:
             self.image_layout.height = "auto"
             self.image_layout.max_width = "100%"
 
         self.image_widget = ipywidgets.Image(layout=self.image_layout)
+        self.iw_layout = ipywidgets.Layout(display="none")
+        self.iw_container = ipywidgets.Box([self.image_widget], layout=self.iw_layout)
         self.html_widget = ipywidgets.HTML(layout=self.html_layout)
-        self.container = ipywidgets.HBox([self.image_widget, self.html_widget])
+        self.container = ipywidgets.HBox([self.iw_container, self.html_widget])
 
     def clear_widgets(self):
         if not self.aperture:
@@ -91,13 +93,13 @@ class Image(ImageWidget):
             self.render_tiled_image()
 
     def render_untiled_image(self):
-        self.image_layout.display = "inline"
+        self.iw_layout.display = "inline"
         self.html_layout.display = "none"
 
         self.image_widget.value = image_to_bytes(self.image)
 
     def render_tiled_image(self):
-        self.image_layout.display = "none"
+        self.iw_layout.display = "none"
         self.html_layout.display = "inline"
 
         self.html_widget.value = ''.join(self._render_tiled_image())

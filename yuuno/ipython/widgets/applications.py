@@ -158,7 +158,9 @@ class preview(Widget):
             min=0,
             max=minlength - 1,
             step=1,
-            orientation="horizontal"
+            orientation="horizontal",
+            continuous_update=False,
+            layout=ipywidgets.Layout(flex="2 2 auto"),
         )
 
         prev = ipywidgets.Button(icon="fa-step-backward", layout=ipywidgets.Layout(width="50px"))

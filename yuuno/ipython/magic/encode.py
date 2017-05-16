@@ -11,17 +11,21 @@ from IPython import get_ipython
 from yuuno.ipython.magic.util import line_cell_magic
 
 
-def retrieve_clip(expr, local_ns=None):
-    """
-    Retrieves the clip from the simple expression given.
-    """
+def ipy_exec(expr, file, local_ns=None):
     ipy = get_ipython()
     expr = ipy.input_transformer_manager.transform_cell(expr)
     expr_ast = ipy.compile.ast_parse(expr)
     expr_ast = ipy.transform_ast(expr_ast)
 
-    code = ipy.compile(ast.Expression(expr_ast.body[0].value), '<encode-expr>', 'eval')
-    return eval(code, ipy.user_ns, local_ns)
+    code = ipy.compile(ast.Expression(expr_ast.body[0].value), file, 'eval')
+    return eval(code, ipy.user_ns, local_ns)    
+
+
+def retrieve_clip(expr, local_ns=None):
+    """
+    Retrieves the clip from the simple expression given.
+    """
+    return ipy_exec(expr, "<encode-expr>", local_ns)
 
 
 class ClipPiper(Thread):
@@ -100,7 +104,7 @@ else:
     popen = subprocess.Popen
 
     def interrupt_process(process):
-        process.send_signal(signal.CTRL_C_EVENT)
+        process.send_signal(signal.CTRL_C_EVENT)    
 
 
 def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=True, decode_stderr=True, y4m=True):
@@ -155,6 +159,18 @@ def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=T
     return process.returncode
 
 
+def format_command(cmd, local_ns=None):
+    if sys.version_info >= (3,6):
+        cmd = "f{cmd!r}".format(cmd=cmd)
+        return ipy_exec(cmd, "<command-fstring>", local_ns)
+
+    ipy = get_ipython()
+    if local_ns is None:
+        local_ns = {}
+
+    return cmd.format(**ipy.user_ns, **local_ns)
+
+
 def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True):
     flags = ""
     if line.startswith("!"):
@@ -176,6 +192,7 @@ def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdo
         except ValueError:
             return "No command given"
 
+    cmd = format_command(cmd, local_ns)
     clip = retrieve_clip(expr, local_ns)
 
     if not isinstance(clip, vapoursynth.VideoNode):
