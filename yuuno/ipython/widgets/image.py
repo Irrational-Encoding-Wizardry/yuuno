@@ -3,9 +3,10 @@ import math
 
 import ipywidgets
 
-from yuuno.core.converter import image_to_bytes
+from yuuno.util import fake_dict
 from yuuno.core.settings import settings
-from yuuno.ipython.widgets.widget import Widget
+from yuuno.core.converter import image_to_bytes
+from yuuno.ipython.widgets.widget import Widget, Jinja2Mixin
 
 
 class ImageWidget(Widget):
@@ -44,7 +45,7 @@ class RawImage(ImageWidget):
         return ipywidgets.Image(value=self.image)
 
 
-class Image(ImageWidget):
+class Image(Jinja2Mixin, ImageWidget):
     """
     Represents an image.
     """
@@ -101,8 +102,8 @@ class Image(ImageWidget):
     def render_tiled_image(self):
         self.iw_layout.display = "none"
         self.html_layout.display = "inline"
-
-        self.html_widget.value = ''.join(self._render_tiled_image())
+        self.html_widget.value = f = self.render_tile_html()
+        print(len(f))
 
     def get_tile(self, row, column, *, size=None):
         size = self.convert_tile_size(size)
@@ -117,42 +118,19 @@ class Image(ImageWidget):
         size = self.convert_tile_size(size)
         return math.ceil(self.image.height/size), math.ceil(self.image.width/size)
 
-    def _render_tiled_image(self):
+    def render_tile_html(self):
+        @fake_dict
+        def tiles(row):
+            @fake_dict
+            def column_tiles(column):
+                return self.get_bytelink(image_to_bytes(self.get_tile(row, column)))
+            return column_tiles
         row_count, column_count = self.get_tile_count()
-        yield '<div class="vs-image-tiled">'
-        yield '''
-        <style scoped>
-        .vs-image-tiled-main {
-            overflow: scroll;
-            max-width: %s;
-            max-height: %s;
-        }
-        .vs-image-tiled-wrapper > .vs-image-tiled-row {
-            white-space: nowrap;
-        }
 
-        .vs-image-tiled-wrapper > .vs-image-tiled-row > img {
-            margin: 0 !important;
-            image-rendering: pixelated;
-            -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
-            display: inline;
-        }
-        </style>
-        '''%(self.viewport[0], self.viewport[1])
-        yield '<div class="vs-image-tiled-main"><div class="vs-image-tiled-wrapper">'
-
-        for r in range(row_count):
-            yield '<div class="vs-image-tiled-row">'
-            for c in range(column_count):
-                tile = self.get_tile(r, c)
-                yield ''.join([
-                    '<img class="vs-image-tiled-img" src="', self.get_bytelink(image_to_bytes(tile)), '">'
-                ])
-            yield '</div>'
-
-        yield '</div>'
-        yield '</div>'
-        yield '</div>'
+        return self.get_html(
+            {'rows': row_count, 'columns': column_count, 'tiles': tiles, 'viewport': self.viewport},
+            'tiles.html'
+        )
 
     def get_widget(self):
         return self.container

@@ -11,3 +11,10 @@ except ImportError:
 
 def get_data_file(name):
     return resource_filename('yuuno', 'data' + os.path.sep + name)
+
+
+class fake_dict(object):
+    def __init__(self, func):
+        self.func = func
+    def __getitem__(self, it):
+        return self.func(it)
