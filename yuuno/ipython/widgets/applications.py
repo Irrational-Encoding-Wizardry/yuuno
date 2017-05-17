@@ -16,48 +16,24 @@ def dump(clip, converter=convert_clip, *, lots_of_frames=False):
         display(IPyImage(image_to_bytes(converter(frame, frame_no=0))))
 
 
-class diff(Widget):
+class diff(Jinja2Mixin, Widget):
     """
     Represents a simple diff.
     """
 
-    template = '''
-<div class="vs-diff-simple">
-<style scoped>
-div.vs-diff-simple-container > img {
-   display: none;
-   margin-top: 0 !important;
-   %s
-}
+    template_name = "diff.html"
 
-div.vs-diff-simple-container:not(:hover) > img.vs-diff-first,
-div.vs-diff-simple-container:hover > img.vs-diff-second {
-   display: block;
-}
-</style>
-<div class="vs-diff-simple-container">
-  <img class="vs-diff-first" src="%s">
-  <img class="vs-diff-second" src="%s">
-</div>
-</div>
-'''
 
     def __init__(self, normal, hover, converter=convert_clip, cap_size=True, frame_no=0):
         self.clip1 = image_to_bytes(converter(normal, frame_no=frame_no))
         self.clip2 = image_to_bytes(converter(hover, frame_no=frame_no))
         self.cap_size = cap_size
 
-    def generate_styles(self):
-        return ''.join([
-            ("max-width: 100%; height: auto;" if self.cap_size else "")
-        ])
-
     def _repr_html_(self):
-        return self.template % (
-            self.generate_styles(),
-            Image.get_bytelink(self.clip1),
-            Image.get_bytelink(self.clip2)
-        )
+        return self.get_html({
+            'cap_size': self.cap_size,
+            'img': (Image.get_bytelink(self.clip1), Image.get_bytelink(self.clip2)),
+        })
 
     def get_widget(self):
         return ipywidgets.HTML(value=self._repr_html_())
