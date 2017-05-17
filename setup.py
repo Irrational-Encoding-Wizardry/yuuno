@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "yuuno",
-    version = "0.4.0a0",
+    version = "0.4.0rc1",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = "Glue for jupyter and vapoursynth",
