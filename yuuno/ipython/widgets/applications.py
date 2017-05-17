@@ -4,15 +4,12 @@ from PIL.Image import NEAREST
 
 from yuuno.core.converter import image_to_bytes, convert_clip
 from yuuno.ipython.widgets.image import Image, BaseImageChooser
-from yuuno.ipython.widgets.widget import Widget
+from yuuno.ipython.widgets.widget import Widget, Jinja2Mixin
 
 
 def dump(clip, converter=convert_clip, *, lots_of_frames=False):
     if len(clip) > 20 and not lots_of_frames:
-        display(HTML("<span style='color: red'>"
-                     "A lot of frames are going to be shown. "
-                     "Use lots_of_frames=True to force showing all of them"
-                     "</span>"))
+        display(HTML(Jinja2Mixin.render("dump_warning.html", {'clip': clip})))
         return
 
     for frame in clip:
