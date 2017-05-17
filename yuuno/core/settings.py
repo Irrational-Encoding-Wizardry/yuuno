@@ -2,7 +2,7 @@ class SettingsContainer(object):
 
     DEFAULTS = {
         'yuv_matrix': '709',
-        'csp': 'bt709',
+        'csp': 'None',
         'tile_size': '540',
     }
 
