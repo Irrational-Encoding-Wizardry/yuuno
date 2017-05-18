@@ -1,29 +1,31 @@
-import io
 import ast
-import sys
 import shlex
-import base64
 import signal
 import subprocess
+import sys
 from threading import Thread
 
 import vapoursynth
 from IPython import get_ipython
-from IPython.display import HTML
-from yuuno.magic.util import line_cell_magic
+
+from yuuno.ipython.magic.util import line_cell_magic
+
+
+def ipy_exec(expr, file, local_ns=None):
+    ipy = get_ipython()
+    expr = ipy.input_transformer_manager.transform_cell(expr)
+    expr_ast = ipy.compile.ast_parse(expr)
+    expr_ast = ipy.transform_ast(expr_ast)
+
+    code = ipy.compile(ast.Expression(expr_ast.body[0].value), file, 'eval')
+    return eval(code, ipy.user_ns, local_ns)    
 
 
 def retrieve_clip(expr, local_ns=None):
     """
     Retrieves the clip from the simple expression given.
     """
-    ipy = get_ipython()
-    expr = ipy.input_transformer_manager.transform_cell(expr)
-    expr_ast = ipy.compile.ast_parse(expr)
-    expr_ast = ipy.transform_ast(expr_ast)
-
-    code = ipy.compile(ast.Expression(expr_ast.body[0].value), '<encode-expr>', 'eval')
-    return eval(code, ipy.user_ns, local_ns)
+    return ipy_exec(expr, "<encode-expr>", local_ns)
 
 
 class ClipPiper(Thread):
@@ -102,7 +104,7 @@ else:
     popen = subprocess.Popen
 
     def interrupt_process(process):
-        process.send_signal(signal.CTRL_C_EVENT)
+        process.send_signal(signal.CTRL_C_EVENT)    
 
 
 def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=True, decode_stderr=True, y4m=True):
@@ -157,7 +159,30 @@ def run_encoder(clip, cmd, stdout=sys.stdout, stderr=sys.stderr, decode_stdout=T
     return process.returncode
 
 
-def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True, y4m=True):
+def format_command(cmd, local_ns=None):
+    if sys.version_info >= (3,6):
+        cmd = "f{cmd!r}".format(cmd=cmd)
+        return ipy_exec(cmd, "<command-fstring>", local_ns)
+
+    ipy = get_ipython()
+    if local_ns is None:
+        local_ns = {}
+
+    return cmd.format(**ipy.user_ns, **local_ns)
+
+
+def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdout, decode_stdout=True, decode_stderr=True):
+    flags = ""
+    if line.startswith("!"):
+        flags, *line = line.split(" ", 1)
+        flags = flags[1:].split(",")
+
+        if not line:
+            return "No command given"
+        line = line[0]
+
+    y4m = "raw" not in flags
+
     if cell is not None:
         cmd = line
         expr = cell
@@ -167,6 +192,7 @@ def do_encode(line, cell=None, local_ns=None, stderr=sys.stderr, stdout=sys.stdo
         except ValueError:
             return "No command given"
 
+    cmd = format_command(cmd, local_ns)
     clip = retrieve_clip(expr, local_ns)
 
     if not isinstance(clip, vapoursynth.VideoNode):
@@ -184,35 +210,36 @@ def encode(line, cell=None, local_ns=None):
     Encodes a clip. It will produce the y4m-output and pipe said output
     into an encoder process. The output of the encoder-process is piped
     back to the shell.
-    
+
     *as line-magic*:
     Encodes a clip given by the first word in the first line.
     All following words are parsed as the command line passed to the process.
-    
+
     *as cell-magic*:
     Encodes a clip that is evaluated by the cell. The arguments are the command
     line command for the encoder.
 
     The encoder receives y4m output.
+
         >>> %encode clip x264 --demuxer y4m - ...
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
     or
+
         >>> %%encode x264 --demuxer y4m - ...
         ... clip
         y4m [info]: 800x450p 0:0 @ 62500/2609 fps (cfr)
         x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
         x264 [info]: profile High, level 3.0
-    """
-    return do_encode(line, cell, local_ns, y4m=True)
 
-@line_cell_magic
-def encode_raw(line, cell=None, local_ns=None):
+    To modify the exact details of the output, you can pass flags to this magic like this:
+
+        >>> %encode !raw clip x264 --demuxer raw - ...
+
+    When the first word after the word starts with a `!`, a comma-separated list of flags
+    will be read. The rest of the line will behave as if the flags were not passed.
+
+    Currently there is only one flag, `raw`, which causes raw frames to be passed into the subprocess.
     """
-    Encodes a clip given by the first word in the first line and produes a live output of the
-    console.
-    
-    Behaves like the `%%encode`-Magic. However the output will be as raw instead of y4m.
-    """
-    return do_encode(line, cell, local_ns, y4m=False)
+    return do_encode(line, cell, local_ns)

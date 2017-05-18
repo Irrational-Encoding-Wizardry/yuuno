@@ -6,7 +6,10 @@ import os
 from io import BytesIO
 
 from PIL import Image
-from yuuno.settings import settings
+
+from yuuno.core.settings import settings
+from yuuno.util import get_data_file
+
 
 def open_icc(name=None):
     """
@@ -14,15 +17,18 @@ def open_icc(name=None):
     """
     if name is None:
         name = settings.csp
-    
-    this_dir, this_filename = os.path.split(__file__)
-    path = os.path.join(this_dir, '..', "data", name+".icc")
+
+    if name == "None":
+        return None
+
+    path = get_data_file(name + '.icc')
+
     try:
         with open(path, "rb") as f:
             return f.read()
     except IOError as e:
         print(e)
-        return b''
+        return None
 
 def image_to_bytes(im: Image.Image) -> bytes:
     """
@@ -36,5 +42,9 @@ def image_to_bytes(im: Image.Image) -> bytes:
     f = BytesIO()
     if im.mode not in ("RGB", "1", "L", "P"):
         im = im.convert("RGB")
-    im.save(f, format="png", icc_profile=open_icc())
+    profile = open_icc()
+    if profile is not None:
+        im.save(f, format="png", icc_profile=profile)
+    else:
+        im.save(f, format="png")
     return f.getvalue()

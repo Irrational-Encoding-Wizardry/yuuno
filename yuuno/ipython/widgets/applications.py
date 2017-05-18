@@ -2,67 +2,38 @@ import ipywidgets
 from IPython.display import Image as IPyImage, HTML, display
 from PIL.Image import NEAREST
 
-from yuuno.converter import image_to_bytes, convert_clip
-
-from yuuno.widgets.image import Image, BaseImageChooser
-from yuuno.widgets.widget import Widget
-
+from yuuno.core.converter import image_to_bytes, convert_clip
+from yuuno.ipython.widgets.image import Image, BaseImageChooser
+from yuuno.ipython.widgets.widget import Widget, Jinja2Mixin
 
 
 def dump(clip, converter=convert_clip, *, lots_of_frames=False):
     if len(clip) > 20 and not lots_of_frames:
-        display(HTML("<span style='color: red'>"
-                     "A lot of frames are going to be shown. "
-                     "Use lots_of_frames=True to force showing all of them"
-                     "</span>"))
+        display(HTML(Jinja2Mixin.render("dump_warning.html", {'clip': clip})))
         return
 
     for frame in clip:
         display(IPyImage(image_to_bytes(converter(frame, frame_no=0))))
 
 
-class diff(Widget):
+class diff(Jinja2Mixin, Widget):
     """
     Represents a simple diff.
     """
 
-    template = '''
-<div class="vs-diff-simple">
-<style scoped>
-div.vs-diff-simple-container > img {
-   display: none;
-   margin-top: 0 !important;
-   %s
-}
+    template_name = "diff.html"
 
-div.vs-diff-simple-container:not(:hover) > img.vs-diff-first,
-div.vs-diff-simple-container:hover > img.vs-diff-second {
-   display: block;
-}
-</style>
-<div class="vs-diff-simple-container">
-  <img class="vs-diff-first" src="%s">
-  <img class="vs-diff-second" src="%s">
-</div>
-</div>
-'''
 
     def __init__(self, normal, hover, converter=convert_clip, cap_size=True, frame_no=0):
         self.clip1 = image_to_bytes(converter(normal, frame_no=frame_no))
         self.clip2 = image_to_bytes(converter(hover, frame_no=frame_no))
         self.cap_size = cap_size
 
-    def generate_styles(self):
-        return ''.join([
-            ("max-width: 100%; height: auto;" if self.cap_size else "")
-        ])
-
     def _repr_html_(self):
-        return self.template % (
-            self.generate_styles(),
-            Image.get_bytelink(self.clip1),
-            Image.get_bytelink(self.clip2)
-        )
+        return self.get_html({
+            'cap_size': self.cap_size,
+            'img': (Image.get_bytelink(self.clip1), Image.get_bytelink(self.clip2)),
+        })
 
     def get_widget(self):
         return ipywidgets.HTML(value=self._repr_html_())
@@ -160,7 +131,9 @@ class preview(Widget):
             min=0,
             max=minlength - 1,
             step=1,
-            orientation="horizontal"
+            orientation="horizontal",
+            continuous_update=False,
+            layout=ipywidgets.Layout(flex="2 2 auto"),
         )
 
         prev = ipywidgets.Button(icon="fa-step-backward", layout=ipywidgets.Layout(width="50px"))

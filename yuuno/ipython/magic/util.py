@@ -5,7 +5,7 @@ _deferred = []
 def _make_deferred(decorator):
     def _decorator(func):
         def _registrar():
-            decorator(func)
+            return decorator(func)
         _deferred.append(_registrar)
         return func
     return _decorator

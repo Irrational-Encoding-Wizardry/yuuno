@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "yuuno",
-    version = "0.3.4.2",
+    version = "0.4.0",
     author = "StuxCrystal",
     author_email = "stuxcrystal@encode.moe",
     description = "Glue for jupyter and vapoursynth",
@@ -21,10 +21,10 @@ setup(
     keywords = "vapoursynth frameserver jupyter ipython",
     url = "https://github.com/stuxcrystal/yuuno",
 
-    packages=find_packages(exclude=["docs"]),
+    packages=find_packages(),
     include_package_data=True,
     package_data={
-        'yuuno': ['data/*.icc'],
+        'yuuno': ['data/*.icc', 'data/widgets/*.html'],
     },
 
     long_description=read('README.rst'),
@@ -33,9 +33,9 @@ setup(
 
         "License :: OSI Approved :: MIT License",
         "Environment :: Web Environment",
-        
+
         "Topic :: Utilities",
-        
+
         "Topic :: Multimedia :: Video",
         "Topic :: Multimedia :: Video :: Conversion",
         "Programming Language :: Python :: Implementation :: CPython",

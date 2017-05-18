@@ -1,10 +1,10 @@
 from functools import wraps
 
-from yuuno import inspection
-from yuuno import variables
-from yuuno import magic
-from yuuno.magic import install_magic
-from yuuno.formatters import inlines
+from yuuno.ipython.formatters import inlines
+
+from yuuno.ipython import variables
+from yuuno.ipython import magic
+from yuuno.ipython.magic import yuuno_command
 
 
 class FeatureManager(object):
@@ -70,15 +70,11 @@ class FeatureManager(object):
 install = FeatureManager()
 
 # Default-Features are defined here
-install.feature("inspection")(inspection.install)
 install.feature("magic")(magic.install)
 install.feature("inline")(inlines.install)
 install.feature("variables")(variables.install)
 
 # Autoregister the Yuuno-Command
-install.feature("yuuno", auto=True)(install_magic.install_yuuno_command)
-
-
+install.feature("yuuno", auto=True)(yuuno_command.install_yuuno_command)
 
 __all__ = ["install"]
-            

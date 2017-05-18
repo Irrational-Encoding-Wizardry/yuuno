@@ -1,3 +1,4 @@
 notebook
 Pillow
 ipywidgets
+setuptools-git

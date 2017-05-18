@@ -2,12 +2,12 @@
 This file registers the formatters for the vapoursynth-types.
 """
 from IPython import get_ipython
-from PIL.Image import Image, new
 
 import vapoursynth as vs
 from vapoursynth import VideoProps, VideoFrame, VideoNode, Core, Format
 
-from yuuno.converter import converters, image_to_bytes
+from yuuno.core.converter import converters, image_to_bytes
+
 
 class _InlineManager(object):
     """
@@ -35,6 +35,7 @@ class _InlineManager(object):
 
 inlines = _InlineManager()
 
+
 @inlines.register(VideoNode, format="image/png")
 @inlines.register(VideoFrame, format="image/png")
 def video_converter(obj):
@@ -45,19 +46,19 @@ def video_converter(obj):
         'unconfined': True
     }
 
+
 @inlines.register(Format, format="text/plain")
 def format_format(f, p, cycle):
     p.text(str(f))
 
+
 @inlines.register(VideoProps, format="text/plain")
 def format_format(f, p, cycle):
     result = ["VideoProps:"]
-    for val in dir(f):
-        if val.startswith("__") and val.endswith("__"):
-            continue
-
-        result.append("\t%s: %r" % (val, getattr(f, val)))
+    for k, v in f.items():
+        result.append("\t%s: %r" % (k, repr(v)))
     p.text("\n".join(result))
+
 
 @inlines.register(Core, format="image/png")
 def format_core(core):

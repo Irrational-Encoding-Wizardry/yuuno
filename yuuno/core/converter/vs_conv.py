@@ -1,11 +1,11 @@
 import ctypes
 import functools
 
-from PIL import Image
 import vapoursynth as vs
+from PIL import Image
 
-from yuuno.settings import settings
-from yuuno.converter.converter import converters
+from yuuno.core.converter.manager import converters
+from yuuno.core.settings import settings
 
 
 @converters.register(vs.VideoNode)
