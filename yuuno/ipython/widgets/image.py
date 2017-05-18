@@ -103,7 +103,6 @@ class Image(Jinja2Mixin, ImageWidget):
         self.iw_layout.display = "none"
         self.html_layout.display = "inline"
         self.html_widget.value = f = self.render_tile_html()
-        print(len(f))
 
     def get_tile(self, row, column, *, size=None):
         size = self.convert_tile_size(size)
