@@ -9,6 +9,6 @@ def load_ipython_extension(ipython):
     install.initialize(ipython)
 
 
-version = (0, 4, 0)
+version = (0, 5, "0dev0")
 __version__ = ".".join(str(n) for n in version)
 __all__ = ["install", "diff", "compare", "inspect", "preview", "dump", "interact"]
