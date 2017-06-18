@@ -9,10 +9,6 @@ yuuno
 .. image:: https://img.shields.io/travis/stuxcrystal/yuuno.svg
         :target: https://travis-ci.org/stuxcrystal/yuuno
 
-.. image:: https://readthedocs.org/projects/yuuno/badge/?version=latest
-        :target: https://yuuno.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
 .. image:: https://pyup.io/repos/github/stuxcrystal/yuuno/shield.svg
      :target: https://pyup.io/repos/github/stuxcrystal/yuuno/
      :alt: Updates
@@ -20,9 +16,8 @@ yuuno
 
 Yuuno = Jupyter + VapourSynth
 
-
 * Free software: MIT license
-* Documentation: https://yuuno.readthedocs.io.
+* Documentation: https://yuuno.encode.moe/
 
 
 Features
@@ -30,10 +25,11 @@ Features
 
 * Automatic importing of a VapourSynth-core as well as the VapourSynth-module itself.
 * Inline-rendering of the first frame of a clip.
-*
+* Encoding of VapourSynth-Clips from the Notebook/IPython-shell
+* Interactive Clip Introspection using IPython-magics (%preview, %diff, %compare and %inspect)
 
 Credits
----------
+-------
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 

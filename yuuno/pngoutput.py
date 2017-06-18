@@ -10,7 +10,7 @@ class PNGOutput(HasTraits):
     """
     Defines an output for PNG-files
     """
-    yuuno = Any()
+    yuuno = Any(help="Reference to the current Yuuno instance.")
 
     def bytes_of(self, im: Frame) -> bytes:
         """

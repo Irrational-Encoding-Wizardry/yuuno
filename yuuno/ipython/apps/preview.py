@@ -14,6 +14,8 @@ from yuuno.ipython.apps.mixins import ClipWrapperMixin
 class Preview(VBox, ClipWrapperMixin):
     """
     Implements a preview widget
+
+    .. automethod:: __init__
     """
 
     _current: Image = Instance(Image)

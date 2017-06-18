@@ -78,7 +78,7 @@ Ready to contribute? Here's how to set up `yuuno` for local development.
 
 5. When you're done making changes, check that your changes pass the tests, including testing other Python versions with tox::
 
-    $ python setup.py test or py.test
+    $ python -m unittest discover tests
     $ tox
 
    To get tox, just pip install them into your virtualenv.
@@ -100,7 +100,7 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.6 and VapourSynth R36 and R37 as well as the current developmental build.
+3. The pull request should work for Python 3.6 and VapourSynth R36 and up as well as the current developmental build.
    Check https://travis-ci.org/stuxcrystal/yuuno/pull_requests
    and make sure that the tests pass for all supported Python and VapourSynth versions.
 
@@ -108,6 +108,5 @@ Tips
 ----
 
 To run a subset of tests::
-
 
     $ python -m unittest tests.test_yuuno

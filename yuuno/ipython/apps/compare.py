@@ -5,7 +5,9 @@ from yuuno.ipython.apps.mixins import InitialFrameMixin
 
 class Compare(ImageChooser, InitialFrameMixin):
     """
-    Define the desired frame number
+    Shows an image-chooser with different clips.
+
+    .. automethod:: __init__
     """
 
     def __init__(self, *images, **kwargs):

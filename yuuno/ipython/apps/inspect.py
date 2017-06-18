@@ -11,6 +11,8 @@ from yuuno.ipython.apps.mixins import ClipWrapperMixin
 class Inspect(ImageChooser, InitialFrameMixin, ClipWrapperMixin):
     """
     Inspects an image.
+
+    .. automethod:: __init__
     """
 
     def __init__(self, clip, *args, **kwargs):

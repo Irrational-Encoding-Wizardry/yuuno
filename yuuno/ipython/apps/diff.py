@@ -6,7 +6,11 @@ from yuuno.ipython.apps.mixins import Jinja2Mixin, InitialFrameMixin
 
 class Diff(InitialFrameMixin, Jinja2Mixin):
     """
-    Implements a diff
+    Implements a diff using a simple hover.
+
+    This is a rather static "app" since does not rely on ipywidgets.
+
+    .. automethod:: __init__
     """
 
     def __init__(self, *clips, **kwargs):

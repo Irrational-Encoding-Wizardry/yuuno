@@ -24,6 +24,9 @@ class Clip(object):
 
     Some special functions might require an extended
     interface that is defined in its respective places.
+
+    .. automethod:: __len__
+    .. automethod:: __getitem__
     """
 
     def __init__(self, clip: T) -> None:
