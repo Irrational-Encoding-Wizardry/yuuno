@@ -119,8 +119,8 @@ class TestVapourSynth(unittest.TestCase):
         self.assertEqual(im.width, self.black_clip.width)
         self.assertEqual(im.height, self.black_clip.height)
 
-        #                                    R       G       B         X
-        self.assertEqual(im.getextrema(), ((0, 0), (0, 0), (0, 0), (255, 255)))
+        #                                        R       G       B
+        self.assertEqual(im.getextrema()[:3], ((0, 0), (0, 0), (0, 0)))
 
     def test_004_vapoursynth_resizer(self):
         vse = VapourSynth()

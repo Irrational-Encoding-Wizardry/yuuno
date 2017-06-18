@@ -7,15 +7,17 @@ sudo: required
 language: python
 python: 3.6
 
-# env:
-#   - VS_VERSION=38-1
-#   - VS_VERSION=37-1
-#   - VS_VERSION=36-2
+env:
+  - VS_VERSION=38-1 VS_GIT_VERSION=R38
+  - VS_VERSION=37-1 VS_GIT_VERSION=R37
+  - VS_VERSION=36-2 VS_GIT_VERSION=R36
 
-# before_install:
-#   - sudo add-apt-repository ppa:djcj/vapoursynth -y
-#   - sudo apt-get update -q
-#   - sudo apt-get install vapoursynth=$VS_VERSION
+before_install:
+  - sudo add-apt-repository ppa:djcj/vapoursynth -y
+  - sudo apt-get update -q
+  - sudo apt-get install -y vapoursynth=${VS_VERSION}~trusty
+  - pip install Cython
+  - pip install https://github.com/vapoursynth/vapoursynth/archive/${VS_GIT_VERSION}.tar.gz
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install .
