@@ -37,8 +37,28 @@ class ClipFeeder(Thread):
         except Exception as e:
             if e.__class__.__name__ != "Error":
                 raise
-            return
         self.pipe.close()
+
+
+class OutputFeeder(Thread):
+
+    def __init__(self, process, pipe, output):
+        super(OutputFeeder, self).__init__(name=f"<YuunoOutputFeeder {pipe!r} to {output!r}>")
+        self.process = process
+        self.pipe = pipe
+        self.output = output
+
+    def run(self):
+        while self.process.poll() is None:
+            ld = self.pipe.read(1).decode("utf-8")
+            if not ld:
+                time.sleep(0)
+                continue
+            print(ld, end='', file=self.output)
+
+        res = self.pipe.read().decode("utf-8")
+        if res:
+            print(res, file=self.output)
 
 
 @magics_class
@@ -62,12 +82,24 @@ class EncodeMagic(Magics):
         :param stdout:      Where to send the stdout.
         :return:            The return code.
         """
+
+        commandline = shlex.split(commandline)
+
+        process = popen(
+            commandline,
+            stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+        )
+
+        feeder = ClipFeeder(clip, process.stdin, **kwargs)
+        feeder.start()
+
         if stdout is None:
             stdout = sys.stdout
 
-        process = popen(commandline, shell=True, stdin=subprocess.PIPE, stdout=stdout)
-        feeder = ClipFeeder(clip, process.stdin, **kwargs)
-        feeder.start()
+        stderr = OutputFeeder(process, process.stderr, sys.stderr)
+        stderr.start()
+        stdout = OutputFeeder(process, process.stdout, stdout)
+        stdout.start()
 
         try:
             while process.poll() is None:
@@ -90,6 +122,11 @@ class EncodeMagic(Magics):
         except:
             process.terminate()
             raise
+
+        finally:
+            stderr.join()
+            stdout.join()
+            time.sleep(.5)
 
         return process.returncode
 
