@@ -11,8 +11,8 @@ Planned Releases
 * `Yuuno 1.0.0`: 2017-10-12
 
 
-0.5.0dev0 (2017-06-18)
-----------------------
+0.5.0a0 (2017-06-18)
+--------------------
 
 Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 
