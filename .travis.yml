@@ -25,7 +25,7 @@ script: python -m unittest discover tests
 
 before_deploy:
   - pip install -r requirements_dev.txt
-  - cd docs && make html
+  - pushd docs && make html && popd
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
@@ -33,6 +33,7 @@ deploy:
   - provider: pages
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
+    local_dir: docs/_build/html
     repo: stuxcrystal/yuuno.encode.moe
     target_branch: master
     fqdn: yuuno.encode.moe
@@ -41,6 +42,7 @@ deploy:
       repo: stuxcrystal/yuuno
 
   - provider: pages
+    local_dir: docs/_build/html
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     target_branch: gh-pages
