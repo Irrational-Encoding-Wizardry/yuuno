@@ -1,27 +1,36 @@
 # Config file for automatic testing at travis-ci.org
 # This file will be regenerated if you run travis_pypi_setup.py
 
+dist: trusty
+sudo: required
+
 language: python
 python: 3.6
 
 env:
-  - TOXENV=py36
+  - VS_VERSION=38-1
+  - VS_VERSION=37-1
+  - VS_VERSION=36-2
+
+before_install:
+  - sudo add-apt-repository ppa:djcj/vapoursynth -y
+  - sudo apt-get update -q
+  - sudo apt-get install vapoursynth=$VS_VERSION
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -U tox
+install: pip install . --use-mirrors
 
 # command to run tests, e.g. python setup.py test
-script: tox -e ${TOXENV}
+script: python -m unittest discover tests
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
 deploy:
   provider: pypi
-  distributions: sdist bdist_wheel
+  distributions: sdist --format=zip bdist_wheel
   user: stuxcrystal
   password:
     secure: PLEASE_REPLACE_ME
   on:
     tags: true
     repo: stuxcrystal/yuuno
-    condition: $TOXENV == py36
