@@ -39,6 +39,15 @@ deploy:
       branch: master
       repo: stuxcrystal/yuuno
 
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    target_branch: gh-pages
+    fqdn: yuuno-devel.encode.moe
+    on:
+      branch: development
+      repo: stuxcrystal/yuuno
+
   - provider: pypi
     distributions: sdist --format=zip bdist_wheel
     user: stuxcrystal
