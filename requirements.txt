@@ -1,4 +1,4 @@
-notebook
+notebook==5.0.0
 Pillow
 ipywidgets
 setuptools-git
