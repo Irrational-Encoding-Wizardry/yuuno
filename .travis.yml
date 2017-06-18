@@ -26,6 +26,7 @@ script: python -m unittest discover tests
 before_deploy:
   - pip install -r requirements_dev.txt
   - pushd docs && make html && popd
+  - touch docs/_build/html/.nojekyll
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
