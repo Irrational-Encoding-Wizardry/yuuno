@@ -55,6 +55,7 @@ deploy:
   - provider: pypi
     distributions: sdist --format=zip bdist_wheel
     user: stuxcrystal
+    skip_upload_docs: true
     password:
       secure: !!binary |
         RExJZnNyQlplbE9lWjNmUER2a0tOQmhZVkl5Q1VJbXpaYUZsdjRmQjB4KysrZTl5V0JUMGhPY3pk

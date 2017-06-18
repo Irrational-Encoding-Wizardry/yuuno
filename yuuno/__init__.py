@@ -3,7 +3,7 @@ import sys
 
 __author__ = """stuxcrystal"""
 __email__ = 'stuxcrystal@encode.moe'
-__version__ = '0.5.0a0'
+__version__ = '0.5.0a1'
 
 
 if sys.version_info < (3, 6):
