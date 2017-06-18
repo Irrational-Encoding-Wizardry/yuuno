@@ -8,14 +8,12 @@ language: python
 python: 3.6
 
 env:
-  - VS_VERSION=38-1 VS_GIT_VERSION=R38
-  - VS_VERSION=37-1 VS_GIT_VERSION=R37
-  - VS_VERSION=36-2 VS_GIT_VERSION=R36
+  - VS_GIT_VERSION=R38
 
 before_install:
   - sudo add-apt-repository ppa:djcj/vapoursynth -y
   - sudo apt-get update -q
-  - sudo apt-get install -y vapoursynth=${VS_VERSION}~trusty
+  - sudo apt-get install -y vapoursynth
   - pip install Cython
   - pip install https://github.com/vapoursynth/vapoursynth/archive/${VS_GIT_VERSION}.tar.gz
 
