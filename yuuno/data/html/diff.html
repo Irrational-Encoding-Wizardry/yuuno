@@ -1,0 +1,20 @@
+<div class="vs-diff-simple">
+  <style scoped>
+    div.vs-diff-simple-container > img {
+      display: none;
+      margin-top: 0 !important;
+      {% if cap_size %}
+        max-width: 100%;
+        height: auto;
+      {% endif %}
+    }
+    div.vs-diff-simple-container:not(:hover) > img.vs-diff-first,
+    div.vs-diff-simple-container:hover > img.vs-diff-second {
+       display: block;
+    }
+  </style>
+  <div class="vs-diff-simple-container">
+    <img class="vs-diff-first" src="{{ img[0] }}">
+    <img class="vs-diff-second" src="{{ img[1] }}">
+  </div>
+</div>

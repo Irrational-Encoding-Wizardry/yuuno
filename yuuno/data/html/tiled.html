@@ -1,0 +1,29 @@
+<div class="vs-image-tiled">
+  <style scoped>
+    .vs-image-tiled-main {
+      overflow: scroll;
+      max-width: {{ sizes[0] }}px;
+      max-height: {{ sizes[1] }}px;
+    }
+    .vs-image-tiled-wrapper > .vs-image-tiled-row {
+      white-space: nowrap;
+    }
+    .vs-image-tiled-wrapper > .vs-image-tiled-row > img {
+      margin: 0 !important;
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+      display: inline;
+    }
+  </style>
+  <div class="vs-image-tiled-main">
+    <div class="vs-image-tiled-wrapper">
+      {% for row in range(rows) %}
+        <div class="vs-image-tiled-row">
+          {%- for column in range(columns) -%}
+            <img class="vs-image-tiled-img" src="{{- tiles[row][column] -}}">
+          {%- endfor -%}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
