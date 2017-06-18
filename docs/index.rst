@@ -9,6 +9,7 @@ Contents:
    readme
    installation
    usage
+   howtos/index
    reference/modules
    contributing
    authors
