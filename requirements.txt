@@ -1,4 +1,4 @@
 notebook
 Pillow
 ipywidgets
-setuptools-git
+setuptools-git==1.2
