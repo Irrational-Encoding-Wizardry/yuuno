@@ -4,6 +4,16 @@
 Installation
 ============
 
+TL;DR
+-----
+
+Yuuno requires Python 3.6 or later. To support VapourSynth, you need VapourSynth R36 or later.
+To install it use these commands:
+
+.. code-block:: console
+
+    $ pip install yuuno
+    $ jupyter nbextension enable --py widgetsnbextension
 
 Stable release
 --------------
@@ -14,7 +24,7 @@ To install yuuno, run this command in your terminal:
 
     $ pip install yuuno
 
-This is the preferred method to install yuuno, as it will always install the most recent stable release. 
+This is the preferred method to install yuuno, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -49,3 +59,20 @@ Once you have a copy of the source, you can install it with:
 
 .. _Github repo: https://github.com/stuxcrystal/yuuno
 .. _tarball: https://github.com/stuxcrystal/yuuno/tarball/master
+
+
+Enabling interactive applications
+---------------------------------
+
+The interactive application which Yuuno provides for better introspection
+rely on the third-party extension `ipywidgets`. This is how you activate this extension:
+
+.. code-block:: console
+
+    $ jupyter nbextension enable --py widgetsnbextension
+
+Refer to this documentation for installation inside virtual environments (such as virtualenv and venv): `ipywidgets Documentation`_
+
+.. _ipywidgets Documentation:  https://ipywidgets.readthedocs.io/en/latest/user_install.html
+
+

@@ -74,11 +74,11 @@ class TestIPythonMagic(unittest.TestCase):
 
     def test_002_test_magic_unregister(self):
         Yuuno.instance().environment.features[0].unregister_magics(TestMagicFeature.TestMagics)
-        self.assertIsNone(self.shell.run_line_magic("%test_line_magic", "testificate"))
+        self.assertIsNone(self.shell.run_line_magic("test_line_magic", "testificate"))
         self.assertIsNone(self.shell.run_cell_magic("test_cell_magic", "testificate", "1 2 3"))
 
     def test_003_test_magic_autounregister(self):
         self.loaded = False
         unload_ipython_extension(self.shell)
-        self.assertIsNone(self.shell.run_line_magic("%test_line_magic", "testificate"))
+        self.assertIsNone(self.shell.run_line_magic("test_line_magic", "testificate"))
         self.assertIsNone(self.shell.run_cell_magic("test_cell_magic", "testificate", "1 2 3"))

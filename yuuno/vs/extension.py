@@ -51,7 +51,8 @@ If the passed object is a callable, it will just use the callable.
         except ImportError:
             return False
 
-        return True
+        core = vapoursynth.get_core()
+        return core.version_number() > 35
 
     @property
     def resize_filter(self) -> TCallable:
