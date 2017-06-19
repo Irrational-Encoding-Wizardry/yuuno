@@ -33,3 +33,15 @@ Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 * Add f-string parsing inside %encode. (Will fallback to regular string.format for Python < 3.6) [thanks for the idea @🎌eXmendiC]
 * Switched to Jinja2 Templates for Raw-HTML output
 * Omit iCCP-chunk since apparently the csp has to be set manually by the user on media players. Of course it can be changed back at any time.
+
+0.3.0 (2017-03-20)
+------------------
+
+Changelog:
+* An ICCP-chunk is now sent along with the PNG. Currently the default is the 709-CSP ICC. Color-Managed browsers will honor this chunk.
+* The variables `core` (referencing the current VS-Core) and `vs` (as a referece to the vapoursynth) will now be pushed to the user-namespace on Yuuno activation.
+* `%yuuno install` is now the installation command
+* `%yuuno version` shows the current version of yuuno
+* `%yuuno help` shows the help for Yuuno.
+* `%yuuno get` and `%yuuno set` can be used for configuring Yuuno.
+* You have to use `%load_ext yuuno` for initiating yuuno now.
