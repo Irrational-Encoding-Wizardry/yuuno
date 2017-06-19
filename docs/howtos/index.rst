@@ -9,3 +9,5 @@ things in Yuuno.
    :maxdepth: 2
 
    reuse_preview
+   auto_import_yuuno
+   configure_yuuno
