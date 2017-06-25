@@ -1,49 +1,78 @@
 #!/usr/bin/env python
-import os
+# -*- coding: utf-8 -*-
+
+# Yuuno - IPython + VapourSynth
+# Copyright (C) 2017 StuxCrystal
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 from setuptools import setup, find_packages
 
-# Utility function to read the README file.
-# Used for the long_description.  It's nice, because now 1) we have a top level
-# README file and 2) it's easier to type in the README file than to put a raw
-# string in below ...
-def read(fname):
-    if os.path.exists("README.rst"):
-        return open(os.path.join(os.path.dirname(__file__), fname)).read()
-    return ""
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+
+requirements = [
+    "jupyter",
+    "traitlets",
+    "jinja2",
+    "ipywidgets",
+    "pillow"
+]
+
+test_requirements = [
+    # TODO: put package test requirements here
+]
 
 setup(
-    name = "yuuno",
-    version = "0.4.0.1",
-    author = "StuxCrystal",
-    author_email = "stuxcrystal@encode.moe",
-    description = "Glue for jupyter and vapoursynth",
-    license = "MIT",
-    keywords = "vapoursynth frameserver jupyter ipython",
-    url = "https://github.com/stuxcrystal/yuuno",
-
-    packages=find_packages(),
+    name='yuuno',
+    version='0.5.0',
+    description="Yuuno = Jupyter + VapourSynth",
+    long_description=readme + '\n\n' + history,
+    author="stuxcrystal",
+    author_email='stuxcrystal@encode.moe',
+    url='https://github.com/stuxcrystal/yuuno',
+    packages=find_packages(exclude=("tests", )),
+    package_dir={'yuuno': 'yuuno'},
+    package_data={'yuuno': ['data/*']},
     include_package_data=True,
-    package_data={
-        'yuuno': ['data/*.icc', 'data/widgets/*.html'],
-    },
-
-    long_description=read('README.rst'),
+    install_requires=requirements,
+    license="GNU Lesser General Public License v3 (LGPLv3)",
+    zip_safe=False,
+    keywords='yuuno',
     classifiers=[
-        "Development Status :: 4 - Beta",
+        'Natural Language :: English',
 
-        "License :: OSI Approved :: MIT License",
-        "Environment :: Web Environment",
+        'Development Status :: 4 - Beta',
 
-        "Topic :: Utilities",
+        'Intended Audience :: Developers',
+        'Intended Audience :: Other Audience',
 
-        "Topic :: Multimedia :: Video",
-        "Topic :: Multimedia :: Video :: Conversion",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: 3 :: Only",
-        "Framework :: IPython"
+        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+
+        'Programming Language :: Python :: 3.6',
+
+        'Framework :: IPython',
+        'Framework :: Jupyter',
+
+        'Topic :: Multimedia :: Video',
+        'Topic :: Multimedia :: Video :: Display',
+        'Topic :: Multimedia :: Video :: Non-Linear Editor',
     ],
-
-    install_requires=[
-        'notebook', 'Pillow', "ipywidgets", 'setuptools-git'
-    ]
+    test_suite='tests',
+    tests_require=test_requirements
 )

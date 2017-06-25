@@ -17,33 +17,35 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from typing import Any as All
+from typing import AnyStr, Callable
 
 from traitlets.utils.importstring import import_item
-from traitlets.config import SingletonConfigurable
-
-from traitlets import Any
-from traitlets import default, observe
-from traitlets import DottedObjectName, List
 
 
-class Settings(SingletonConfigurable):
+def get_proxy_or_core():
     """
-    Stores the settings for the registry
+    Returns the current core-proxy or a core instance for pre Vapoursynth R37 installations
+    :return: A proxy or the actual core.
     """
-    DEFAULT_EXTENSION_TYPES = [
-        "yuuno.vs.extension.VapourSynth"
-    ]
+    try:
+        from vapoursynth import core
+    except ImportError:
+        from vapoursynth import get_core
+        core = get_core()
+    return core
 
-    registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)
-    registry = Any()
 
-    extension_types = List(DottedObjectName(), DEFAULT_EXTENSION_TYPES, config=True)
+def filter_or_import(name: AnyStr) -> Callable:
+    """
+    Loads the filter from the current core or tries to import the name.
 
-    @observe('registry_type')
-    def _reset_registry_on_reset(self, change: dict) -> None:
-        self.registry = import_item(change['new'])()
+    :param name: The name to load.
+    :return:  A callable.
+    """
+    core = get_proxy_or_core()
 
-    @default('registry')
-    def _auto_registry(self) -> All:
-        return import_item(self.registry_type)()
+    try:
+        ns, func = name.split(".", 1)
+        return getattr(getattr(core, ns), func)
+    except (ValueError, AttributeError):
+        return import_item(name)

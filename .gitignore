@@ -1,7 +1,3 @@
-
-# Created by https://www.gitignore.io/api/python,virtualenv,git
-
-### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -24,7 +20,6 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -56,14 +51,6 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -71,50 +58,12 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
+# pyenv python configuration file
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
 
-# dotenv
-.env
-
-# virtualenv
-.venv/
-venv/
-ENV/
-
-# Spyder project settings
-.spyderproject
-
-# Rope project settings
-.ropeproject
-
-
-### VirtualEnv ###
-# Virtualenv
-# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-[Bb]in
-[Ii]nclude
-[Ll]ib
-[Ll]ib64
-[Ll]ocal
-[Ss]cripts
-pyvenv.cfg
-.venv
-pip-selfcheck.json
-
-
-### Git ###
-*.orig
-
-# End of https://www.gitignore.io/api/python,virtualenv,git
-
-testnotebooks
-
-### CodeTasty Online IDE ###
-.codetasty/
+######################
+# Misc stuff
+test.ipynb
+*.mp4
+.ipynb_checkpoints

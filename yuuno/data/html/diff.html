@@ -1,0 +1,40 @@
+{# -*- encoding: utf-8 -*- #}
+
+{#
+Yuuno - IPython + VapourSynth
+Copyright (C) 2017 StuxCrystal
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+
+<div class="vs-diff-simple">
+  <style scoped>
+    div.vs-diff-simple-container > img {
+      display: none;
+      margin-top: 0 !important;
+      {% if cap_size %}
+        max-width: 100%;
+        height: auto;
+      {% endif %}
+    }
+    div.vs-diff-simple-container:not(:hover) > img.vs-diff-first,
+    div.vs-diff-simple-container:hover > img.vs-diff-second {
+       display: block;
+    }
+  </style>
+  <div class="vs-diff-simple-container">
+    <img class="vs-diff-first" src="{{ img[0] }}">
+    <img class="vs-diff-second" src="{{ img[1] }}">
+  </div>
+</div>

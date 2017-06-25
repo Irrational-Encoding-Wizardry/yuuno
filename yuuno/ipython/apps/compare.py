@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -17,34 +17,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
-
-__author__ = """stuxcrystal"""
-__email__ = 'stuxcrystal@encode.moe'
-__version__ = '0.5.0'
+from yuuno import Yuuno
+from yuuno.ipython.apps.chooser import ImageChooser
+from yuuno.ipython.apps.mixins import InitialFrameMixin
 
 
-if sys.version_info < (3, 6):
-    raise ImportError(
-        "Yuuno now requires Python 3.6."
-        "Please make sure you are using this version."
-    )
+class Compare(ImageChooser, InitialFrameMixin):
+    """
+    Shows an image-chooser with different clips.
 
+    .. automethod:: __init__
+    """
 
-from yuuno.yuuno import Yuuno
+    def __init__(self, *images, **kwargs):
+        self.images = images
+        super(Compare, self).__init__(current="0", values=tuple(map(str, range(len(images)))), **kwargs)
 
-__all__ = ["Yuuno"]
-
-
-try:
-    import IPython
-except ImportError:
-    pass
-else:
-    from yuuno.ipython.environment import load_ipython_extension
-    from yuuno.ipython.environment import unload_ipython_extension
-
-    __all__ += [
-        "load_ipython_extension",
-        "unload_ipython_extension",
-    ]
+    def set_image(self, value):
+        img = Yuuno.instance().registry.wrap(self.images[int(value)])
+        fno = min(self.frame_number, len(img)-1)
+        self.image.image = img[fno].to_pil()

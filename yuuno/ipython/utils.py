@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -17,34 +17,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
-
-__author__ = """stuxcrystal"""
-__email__ = 'stuxcrystal@encode.moe'
-__version__ = '0.5.0'
+from typing import Callable
 
 
-if sys.version_info < (3, 6):
-    raise ImportError(
-        "Yuuno now requires Python 3.6."
-        "Please make sure you are using this version."
-    )
+class fake_dict(object):
+    """
+    Decorator for functions so that they behave like a dict
+    """
 
+    def __init__(self, func: Callable[[object], object]) -> None:
+        self.func = func
 
-from yuuno.yuuno import Yuuno
+    def __getitem__(self, it: object) -> object:
+        return self.func(it)
 
-__all__ = ["Yuuno"]
-
-
-try:
-    import IPython
-except ImportError:
-    pass
-else:
-    from yuuno.ipython.environment import load_ipython_extension
-    from yuuno.ipython.environment import unload_ipython_extension
-
-    __all__ += [
-        "load_ipython_extension",
-        "unload_ipython_extension",
-    ]

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*- 
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -17,34 +17,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
-
-__author__ = """stuxcrystal"""
-__email__ = 'stuxcrystal@encode.moe'
-__version__ = '0.5.0'
-
-
-if sys.version_info < (3, 6):
-    raise ImportError(
-        "Yuuno now requires Python 3.6."
-        "Please make sure you are using this version."
-    )
-
-
-from yuuno.yuuno import Yuuno
-
-__all__ = ["Yuuno"]
-
+import os
+from pathlib import Path
 
 try:
-    import IPython
+    from pkg_resources import resource_filename
 except ImportError:
-    pass
-else:
-    from yuuno.ipython.environment import load_ipython_extension
-    from yuuno.ipython.environment import unload_ipython_extension
+    def resource_filename(_: str, name: str):
+        this_dir, this_filename = os.path.split(__file__)
+        path = os.path.join(this_dir, '..', name)
+        return path
 
-    __all__ += [
-        "load_ipython_extension",
-        "unload_ipython_extension",
-    ]
+
+def get_data_file(name) -> Path:
+    """
+    Returns the path to a data file.
+    :param name: Name of the file
+    :return: A path object to the specified directory or file
+    """
+    filename = resource_filename('yuuno', 'data' + os.path.sep + name)
+    return Path(filename)

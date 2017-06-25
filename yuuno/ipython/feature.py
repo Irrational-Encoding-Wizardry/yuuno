@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -17,34 +17,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
+from typing import Any
 
-__author__ = """stuxcrystal"""
-__email__ = 'stuxcrystal@encode.moe'
-__version__ = '0.5.0'
+from traitlets import HasTraits, Any
 
 
-if sys.version_info < (3, 6):
-    raise ImportError(
-        "Yuuno now requires Python 3.6."
-        "Please make sure you are using this version."
-    )
+class Feature(HasTraits):
+    """
+    Defines a feature
+    """
 
+    environment: 'YuunoIPythonEnvironment' = Any()
 
-from yuuno.yuuno import Yuuno
+    @classmethod
+    def feature_name(cls):
+        return cls.__name__.lower()
 
-__all__ = ["Yuuno"]
+    def initialize(self):
+        """
+        Initializes a feature
+        """
 
-
-try:
-    import IPython
-except ImportError:
-    pass
-else:
-    from yuuno.ipython.environment import load_ipython_extension
-    from yuuno.ipython.environment import unload_ipython_extension
-
-    __all__ += [
-        "load_ipython_extension",
-        "unload_ipython_extension",
-    ]
+    def deinitialize(self):
+        """
+        Deinitializes a feature.
+        """
