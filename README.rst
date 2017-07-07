@@ -3,6 +3,19 @@ yuuno
 =====
 
 
+.. code::
+
+    __   __                      
+    \ \ / /                      
+     \ V /   _ _   _ _ __   ___  
+      \ / | | | | | | '_ \ / _ \ 
+      | | |_| | |_| | | | | (_) |
+      \_/\__,_|\__,_|_| |_|\___/ 
+                             
+                             
+                             
+
+
 .. image:: https://img.shields.io/pypi/v/yuuno.svg
         :target: https://pypi.python.org/pypi/yuuno
 
