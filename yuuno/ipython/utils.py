@@ -15,9 +15,21 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import ast
 
 from typing import Callable
+
+from yuuno.yuuno import Yuuno
+
+
+def execute_code(expr, file):
+    ipy = Yuuno.instance().environment.ipython
+    expr = ipy.input_transformer_manager.transform_cell(expr)
+    expr_ast = ipy.compile.ast_parse(expr)
+    expr_ast = ipy.transform_ast(expr_ast)
+
+    code = ipy.compile(ast.Expression(expr_ast.body[0].value), file, 'eval')
+    return eval(code, ipy.user_ns, {})
 
 
 class fake_dict(object):

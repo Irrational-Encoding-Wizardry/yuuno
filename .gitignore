@@ -67,3 +67,10 @@ target/
 test.ipynb
 *.mp4
 .ipynb_checkpoints
+
+
+.vs/
+*.pyproj
+Debug/
+venv/
+.idea/

@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -45,7 +45,6 @@ class YuunoIPythonEnvironment(Environment):
 
     formatter: bool = Bool(True, help="Register IPython-formatters for objects", config=True)
     namespace: bool = Bool(True, help="Automatically push modules and extensions into the user namespace.", config=True)
-    encode: bool = Bool(True, help="Automatically register the encode-magic (currently Yuuno only)", config=True)
     apps: bool = Bool(True, help="Register interactive apps as line-magics to IPython", config=True)
 
     tiling_threshold: TTuple[int, int] = List(
@@ -92,7 +91,6 @@ class YuunoIPythonEnvironment(Environment):
     feature_classes: Sequence[str] = List(DottedObjectName(), default_value=[
         "yuuno.ipython.formatter.Formatter",
         "yuuno.ipython.namespace.Namespace",
-        "yuuno.ipython.encode.Encode",
         "yuuno.ipython.apps.feature.Apps"
     ], config=True)
 

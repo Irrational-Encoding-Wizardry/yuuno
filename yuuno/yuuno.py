@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -97,3 +97,9 @@ class Yuuno(Settings):
         self.environment.deinitialize()
         self._deinitialize_extensions()
         self.clear_instance()
+
+    def wrap(self, obj: object) -> object:
+        """
+        Create the clip-wrapper for a specific object.
+        """
+        return self.registry.wrap(obj)
