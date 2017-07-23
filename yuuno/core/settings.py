@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -32,7 +32,8 @@ class Settings(SingletonConfigurable):
     Stores the settings for the registry
     """
     DEFAULT_EXTENSION_TYPES = [
-        "yuuno.vs.extension.VapourSynth"
+        "yuuno.vs.extension.VapourSynth",
+        "yuuno.ipy_vs.extension.IPythonVapoursynthExtension",
     ]
 
     registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)

@@ -19,8 +19,10 @@
 
 from typing import Callable as TCallable, Union as TUnion
 
+from traitlets import observe
 from traitlets import Unicode, DottedObjectName
 from traitlets import Instance, default
+from traitlets import CInt, CBool
 from traitlets import Union
 
 from yuuno.trait_types import Callable
@@ -52,6 +54,39 @@ If the passed object is a callable, it will just use the callable.
     )
 
     registry: Registry = Instance(Registry, read_only=True)
+
+    push_values: bool = CBool(True, help="""Push vs and the current core instance onto the current environment.""", config=True)
+
+    core_num_threads: int = CInt(-1, help="""The number of concurrent threads used by the core. Can be set the change the number.
+Settings to a value less than one makes it default to the number of hardware threads.
+    """, config=True)
+    core_add_cache: bool = CBool(True, help="For debugging purposes only. When set to `False` no caches will be automatically inserted between filters.", config=True)
+    core_accept_lowercase: bool = CBool(False, help="When set to `True` function name lookups in the core are case insensitive. Don't distribute scripts that need it to be set.", config=True)
+    core_max_cache_size: int = CBool(None, allow_none=True, help="Set the upper framebuffer cache size after which memory is aggressively freed. The value is in mediabytes.", config=True)
+
+    def _update_core_values(name=None):
+        def _func(self, change=None):
+            core = get_proxy_or_core()
+
+            if name is None:
+                core.num_threads = self.core_num_threads
+                core.add_cache = self.core_add_cache
+                core.accept_lowercase = self.core_accept_lowercase
+
+                # There is no obvious default for max_cache_size
+                if self.core_max_cache_size is not None:
+                    core.max_cache_size = self.core_max_cache_size
+
+            else:
+                setattr(core, name, change.new)
+        return _func
+
+    update_core_values = _update_core_values()
+
+    _observe_num_threads      = observe("core_num_threads")(_update_core_values("num_threads"))
+    _observe_add_cache        = observe("core_add_cache")(_update_core_values("add_cache"))
+    _observe_accept_lowercase = observe("core_accept_lowercase")(_update_core_values("accept_lowercase"))
+    _observe_max_cache_size   = observe("core_max_cache_size")(_update_core_values("max_cache_size"))
 
     @default("registry")
     def _init_registry(self):
@@ -93,6 +128,8 @@ If the passed object is a callable, it will just use the callable.
 
         self.parent.namespace['vs'] = vapoursynth
         self.parent.namespace['core'] = core
+
+        self.update_core_values()
 
     def deinitialize(self):
         self.parent.registry.remove_subregistry(self.registry)

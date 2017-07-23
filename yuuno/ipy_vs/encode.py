@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
 # Copyright (C) 2017 StuxCrystal
@@ -18,7 +18,6 @@
 
 
 import io
-import ast
 import sys
 import time
 import shlex
@@ -31,9 +30,12 @@ from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import line_cell_magic
 
 from yuuno import Yuuno
+from yuuno.ipython.utils import execute_code
 from yuuno.ipython.magic import MagicFeature
-from yuuno.ipython.os import popen, interrupt_process
 from yuuno.ipython.environment import YuunoIPythonEnvironment
+
+from yuuno.ipy_vs.os import popen, interrupt_process
+from yuuno.ipy_vs.vs_feature import VSFeature
 
 
 class ClipFeeder(Thread):
@@ -149,15 +151,6 @@ class EncodeMagic(Magics):
 
         return process.returncode
 
-    def execute_code(self, expr, file):
-        ipy = self.environment.ipython
-        expr = ipy.input_transformer_manager.transform_cell(expr)
-        expr_ast = ipy.compile.ast_parse(expr)
-        expr_ast = ipy.transform_ast(expr_ast)
-
-        code = ipy.compile(ast.Expression(expr_ast.body[0].value), file, 'eval')
-        return eval(code, ipy.user_ns, {})
-
     def prepare_encode(self, line, cell, stdout=None):
         if cell is None:
             cell, line = line.split(" ", 1)
@@ -166,7 +159,7 @@ class EncodeMagic(Magics):
         if y4m:
             line = line[6:]
         commandline = self.environment.ipython.var_expand(line)
-        clip = self.execute_code(cell, "<yuuno.ipython encode>")
+        clip = execute_code(cell, "<yuuno.ipython encode>")
 
         return self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m)
 
@@ -193,7 +186,7 @@ class EncodeMagic(Magics):
         return res
 
 
-class Encode(MagicFeature):
+class Encode(VSFeature, MagicFeature):
 
     def initialize(self):
         self.register_magics(EncodeMagic)
