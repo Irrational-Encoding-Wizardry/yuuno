@@ -15,6 +15,17 @@ Step by step
 
    This should show a simple preview widget without an image.
 
+   .. important::
+
+      Make sure this code is run in its own cell as Yuuno will only save the frame when switching the clip
+      of the preview instance.
+
+   .. note::
+
+      On older IPython versions you might need to import `display` manually. Do so using::
+
+          from IPython.display import display
+
 2. Assign a clip to the preview-widget::
 
     my_preview.clip = core.std.BlankClip(color=[0,0,255])

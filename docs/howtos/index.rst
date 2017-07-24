@@ -9,5 +9,6 @@ things in Yuuno.
    :maxdepth: 2
 
    reuse_preview
+   run_vpy
    auto_import_yuuno
    configure_yuuno
