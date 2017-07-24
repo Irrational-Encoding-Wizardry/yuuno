@@ -8,5 +8,5 @@ coverage==4.1
 Sphinx==1.6.2
 cryptography==1.9
 PyYAML==3.11
-sphinx_rtd_theme
+sphinx-rtd-theme==0.2.4
 
