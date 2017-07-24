@@ -10,9 +10,15 @@ Planned Releases
 * `Yuuno 1.0.0rc1`: 2017-10-09 (Feature freeze 2017-08-15)
 * `Yuuno 1.0.0`: 2017-10-12
 
+0.6.0 (2017-07-24)
+------------------
 
-0.5.0a0 (2017-06-18)
---------------------
+* %runvpy can now return the outputs of a vapoursynth-script (.vpy) as a dict.
+* Settings of VapourSynth cores are now exposed as configuration variables
+* [Misc] Extracted %encode and stuck it inside its own sub-package.
+
+0.5.0 (2017-06-18)
+------------------
 
 Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 
