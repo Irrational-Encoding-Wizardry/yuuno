@@ -7,14 +7,12 @@ Subpackages
 .. toctree::
 
     yuuno.ipython.apps
-    yuuno.ipython.os
 
 Submodules
 ----------
 
 .. toctree::
 
-   yuuno.ipython.encode
    yuuno.ipython.environment
    yuuno.ipython.feature
    yuuno.ipython.formatter

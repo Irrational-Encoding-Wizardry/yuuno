@@ -1,4 +1,4 @@
-yuuno\.ipython\.os package
+yuuno\.ipy\_vs\.os package
 ==========================
 
 Submodules
@@ -6,13 +6,13 @@ Submodules
 
 .. toctree::
 
-   yuuno.ipython.os.unix
-   yuuno.ipython.os.win32
+   yuuno.ipy_vs.os.unix
+   yuuno.ipy_vs.os.win32
 
 Module contents
 ---------------
 
-.. automodule:: yuuno.ipython.os
+.. automodule:: yuuno.ipy_vs.os
     :members:
     :undoc-members:
     :show-inheritance:

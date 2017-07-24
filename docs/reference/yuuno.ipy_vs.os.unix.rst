@@ -1,7 +1,7 @@
-yuuno\.ipython\.os\.unix module
+yuuno\.ipy\_vs\.os\.unix module
 ===============================
 
-.. automodule:: yuuno.ipython.os.unix
+.. automodule:: yuuno.ipy_vs.os.unix
     :members:
     :undoc-members:
     :show-inheritance:

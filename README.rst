@@ -5,15 +5,15 @@ yuuno
 
 .. code::
 
-    __   __                      
-    \ \ / /                      
-     \ V /   _ _   _ _ __   ___  
-      \ / | | | | | | '_ \ / _ \ 
+    __   __
+    \ \ / /
+     \ V /   _ _   _ _ __   ___
+      \ / | | | | | | '_ \ / _ \
       | | |_| | |_| | | | | (_) |
-      \_/\__,_|\__,_|_| |_|\___/ 
-                             
-                             
-                             
+      \_/\__,_|\__,_|_| |_|\___/
+
+
+
 
 
 .. image:: https://img.shields.io/pypi/v/yuuno.svg
@@ -32,6 +32,10 @@ Yuuno = Jupyter + VapourSynth
 * Free software: MIT license
 * Documentation: https://yuuno.encode.moe/
 
+Start your journey here:
+------------------------
+* `Installation <https://yuuno.encode.moe/installation.html>`_
+* `Usage <https://yuuno.encode.moe/usage.html>`_
 
 Features
 --------

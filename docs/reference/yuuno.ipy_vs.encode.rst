@@ -1,7 +1,7 @@
-yuuno\.ipython\.encode module
+yuuno\.ipy\_vs\.encode module
 =============================
 
-.. automodule:: yuuno.ipython.encode
+.. automodule:: yuuno.ipy_vs.encode
     :members:
     :undoc-members:
     :show-inheritance:

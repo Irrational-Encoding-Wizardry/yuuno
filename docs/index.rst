@@ -1,7 +1,10 @@
 Welcome to yuuno's documentation!
 =================================
 
+.. include:: ./readme.rst
+
 Contents:
+=========
 
 .. toctree::
    :maxdepth: 2

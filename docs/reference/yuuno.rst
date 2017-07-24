@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     yuuno.core
+    yuuno.ipy_vs
     yuuno.ipython
     yuuno.vs
 
