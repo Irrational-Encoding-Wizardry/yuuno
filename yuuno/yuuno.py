@@ -28,7 +28,7 @@ from yuuno.core.extension import Extension
 from yuuno.core.namespace import Namespace
 from yuuno.core.settings import Settings
 
-from yuuno.pngoutput import PNGOutput
+from yuuno.output import YuunoImageOutput
 
 T = TypeVar("T")
 
@@ -41,12 +41,12 @@ class Yuuno(Settings):
     environment: Environment = Instance(Environment)
     extensions: Sequence[Type[Extension]] = List(Instance(Extension))
 
-    output: PNGOutput = Instance(PNGOutput)
+    output: YuunoImageOutput = Instance(YuunoImageOutput)
     namespace: Namespace = Instance(Namespace)
 
     @default("output")
     def _default_output(self):
-        return PNGOutput(yuuno=self)
+        return YuunoImageOutput(yuuno=self)
 
     @default("namespace")
     def _default_namespace(self):

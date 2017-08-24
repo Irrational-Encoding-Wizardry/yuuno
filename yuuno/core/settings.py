@@ -41,7 +41,6 @@ class Settings(SingletonConfigurable):
 
     extension_types = List(DottedObjectName(), DEFAULT_EXTENSION_TYPES, config=True)
 
-    zlib_compression = CInt(0, help="0=No compression\n1=Fastest\n9=Slowest", config=True)
 
     @observe('registry_type')
     def _reset_registry_on_reset(self, change: dict) -> None:

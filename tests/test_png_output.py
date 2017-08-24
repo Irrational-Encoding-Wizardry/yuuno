@@ -15,7 +15,7 @@ from traitlets import default, HasTraits, Unicode
 
 from PIL import Image
 
-from yuuno.pngoutput import PNGOutput
+from yuuno.output import YuunoImageOutput
 from yuuno.clip import Frame
 
 
@@ -50,7 +50,7 @@ class TestPNGOutput(unittest.TestCase):
     )
 
     def setUp(self):
-        self.output = PNGOutput()
+        self.output = YuunoImageOutput()
         self.frame = SinglePixelFrame()
 
     def tearDown(self):

@@ -19,17 +19,20 @@
 
 from io import BytesIO
 
-from traitlets import HasTraits, Any
+from traitlets import CInt, Any
+from traitlets.config import Configurable
 from PIL.Image import Image
 
 from yuuno.clip import Frame
 
 
-class PNGOutput(HasTraits):
+class YuunoImageOutput(Configurable):
     """
     Defines an output for PNG-files
     """
     yuuno = Any(help="Reference to the current Yuuno instance.")
+
+    zlib_compression = CInt(6, help="0=No compression\n1=Fastest\n9=Slowest", config=True)
 
     def bytes_of(self, im: Frame) -> bytes:
         """
@@ -45,5 +48,5 @@ class PNGOutput(HasTraits):
             im = im.convert("RGB")
 
         f = BytesIO()
-        im.save(f, format="png", compress_level=self.yuuno.zlib_compression)
+        im.save(f, format="png", compress_level=self.zlib_compression)
         return f.getvalue()
