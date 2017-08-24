@@ -22,7 +22,7 @@ from typing import Any as All
 from traitlets.utils.importstring import import_item
 from traitlets.config import SingletonConfigurable
 
-from traitlets import Any
+from traitlets import Any, CInt
 from traitlets import default, observe
 from traitlets import DottedObjectName, List
 
@@ -40,6 +40,8 @@ class Settings(SingletonConfigurable):
     registry = Any()
 
     extension_types = List(DottedObjectName(), DEFAULT_EXTENSION_TYPES, config=True)
+
+    zlib_compression = CInt(0, help="0=No compression\n1=Fastest\n9=Slowest", config=True)
 
     @observe('registry_type')
     def _reset_registry_on_reset(self, change: dict) -> None:

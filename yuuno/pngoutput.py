@@ -45,5 +45,5 @@ class PNGOutput(HasTraits):
             im = im.convert("RGB")
 
         f = BytesIO()
-        im.save(f, format="png")
+        im.save(f, format="png", compress_level=self.yuuno.zlib_compression)
         return f.getvalue()
