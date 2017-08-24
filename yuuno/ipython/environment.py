@@ -117,7 +117,7 @@ class YuunoIPythonEnvironment(Environment):
             feature.deinitialize()
 
     def initialize(self):
-        self.ipython.configurables += [self.parent]
+        self.ipython.configurables += [self.parent, self.parent.output]
         self.ipython.configurables += [self]
         self.ipython.configurables += self.parent.extensions
 
@@ -130,6 +130,7 @@ class YuunoIPythonEnvironment(Environment):
 
         self.ipython.configurables.remove(self)
         self.ipython.configurables.remove(self.parent)
+        self.ipython.configurables.remove(self.parent.output)
         for extension in self.parent.extensions:
             self.ipython.configurables.remove(extension)
 

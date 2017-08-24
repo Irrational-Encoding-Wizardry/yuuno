@@ -19,7 +19,7 @@
 
 from io import BytesIO
 
-from traitlets import CInt, Any
+from traitlets import Unicode, CInt, Any
 from traitlets.config import Configurable
 from PIL.Image import Image
 
@@ -32,7 +32,8 @@ class YuunoImageOutput(Configurable):
     """
     yuuno = Any(help="Reference to the current Yuuno instance.")
 
-    zlib_compression = CInt(6, help="0=No compression\n1=Fastest\n9=Slowest", config=True)
+    zlib_compression: int = CInt(6, help="0=No compression\n1=Fastest\n9=Slowest", config=True)
+    icc_profile: str = Unicode(None, help="Specify the path to an ICC-Profile (Defaults to sRGB).", allow_none=True, config=True)
 
     def bytes_of(self, im: Frame) -> bytes:
         """
@@ -47,6 +48,14 @@ class YuunoImageOutput(Configurable):
         if im.mode not in ("RGBA", "RGB", "1", "L", "P"):
             im = im.convert("RGB")
 
+        settings = {
+            "compress_level": self.zlib_compression,
+            "format": "png"
+        }
+        if self.icc_profile is not None:
+            with open(self.icc_profile, "rb") as f:
+                settings["icc_profile"] = f.read()
+
         f = BytesIO()
-        im.save(f, format="png", compress_level=self.zlib_compression)
+        im.save(f, **settings)
         return f.getvalue()
