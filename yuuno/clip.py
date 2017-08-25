@@ -36,6 +36,13 @@ class Frame(object):
         :return: A PIL-Image with the frame data.
         """
 
+    def to_raw(self) -> bytes:
+        """
+        Generates a raw RGBX-Image from the frame.
+        :return: A bytes-object with the frame data
+        """
+
+
 
 class Clip(object):
     """

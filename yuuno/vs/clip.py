@@ -125,9 +125,21 @@ class VapourSynthClipMixin(HasTraits):
     def extension(self) -> VapourSynth:
         return Yuuno.instance().get_extension(VapourSynth)
 
-    def _to_compat_rgb32(self):
-        clip: VideoNode = self.clip
+    def _wrap_frame(self, frame: VideoFrame) -> VideoNode:
+        core = get_proxy_or_core()
 
+        bc = core.std.BlankClip(
+            width=frame.width,
+            height=frame.height,
+            length=1,
+            fpsnum=1,
+            fpsden=1,
+            format=frame.format.id
+        )
+
+        return bc.std.ModifyFrame([bc], lambda n, f: frame.copy())
+
+    def _to_compat_rgb32(self, clip: VideoNode):
         if clip.format.color_family == vs.YUV:
             clip = self.extension.resize_filter(clip, format=vs.RGB24, matrix_in_s=self.extension.yuv_matrix)
 
@@ -136,14 +148,18 @@ class VapourSynthClipMixin(HasTraits):
 
         return self.extension.resize_filter(clip, format=vs.COMPATBGR32)
 
+    def to_compat_rgb32(self, frame: VideoFrame) -> VideoNode:
+        clip = self._wrap_frame(frame)
+        return self._to_compat_rgb32(clip)
+
     def __len__(self):
         return len(self.clip)
 
     def __getitem__(self, item) -> VapourSynthFrameWrapper:
-        frame: VideoNode = self.clip.get_frame(item)
-        compat: VideoNode = self._to_compat_rgb32()
+        frame: VideoFrame = self.clip.get_frame(item)
+        compat: VideoNode = self.to_compat_rgb32(frame)
 
-        return VapourSynthFrameWrapper(frame=frame, compat_frame=compat.get_frame(item))
+        return VapourSynthFrameWrapper(frame=frame, compat_frame=compat.get_frame(0))
 
 
 class VapourSynthClip(VapourSynthClipMixin, HasTraits):
@@ -163,17 +179,5 @@ class VapourSynthFrame(VapourSynthClipMixin, HasTraits):
         HasTraits.__init__(self, frame=frame)
 
     @observe("frame")
-    def _wrap_frame(self, value):
-        val = value["new"]
-        core = get_proxy_or_core()
-
-        bc = core.std.BlankClip(
-            width=val.width,
-            height=val.height,
-            length=1,
-            fpsnum=1,
-            fpsden=1,
-            format=val.format.id
-        )
-
-        self.clip = bc.std.ModifyFrame([bc], lambda n, f: val.copy())
+    def _frame_observe(self, value):
+        self.clip = self._wrap_frame(value['new'])
