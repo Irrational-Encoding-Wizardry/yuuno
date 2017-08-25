@@ -11,7 +11,7 @@ Planned Releases
 0.7.0 (Yet to be released)
 --------------------------
 * Added support for clips with variable video formats
-* Added support for zlib compression and ICCP-chung on PNG outputter
+* Added support for zlib compression and ICCP-chunk on PNG outputter
 
 0.6.0 (2017-07-24)
 ------------------
@@ -46,7 +46,6 @@ Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 0.3.0 (2017-03-20)
 ------------------
 
-Changelog:
 * An ICCP-chunk is now sent along with the PNG. Currently the default is the 709-CSP ICC. Color-Managed browsers will honor this chunk.
 * The variables `core` (referencing the current VS-Core) and `vs` (as a referece to the vapoursynth) will now be pushed to the user-namespace on Yuuno activation.
 * `%yuuno install` is now the installation command
