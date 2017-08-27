@@ -10,15 +10,16 @@ Planned Releases
 
 0.7.0 (Yet to be released)
 --------------------------
+
 * Added support for clips with variable video formats
 * Added support for zlib compression and ICCP-chunk on PNG outputter
 
 0.6.0 (2017-07-24)
 ------------------
 
-* %runvpy can now return the outputs of a vapoursynth-script (.vpy) as a dict.
+* `%runvpy` can now return the outputs of a vapoursynth-script (.vpy) as a dict.
 * Settings of VapourSynth cores are now exposed as configuration variables
-* [Misc] Extracted %encode and stuck it inside its own sub-package.
+* [Misc] Extracted `%encode` and stuck it inside its own sub-package.
 
 0.5.0 (2017-06-18)
 ------------------
