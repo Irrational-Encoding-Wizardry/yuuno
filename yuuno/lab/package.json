@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "yuuno.lab",
-  "version": "0.6.1.dev0",
+  "version": "0.7.0a0",
   "description": "JupyterLab-Extension for Yuuno",
   "author": "stuxcrystal",
   "main": "lib/plugin.js",
