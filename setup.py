@@ -30,7 +30,7 @@ requirements = [
     "jupyter",
     "traitlets",
     "jinja2",
-    "ipywidgets",
+    "ipywidgets<7",
     "pillow"
 ]
 

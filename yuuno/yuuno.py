@@ -17,10 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from typing import Sequence, Type, TypeVar, Optional
+from typing import Dict as TDict, Sequence, Type, TypeVar, Optional
 
 from traitlets.utils.importstring import import_item
-from traitlets import Instance, List
+from traitlets import Instance, List, Dict
 from traitlets import default
 
 from yuuno.core.environment import Environment
