@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -17,10 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from typing import Sequence, Type, TypeVar, Optional
+from typing import Dict as TDict, Sequence, Type, TypeVar, Optional
 
 from traitlets.utils.importstring import import_item
-from traitlets import Instance, List
+from traitlets import Instance, List, Dict
 from traitlets import default
 
 from yuuno.core.environment import Environment
@@ -28,7 +28,7 @@ from yuuno.core.extension import Extension
 from yuuno.core.namespace import Namespace
 from yuuno.core.settings import Settings
 
-from yuuno.pngoutput import PNGOutput
+from yuuno.output import YuunoImageOutput
 
 T = TypeVar("T")
 
@@ -41,12 +41,12 @@ class Yuuno(Settings):
     environment: Environment = Instance(Environment)
     extensions: Sequence[Type[Extension]] = List(Instance(Extension))
 
-    output: PNGOutput = Instance(PNGOutput)
+    output: YuunoImageOutput = Instance(YuunoImageOutput)
     namespace: Namespace = Instance(Namespace)
 
     @default("output")
     def _default_output(self):
-        return PNGOutput(yuuno=self)
+        return YuunoImageOutput(yuuno=self)
 
     @default("namespace")
     def _default_namespace(self):
@@ -65,8 +65,17 @@ class Yuuno(Settings):
 
     def _initialize_extensions(self) -> None:
         self.extensions = self._load_extensions()
+        failed_extensions = []
         for extension in self.extensions:
-            extension.initialize()
+            try:
+                extension.initialize()
+            except Exception as e:
+                failed_extensions.append(extension)
+                import traceback
+                traceback.print_exception(type(e), e, e.__traceback__)
+
+        for extension in failed_extensions:
+            self.extensions.remove(extension)
 
     def _deinitialize_extensions(self) -> None:
         for extension in reversed(self.extensions):

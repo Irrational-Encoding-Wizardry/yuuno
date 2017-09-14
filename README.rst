@@ -1,5 +1,5 @@
 =====
-yuuno
+Yuuno
 =====
 
 
@@ -19,12 +19,8 @@ yuuno
 .. image:: https://img.shields.io/pypi/v/yuuno.svg
         :target: https://pypi.python.org/pypi/yuuno
 
-.. image:: https://img.shields.io/travis/stuxcrystal/yuuno.svg
-        :target: https://travis-ci.org/stuxcrystal/yuuno
-
-.. image:: https://pyup.io/repos/github/stuxcrystal/yuuno/shield.svg
-     :target: https://pyup.io/repos/github/stuxcrystal/yuuno/
-     :alt: Updates
+.. image:: https://img.shields.io/travis/Irrational-Encoding-Wizardry/yuuno.svg
+        :target: https://travis-ci.org/Irrational-Encoding-Wizardry/yuuno
 
 
 Yuuno = Jupyter + VapourSynth

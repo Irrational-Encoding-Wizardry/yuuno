@@ -5,14 +5,22 @@ History
 Planned Releases
 ----------------
 
-* `Yuuno 0.5.0 (1.0.0a1)`: 2017-06-25
-* `Yuuno 0.6.0 (1.0.0b1)`: 2017-07-20
-* `Yuuno 1.0.0rc1`: 2017-10-09 (Feature freeze 2017-08-15)
-* `Yuuno 1.0.0`: 2017-10-12
+* `Yuuno 0.8.0`: 2017-10-09
 
+0.7.0
+-----
+* Added support for clips with variable video formats
+* Added support for zlib compression and ICCP-chunk on PNG outputter
 
-0.5.0a0 (2017-06-18)
---------------------
+0.6.0 (2017-07-24)
+------------------
+
+* `%runvpy` can now return the outputs of a vapoursynth-script (.vpy) as a dict.
+* Settings of VapourSynth cores are now exposed as configuration variables
+* [Misc] Extracted `%encode` and stuck it inside its own sub-package.
+
+0.5.0 (2017-06-18)
+------------------
 
 Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 
@@ -37,7 +45,6 @@ Rewrite of the yuuno codebase to prepare for Yuuno 1.0.0-release.
 0.3.0 (2017-03-20)
 ------------------
 
-Changelog:
 * An ICCP-chunk is now sent along with the PNG. Currently the default is the 709-CSP ICC. Color-Managed browsers will honor this chunk.
 * The variables `core` (referencing the current VS-Core) and `vs` (as a referece to the vapoursynth) will now be pushed to the user-namespace on Yuuno activation.
 * `%yuuno install` is now the installation command

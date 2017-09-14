@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ requirements = [
     "jupyter",
     "traitlets",
     "jinja2",
-    "ipywidgets",
+    "ipywidgets<7",
     "pillow"
 ]
 
@@ -40,7 +40,7 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='0.6.0',
+    version='0.7.0',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",

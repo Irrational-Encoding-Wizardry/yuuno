@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -117,7 +117,7 @@ class YuunoIPythonEnvironment(Environment):
             feature.deinitialize()
 
     def initialize(self):
-        self.ipython.configurables += [self.parent]
+        self.ipython.configurables += [self.parent, self.parent.output]
         self.ipython.configurables += [self]
         self.ipython.configurables += self.parent.extensions
 
@@ -130,6 +130,7 @@ class YuunoIPythonEnvironment(Environment):
 
         self.ipython.configurables.remove(self)
         self.ipython.configurables.remove(self.parent)
+        self.ipython.configurables.remove(self.parent.output)
         for extension in self.parent.extensions:
             self.ipython.configurables.remove(extension)
 

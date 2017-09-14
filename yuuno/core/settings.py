@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,7 @@ from typing import Any as All
 from traitlets.utils.importstring import import_item
 from traitlets.config import SingletonConfigurable
 
-from traitlets import Any
+from traitlets import Any, CInt
 from traitlets import default, observe
 from traitlets import DottedObjectName, List
 
@@ -34,12 +34,18 @@ class Settings(SingletonConfigurable):
     DEFAULT_EXTENSION_TYPES = [
         "yuuno.vs.extension.VapourSynth",
         "yuuno.ipy_vs.extension.IPythonVapoursynthExtension",
+
+        ##
+        # This code is a upcoming feature that hasn't been completed
+        # yet.
+        # "yuuno.lab.extension.YuunoLabKernelExtension",
     ]
 
     registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)
     registry = Any()
 
     extension_types = List(DottedObjectName(), DEFAULT_EXTENSION_TYPES, config=True)
+
 
     @observe('registry_type')
     def _reset_registry_on_reset(self, change: dict) -> None:

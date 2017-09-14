@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -35,6 +35,13 @@ class Frame(object):
         Generates an RGB PIL-Image from the frame.
         :return: A PIL-Image with the frame data.
         """
+
+    def to_raw(self) -> bytes:
+        """
+        Generates a raw RGBX-Image from the frame.
+        :return: A bytes-object with the frame data
+        """
+
 
 
 class Clip(object):

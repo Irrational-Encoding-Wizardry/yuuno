@@ -1,0 +1,31 @@
+{
+    "private": true,
+    "name": "yuuno.lab",
+    "version": "0.7.0",
+    "description": "JupyterLab-Extension for Yuuno",
+    "author": "stuxcrystal",
+    "main": "lib/plugin.js",
+    "keywords": [
+        "jupyter",
+        "jupyterlab"
+    ],
+    "jupyterlab": {
+        "extension": true
+    },
+    "scripts": {
+        "build": "tsc",
+        "clean": "rimraf lib",
+        "prepublish": "npm run build"
+    },
+    "files": [
+        "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
+    ],
+    "dependencies": {
+        "@jupyterlab/application": "^0.10.0",
+        "@jupyterlab/running-extension": "^0.10.0"
+    },
+    "devDependencies": {
+        "rimraf": "^2.6.1",
+        "typescript": "~2.4.0"
+    }
+}

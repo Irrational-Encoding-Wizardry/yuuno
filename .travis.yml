@@ -35,12 +35,12 @@ deploy:
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     local_dir: docs/_build/html
-    repo: stuxcrystal/yuuno.encode.moe
+    repo: Irrational-Encoding-Wizardry/yuuno.encode.moe
     target_branch: master
     fqdn: yuuno.encode.moe
     on:
       branch: master
-      repo: stuxcrystal/yuuno
+      repo: Irrational-Encoding-Wizardry/yuuno
 
   - provider: pages
     local_dir: docs/_build/html
@@ -50,7 +50,7 @@ deploy:
     fqdn: yuuno-devel.encode.moe
     on:
       branch: development
-      repo: stuxcrystal/yuuno
+      repo: Irrational-Encoding-Wizardry/yuuno
 
   - provider: pypi
     distributions: sdist --format=zip bdist_wheel
@@ -72,4 +72,4 @@ deploy:
         NGFaMjRGczJZZXVTQ2tMYndWNVlIbnhBTTF4QnU1eVVnU2VodVRCeXRSNjVlMG51K21pWHpMN289
     on:
       tags: true
-      repo: stuxcrystal/yuuno
+      repo: Irrational-Encoding-Wizardry/yuuno

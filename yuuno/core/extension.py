@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+from typing import Sequence, Type
 
 from traitlets.config import Configurable
 
@@ -36,6 +36,12 @@ class Extension(Configurable):
         :return: The result of this check.
         """
         return False
+
+    def provides(self) -> Sequence[Type]:
+        """
+        Returns extension classes this extension implements.
+        """
+        return []
 
     def initialize(self) -> None:
         """
