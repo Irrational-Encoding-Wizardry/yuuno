@@ -5,12 +5,10 @@ History
 Planned Releases
 ----------------
 
-* `Yuuno 0.7.0`: 2017-10-09
+* `Yuuno 0.8.0`: 2017-10-09
 
-
-0.7.0 (Yet to be released)
---------------------------
-
+0.7.0
+-----
 * Added support for clips with variable video formats
 * Added support for zlib compression and ICCP-chunk on PNG outputter
 
