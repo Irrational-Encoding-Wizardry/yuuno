@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,11 @@ class Settings(SingletonConfigurable):
     DEFAULT_EXTENSION_TYPES = [
         "yuuno.vs.extension.VapourSynth",
         "yuuno.ipy_vs.extension.IPythonVapoursynthExtension",
-        "yuuno.lab.extension.YuunoLabKernelExtension",
+
+        ##
+        # This code is a upcoming feature that hasn't been completed
+        # yet.
+        # "yuuno.lab.extension.YuunoLabKernelExtension",
     ]
 
     registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)

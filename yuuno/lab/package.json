@@ -21,7 +21,8 @@
         "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
     ],
     "dependencies": {
-        "@jupyterlab/application": "^0.10.0"
+        "@jupyterlab/application": "^0.10.0",
+        "@jupyterlab/running-extension": "^0.10.0"
     },
     "devDependencies": {
         "rimraf": "^2.6.1",

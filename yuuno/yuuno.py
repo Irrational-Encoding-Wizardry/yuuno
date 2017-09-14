@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal
+# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -65,8 +65,17 @@ class Yuuno(Settings):
 
     def _initialize_extensions(self) -> None:
         self.extensions = self._load_extensions()
+        failed_extensions = []
         for extension in self.extensions:
-            extension.initialize()
+            try:
+                extension.initialize()
+            except Exception as e:
+                failed_extensions.append(extension)
+                import traceback
+                traceback.print_exception(type(e), e, e.__traceback__)
+
+        for extension in failed_extensions:
+            self.extensions.remove(extension)
 
     def _deinitialize_extensions(self) -> None:
         for extension in reversed(self.extensions):
