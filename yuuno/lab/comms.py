@@ -15,7 +15,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import base64
 from ipykernel.comm import Comm
+
+
+from yuuno.lab.commands import Command
 
 
 class YuunoCommManager(object):
@@ -26,13 +30,29 @@ class YuunoCommManager(object):
     def __init__(self, extension):
         self.connections = {}
         self.extension = extension
+        self.callbacks = []
 
     def register(self, comm):
-        self.connections[comm.comm_id] = comm
-        return YuunoCommConnection(self, comm)
+        conn = YuunoCommConnection(self, comm)
+        self.connections[comm.comm_id] = conn
+        return conn
 
     def unregister(self, comm: Comm):
         del self.connections[comm.comm_id]
+
+    def broadcast(self, msg):
+        for conn in self.connections.values():
+            conn.send(msg)
+
+    def receive(self, comm, command):
+        for callback in self.callbacks:
+            callback(comm, command)
+
+    def on_message(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
 
     def close_all(self):
         for conn in tuple(self.connections.values()):
@@ -57,12 +77,22 @@ class YuunoCommConnection(object):
         finally:
             self._unregister_self()
 
+    def send(self, message: Command):
+        raw = message.to_message()
+        buffers = raw.pop('_buffers', [])
+        self.comm.send({'command': message.command_name, 'data': raw}, buffers=buffers)
+
     def _unregister_self(self):
         self.manager.unregister(self.comm)
         self.closed = True
 
     def _handle_message(self, msg):
-        self.comm.send(msg['content']['data'])
+        content = msg["content"]
+        data = content["data"].copy()
+        data['_buffers'] = msg['buffers']
+
+        command = Command.parse_msg(data)
+        self.manager.receive(self, command)
 
     def _handle_close(self, msg):
         self._unregister_self()
