@@ -25,7 +25,7 @@ script: python -m unittest discover tests
 
 before_deploy:
   - pip install -r requirements_dev.txt
-  - pushd docs && sphinx-apidoc --separate ../yuuno -o reference && make html && popd
+  - pushd docs && sphinx-apidoc --separate ../yuuno -o reference && sed -i 0,/yuuno/{s/yuuno/Reference/} modules.rst && make html && popd
   - touch docs/_build/html/.nojekyll
 
 # After you create the Github repo and add it to Travis, run the
