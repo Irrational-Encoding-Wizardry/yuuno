@@ -15,9 +15,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from weakref import WeakKeyDictionary
+from PIL.Image import Image
 
-
-from traitlets import observe
+from traitlets import observe, default
 from traitlets import HasTraits, Instance, Any
 
 from IPython.display import Image as IPyImage
@@ -33,15 +34,18 @@ class InlineFormat(HasTraits):
     """
 
     clip: Clip = Any()
-    first_frame: Frame = Any(read_only=True, allow_none=True)
     environment: Environment = Instance(Environment)
+
+    first_frame: Image = Any(allow_none=True)
+    ipy_image: IPyImage = Any(allow_none=True)
 
     @observe("clip")
     def _update_initial_frame(self, value):
         value = value['new']
-        self.set_trait('first_frame', value[0].to_pil())
+        self.first_frame = value[0].to_pil()
+        self.ipy_image = self._ipy_image()
 
-    def ipy_image(self) -> IPyImage:
+    def _ipy_image(self) -> IPyImage:
         """
         Converts a clip to an image.
         """
@@ -59,30 +63,44 @@ class InlineFormat(HasTraits):
         pp.text(f"<{self.clip.clip!r} {self.first_frame.width}x{self.first_frame.height}, {len(self.clip)} frames>")
 
     def _repr_html_(self, *args, **kwargs):
-        return self.ipy_image()._repr_html_(*args, **kwargs)
+        return self.ipy_image._repr_html_(*args, **kwargs)
 
     def _repr_png_(self, *args, **kwargs):
-        return self.ipy_image()._repr_png_(*args, **kwargs)
+        return self.ipy_image._repr_png_(*args, **kwargs)
 
 
 class Formatter(Feature):
 
     type_to_repr = {
         'image/png': '_repr_png_',
-        'text/html': '_repr_html_',
+        # 'text/html': '_repr_html_',
         'text/plain': '_repr_pretty_'
     }
+
+    cache: WeakKeyDictionary = Instance(WeakKeyDictionary)
+
+    @default("cache")
+    def _default__cache(self):
+        return WeakKeyDictionary()
 
     @property
     def display_formatters(self):
         return self.environment.ipython.display_formatter.formatters
 
+    def wrap_cached(self, obj) -> InlineFormat:
+        if obj in self.cache:
+            return self.cache[obj]
+
+        clip = self.environment.parent.registry.wrap(obj)
+        wrapped = InlineFormat(environment=self.environment, clip=clip)
+        self.cache[obj] = wrapped
+        return wrapped
+
     def display(self, format):
         formatter_type = self.type_to_repr.get(format)
 
         def _callback(obj, *args, **kwargs):
-            clip = self.environment.parent.registry.wrap(obj)
-            wrapper = InlineFormat(environment=self.environment, clip=clip)
+            wrapper = self.wrap_cached(obj)
             return getattr(wrapper, formatter_type)(*args, **kwargs)
         return _callback
 

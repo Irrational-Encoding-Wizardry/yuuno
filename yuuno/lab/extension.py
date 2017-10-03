@@ -24,6 +24,8 @@ from yuuno.core.extension import Extension
 class YuunoLabKernelExtension(Extension):
 
     comm_manager: 'yuuno.lab.comms.YuunoCommManager' = Any()
+    output_mirror: 'yuuno.lab.output_mirror.OutputMirror' = Any()
+    handler: 'yuuno.lab.handlers.CommProtocolHandler' = Any()
 
     @classmethod
     def is_supported(cls):
@@ -42,7 +44,7 @@ class YuunoLabKernelExtension(Extension):
         return True
 
     @property
-    def ipython(self):
+    def ipython(self) -> 'IPython.core.shellapp.InteractiveShellApp':
         return self.parent.environment.ipython
 
     @property
@@ -54,17 +56,37 @@ class YuunoLabKernelExtension(Extension):
         return self.parent.logger
 
     def lab_connect(self, comm, msg):
-        self.comm_manager.register(comm)
+        from yuuno.lab.commands import UpdateCommand
+        conn = self.comm_manager.register(comm)
+
+    def update_outputs(self):
+        from yuuno.lab.commands import UpdateCommand
+        change = self.output_mirror.update_mirror()
+        self.comm_manager.broadcast(UpdateCommand(change))
 
     def initialize(self):
         from yuuno.lab.comms import YuunoCommManager
+        from yuuno.lab.output_mirror import OutputMirror
+        from yuuno.lab.handlers import CommProtocolHandler
+
+        self.parent.log.info("Initializing YuunoLab")
+        self.comm_manager = YuunoCommManager(self)
+        self.output_mirror = OutputMirror()
+        self.handler = CommProtocolHandler(self, self.comm_manager)
+        self.comm_manager.on_message(self.handler.dispatch)
+
         self.parent.log.info("Registering Comm-Target")
         self.ipython.kernel.comm_manager.register_target("yuuno.lab", self.lab_connect)
 
-        self.comm_manager = YuunoCommManager(self)
+        self.parent.log.info("Registering cell events")
+        self.ipython.events.register('post_run_cell', self.update_outputs)
 
     def deinitialize(self):
+        self.comm_manager.remove_callback(self.handler.dispatch)
         self.comm_manager.close_all()
+
+        self.ipython.events.unregister('post_run_cell', self.update_outputs)
+        self.parent.log.info("Unregistering cell events")
 
         self.ipython.kernel.comm_manager.unregister_target("yuuno.lab")
         self.parent.log.info("Unregistered Comm-Target")

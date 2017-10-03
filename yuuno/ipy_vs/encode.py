@@ -26,8 +26,11 @@ from threading import Thread
 
 from traitlets import Instance, default
 
+from IPython.display import display
 from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import line_cell_magic
+
+from ipywidgets import IntProgress, Layout
 
 from yuuno import Yuuno
 from yuuno.ipython.utils import execute_code
@@ -40,16 +43,23 @@ from yuuno.ipy_vs.vs_feature import VSFeature
 
 class ClipFeeder(Thread):
 
-    def __init__(self, clip, pipe, *args, **kwargs):
+    def __init__(self, clip, pipe, progress=None, *args, **kwargs):
         super(ClipFeeder, self).__init__(name=f"<YuunoClipFeeder {clip!r} to {pipe!r}>")
         self.clip = clip
         self.pipe = pipe
 
         self.args = args
         self.kwargs = kwargs
+        self.progress = progress
+
+        if progress:
+            kwargs["progress_update"] = self.update_progress
 
     def stop(self):
-        self.pipe.close()
+        try:
+            self.pipe.close()
+        except OSError:
+            pass
         self.join()
 
     def run(self):
@@ -59,6 +69,11 @@ class ClipFeeder(Thread):
             if e.__class__.__name__ != "Error":
                 raise
         self.pipe.close()
+
+    def update_progress(self, current_frame, total_frames):
+        self.progress.max = total_frames
+        self.progress.value = current_frame
+        self.progress.description = "{0}/{1}".format(current_frame, total_frames)
 
 
 class OutputFeeder(Thread):
@@ -94,7 +109,7 @@ class EncodeMagic(Magics):
     def _default_environment(self):
         return Yuuno.instance().environment
 
-    def begin_encode(self, clip, commandline, stdout=None, **kwargs):
+    def begin_encode(self, clip, commandline, stdout=None, with_progress=True, **kwargs):
         """
         Implements the actual encoding process
 
@@ -111,11 +126,24 @@ class EncodeMagic(Magics):
             stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
         )
 
-        feeder = ClipFeeder(clip, process.stdin, **kwargs)
+        progress = None
+        if with_progress:
+            progress = IntProgress(
+                value=0,
+                min=0,
+                max=len(clip),
+                orientation="horizontal",
+                step=1,
+                description="0/{clip__len}".format(clip__len=len(clip)),
+                layout=Layout(flex="2 2 auto")
+            )
+            display(progress)
+        feeder = ClipFeeder(clip, process.stdin, progress=progress, **kwargs)
         feeder.start()
 
         if stdout is None:
             stdout = sys.stdout
+
 
         stderr = OutputFeeder(process, process.stderr, sys.stderr)
         stderr.start()
@@ -155,13 +183,26 @@ class EncodeMagic(Magics):
         if cell is None:
             cell, line = line.split(" ", 1)
 
-        y4m = line.startswith("--y4m")
-        if y4m:
-            line = line[6:]
+        y4m = False
+        progress = True
+
+        # Switch to Argparse if this gets more complicated
+        match = True
+        while match:
+            print(line)
+            if line.startswith("--y4m"):
+                y4m = True
+                line = line[6:]
+            elif line.startswith("--no-progress"):
+                progress = False
+                line = line[14:]
+            else:
+                match = False
+
         commandline = self.environment.ipython.var_expand(line)
         clip = execute_code(cell, "<yuuno.ipython encode>")
 
-        return self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m)
+        return self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m, with_progress=progress)
 
     @line_cell_magic
     def encode(self, line, cell=None):
