@@ -18,10 +18,10 @@
 from yuuno import Yuuno
 from yuuno.vs.utils import get_proxy_or_core, VapourSynthEnvironment
 
-from yuuno.lab.comms import YuunoCommConnection, YuunoCommManager
-from yuuno.lab.commands import Command, UpdateCommand
-from yuuno.lab.commands import FrameRequestCommand, FrameResponseCommand
-from yuuno.lab.commands import OutputRequestCommand, OutputResponseCommand
+from yuuno.comm.comms import YuunoCommConnection, YuunoCommManager
+from yuuno.comm.commands import Command, UpdateCommand
+from yuuno.comm.commands import FrameRequestCommand, FrameResponseCommand
+from yuuno.comm.commands import OutputRequestCommand, OutputResponseCommand
 
 
 class CommProtocolHandler(object):

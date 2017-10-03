@@ -15,13 +15,3 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-# Running `npm run build` will create static resources in the static
-# directory of this Python package (and create that directory if necessary).
-
-
-def _jupyter_labextension_paths():
-    return [{
-        'name': 'yuuno.lab',
-        'src': 'static',
-    }]

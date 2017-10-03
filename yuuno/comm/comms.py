@@ -15,11 +15,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import base64
 from ipykernel.comm import Comm
 
 
-from yuuno.lab.commands import Command
+from yuuno.comm.commands import Command
 
 
 class YuunoCommManager(object):

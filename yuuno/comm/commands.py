@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from yuuno import Yuuno
 from yuuno.output import YuunoImageOutput
-from yuuno.lab.output_mirror import ChangeSet
+from yuuno.comm.output_mirror import ChangeSet
 
 
 class UnknownCommandException(KeyError): pass

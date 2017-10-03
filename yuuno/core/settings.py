@@ -34,7 +34,7 @@ class Settings(SingletonConfigurable):
     DEFAULT_EXTENSION_TYPES = [
         "yuuno.vs.extension.VapourSynth",
         "yuuno.ipy_vs.extension.IPythonVapoursynthExtension",
-        "yuuno.lab.extension.YuunoLabKernelExtension",
+        "yuuno.comm.extension.YuunoKernelCommExtension",
     ]
 
     registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)
