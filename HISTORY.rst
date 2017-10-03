@@ -10,7 +10,7 @@ Planned Releases
 0.8.0
 -----
 
-* Fixed color profile. Do so by emitting an sRGB-chunk.
+* Fixed color profile not included in PNGs by default. Do so by emitting an sRGB-chunk.
 * Completed first version of Comm-Protocol for Yuuno-Kernels.
 * Added progressbar to %encode-magic.
 
