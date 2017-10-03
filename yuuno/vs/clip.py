@@ -112,11 +112,16 @@ def extract_plane(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Ima
 
 class VapourSynthFrameWrapper(HasTraits, Frame):
 
+    pil_cache: Image.Image = Instance(Image.Image, allow_none=True)
+
     frame: VideoFrame = Instance(VideoFrame)
     compat_frame: VideoFrame = Instance(VideoFrame)
 
     def to_pil(self) -> Image.Image:
-        return extract_plane(self.compat_frame, 0, compat=True)
+        if self.pil_cache is None:
+            self.pil_cache = extract_plane(self.compat_frame, 0, compat=True)
+        # noinspection PyTypeChecker
+        return self.pil_cache
 
 
 class VapourSynthClipMixin(HasTraits):
