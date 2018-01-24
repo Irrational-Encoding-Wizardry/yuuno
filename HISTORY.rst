@@ -2,17 +2,15 @@
 History
 =======
 
-Planned Releases
-----------------
+0.8.0 (Glastig Uaine)
+---------------------
 
-* `Yuuno 0.8.0`: 2017-10-09
-
-0.8.0
------
-
+* Now I name my releases because I feel like it.
 * Fixed color profile not included in PNGs by default. Do so by emitting an sRGB-chunk.
 * Completed first version of Comm-Protocol for Yuuno-Kernels.
 * Added progressbar to %encode-magic.
+* Added support for R42+ alpha clips.
+* Use %show for IPython. It will convert the clip to a PIL image. (Can also work for Alpha-Tuples pre R42).
 
 0.7.0
 -----
