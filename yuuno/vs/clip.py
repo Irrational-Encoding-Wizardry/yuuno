@@ -29,7 +29,8 @@ from vapoursynth import VideoNode, VideoFrame
 from yuuno import Yuuno
 from yuuno.clip import Clip, Frame
 from yuuno.vs.extension import VapourSynth
-from yuuno.vs.utils import get_proxy_or_core, AlphaOutputClip
+from yuuno.vs.utils import get_proxy_or_core, is_version
+from yuuno.vs.alpha import AlphaOutputClip
 
 
 def calculate_size(frame: VideoFrame, planeno: int) -> Tuple[int, int]:

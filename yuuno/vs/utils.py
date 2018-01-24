@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -54,38 +54,9 @@ def filter_or_import(name: AnyStr) -> Callable:
         return import_item(name)
 
 
-class AlphaOutputClipMeta(abc.ABCMeta):
-    IS_VS43 = None
-    VAPOURSYNTH = None
-
-    def __subclasscheck__(self, subclass):
-        if self.IS_VS43 is None:
-            import vapoursynth
-            self.VAPOURSYNTH = vapoursynth
-            core = get_proxy_or_core(resolve_proxy=True)
-            self.IS_VS43 = core.version_number() >= 43
-
-        if self.IS_VS43:
-            return issubclass(self.VAPOURSYNTH.AlphaOutputClip, subclass)
-
-        return False
-
-    @classmethod
-    def __instancecheck__(self, obj):
-        if self.__subclasscheck__(self, type(obj)):
-            return True
-
-        if not isinstance(obj, tuple):
-            return False
-
-        if len(obj) != 2:
-            return False
-
-        return all(i is None or isinstance(i, self.VAPOURSYNTH.VideoNode) for i in obj)
-
-
-class AlphaOutputClip(metaclass=AlphaOutputClipMeta):
-    pass
+def is_version(version_number):
+    core = get_proxy_or_core(resolve_proxy=True)
+    return core.version_number() >= version_number
 
 
 class VapourSynthEnvironment(object):

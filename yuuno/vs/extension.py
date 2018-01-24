@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,8 @@ from yuuno.trait_types import Callable
 from yuuno.core.extension import Extension
 from yuuno.core.registry import Registry
 
-from yuuno.vs.utils import get_proxy_or_core, AlphaOutputClip
+from yuuno.vs.utils import get_proxy_or_core, is_version
+from yuuno.vs.alpha import AlphaOutputClip
 
 
 class VapourSynth(Extension):
@@ -98,6 +99,11 @@ Settings to a value less than one makes it default to the number of hardware thr
         registry.register(VapourSynthClip, VideoNode)
         registry.register(VapourSynthFrame, VideoFrame)
         registry.register(VapourSynthAlphaClip, AlphaOutputClip)
+        if is_version(43):
+            # Required so that IPython automatically supports alpha outputs
+            from vapoursynth import AlphaOutputTuple
+            registry.register(VapourSynthAlphaClip, AlphaOutputTuple)
+
         return registry
 
     @classmethod
@@ -108,7 +114,7 @@ Settings to a value less than one makes it default to the number of hardware thr
             return False
 
         core = vapoursynth.get_core()
-        return core.version_number() > 35
+        return is_version(36)
 
     @property
     def resize_filter(self) -> TCallable:
