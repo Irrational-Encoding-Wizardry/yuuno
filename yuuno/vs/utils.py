@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import abc
 import types
 from typing import AnyStr, Callable
 
@@ -51,6 +52,11 @@ def filter_or_import(name: AnyStr) -> Callable:
         return getattr(getattr(core, ns), func)
     except (ValueError, AttributeError):
         return import_item(name)
+
+
+def is_version(version_number):
+    core = get_proxy_or_core(resolve_proxy=True)
+    return core.version_number() >= version_number
 
 
 class VapourSynthEnvironment(object):

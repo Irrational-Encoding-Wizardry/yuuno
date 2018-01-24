@@ -34,18 +34,13 @@ class Settings(SingletonConfigurable):
     DEFAULT_EXTENSION_TYPES = [
         "yuuno.vs.extension.VapourSynth",
         "yuuno.ipy_vs.extension.IPythonVapoursynthExtension",
-
-        ##
-        # This code is a upcoming feature that hasn't been completed
-        # yet.
-        # "yuuno.lab.extension.YuunoLabKernelExtension",
+        "yuuno.comm.extension.YuunoKernelCommExtension",
     ]
 
     registry_type: str = DottedObjectName("yuuno.core.registry.Registry", config=True)
     registry = Any()
 
     extension_types = List(DottedObjectName(), DEFAULT_EXTENSION_TYPES, config=True)
-
 
     @observe('registry_type')
     def _reset_registry_on_reset(self, change: dict) -> None:

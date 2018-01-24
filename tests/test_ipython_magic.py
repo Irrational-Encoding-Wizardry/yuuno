@@ -11,6 +11,7 @@ Tests for `yuuno` module.
 
 import unittest
 
+from IPython import __version__ as ipy_version
 from IPython.testing import globalipapp
 
 from IPython.core.magic import Magics, magics_class
@@ -68,17 +69,31 @@ class TestIPythonMagic(unittest.TestCase):
             exec_result.raise_error()
         return exec_result.result
 
+    def _exec_magic(self, type, *args, **kwargs):
+        return getattr(self.shell, f'run_{type}_magic')(*args, **kwargs)
+
+    def _run_magic(self, type, *args, **kwargs):
+        if ipy_version < '6':
+            return self._exec_magic(type, *args, **kwargs)
+        else:
+            from IPython.core.error import UsageError
+
+            try:
+                return self._exec_magic(type, *args, **kwargs)
+            except UsageError:
+                return None
+
     def test_001_test_magic_register(self):
-        self.assertEqual(self.shell.run_line_magic("test_line_magic", "testificate"), "testificate")
-        self.assertEqual(self.shell.run_cell_magic("test_cell_magic", "testificate", "1 2 3"), ("testificate", "1 2 3"))
+        self.assertEqual(self._run_magic("line", "test_line_magic", "testificate"), "testificate")
+        self.assertEqual(self._run_magic("cell", "test_cell_magic", "testificate", "1 2 3"), ("testificate", "1 2 3"))
 
     def test_002_test_magic_unregister(self):
         Yuuno.instance().environment.features[0].unregister_magics(TestMagicFeature.TestMagics)
-        self.assertIsNone(self.shell.run_line_magic("test_line_magic", "testificate"))
-        self.assertIsNone(self.shell.run_cell_magic("test_cell_magic", "testificate", "1 2 3"))
+        self.assertIsNone(self._run_magic("line", "test_line_magic", "testificate"))
+        self.assertIsNone(self._run_magic("cell", "test_cell_magic", "testificate", "1 2 3"))
 
     def test_003_test_magic_autounregister(self):
         self.loaded = False
         unload_ipython_extension(self.shell)
-        self.assertIsNone(self.shell.run_line_magic("test_line_magic", "testificate"))
-        self.assertIsNone(self.shell.run_cell_magic("test_cell_magic", "testificate", "1 2 3"))
+        self.assertIsNone(self._run_magic("line", "test_line_magic", "testificate"))
+        self.assertIsNone(self._run_magic("cell", "test_cell_magic", "testificate", "1 2 3"))

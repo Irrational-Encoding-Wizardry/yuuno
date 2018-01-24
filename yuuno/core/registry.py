@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -97,16 +97,27 @@ class Registry(HasTraits):
         :param item:  The clip to convert.
         :return:  Type clip-type responsible for wrapping the object
         """
-        # Find in own first
-        for cls in type(item).mro():
-            if cls in self.clip_types:
-                return self.clip_types[cls]
+        own_result = self._find_own(item)
+        if own_result is not None:
+            return own_result
 
         # Then find in foreign
         for registry in self.sub_registries:
             result = registry.get_clip_type_for(item)
             if result is not None:
                 return result
+
+        return None
+
+    def _find_own(self, item: T) -> Optional[Type[Clip]]:
+        # Find in own first
+        for cls in type(item).mro():
+            if cls in self.clip_types:
+                return self.clip_types[cls]
+
+        for cls in self.clip_types:
+            if isinstance(item, cls):
+                return self.clip_types[cls]
 
         return None
 

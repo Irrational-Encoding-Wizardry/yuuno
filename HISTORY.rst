@@ -2,13 +2,19 @@
 History
 =======
 
-Planned Releases
-----------------
+0.8.0 (Glastig Uaine)
+---------------------
 
-* `Yuuno 0.8.0`: 2017-10-09
+* Now I name my releases because I feel like it.
+* Fixed color profile not included in PNGs by default. Do so by emitting an sRGB-chunk.
+* Completed first version of Comm-Protocol for Yuuno-Kernels.
+* Added progressbar to %encode-magic.
+* Added support for R41+ alpha clips. (Also with R43+ AlphaOutputTuple support: vapoursynth/#362)
+* Use %show for IPython. It will convert the clip to a PIL image. (Can also work for Alpha-Tuples pre R41).
 
 0.7.0
 -----
+
 * Added support for clips with variable video formats
 * Added support for zlib compression and ICCP-chunk on PNG outputter
 

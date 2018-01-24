@@ -51,6 +51,7 @@ class TestPNGOutput(unittest.TestCase):
 
     def setUp(self):
         self.output = YuunoImageOutput()
+        self.output.icc_profile = None
         self.frame = SinglePixelFrame()
 
     def tearDown(self):

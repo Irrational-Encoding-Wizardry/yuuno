@@ -53,6 +53,9 @@ class OutputMirror(object):
 
         return ChangeSet(list(outputs.keys()), current_ids-outputs.keys())
 
+    def current_as_changeset(self):
+        return ChangeSet(list(VapourSynthEnvironment.get_global_outputs().keys()), [])
+
     def update_mirror(self):
         current_core = get_proxy_or_core(resolve_proxy=True)
         core = self.last_seen_core()
@@ -65,7 +68,7 @@ class OutputMirror(object):
         outputs = VapourSynthEnvironment.get_global_outputs()
         changes = []
 
-        for index, output in outputs.keys():
+        for index, output in outputs.items():
             val = self.current_output_ids.get(index)
             if id(output) != val:
                 changes.append(index)
