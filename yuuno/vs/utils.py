@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import abc
 import types
 from typing import AnyStr, Callable
 
@@ -51,6 +52,40 @@ def filter_or_import(name: AnyStr) -> Callable:
         return getattr(getattr(core, ns), func)
     except (ValueError, AttributeError):
         return import_item(name)
+
+
+class AlphaOutputClipMeta(abc.ABCMeta):
+    IS_VS43 = None
+    VAPOURSYNTH = None
+
+    def __subclasscheck__(self, subclass):
+        if self.IS_VS43 is None:
+            import vapoursynth
+            self.VAPOURSYNTH = vapoursynth
+            core = get_proxy_or_core(resolve_proxy=True)
+            self.IS_VS43 = core.version_number() >= 43
+
+        if self.IS_VS43:
+            return issubclass(self.VAPOURSYNTH.AlphaOutputClip, subclass)
+
+        return False
+
+    @classmethod
+    def __instancecheck__(self, obj):
+        if self.__subclasscheck__(self, type(obj)):
+            return True
+
+        if not isinstance(obj, tuple):
+            return False
+
+        if len(obj) != 2:
+            return False
+
+        return all(i is None or isinstance(i, self.VAPOURSYNTH.VideoNode) for i in obj)
+
+
+class AlphaOutputClip(metaclass=AlphaOutputClipMeta):
+    pass
 
 
 class VapourSynthEnvironment(object):

@@ -29,7 +29,7 @@ from vapoursynth import VideoNode, VideoFrame
 from yuuno import Yuuno
 from yuuno.clip import Clip, Frame
 from yuuno.vs.extension import VapourSynth
-from yuuno.vs.utils import get_proxy_or_core
+from yuuno.vs.utils import get_proxy_or_core, AlphaOutputClip
 
 
 def calculate_size(frame: VideoFrame, planeno: int) -> Tuple[int, int]:
@@ -186,3 +186,45 @@ class VapourSynthFrame(VapourSynthClipMixin, HasTraits):
     @observe("frame")
     def _frame_observe(self, value):
         self.clip = self._wrap_frame(value['new'])
+
+
+class VapourSynthAlphaFrameWrapper(HasTraits):
+    clip: VapourSynthFrameWrapper = Instance(VapourSynthFrameWrapper)
+    alpha: VapourSynthFrameWrapper = Instance(VapourSynthFrameWrapper)
+
+    _cache: Image.Image = Instance(Image.Image, allow_none=True)
+
+    @property
+    def color(self):
+        return clip[0]
+
+    def to_pil(self):
+        if self._cache is None:
+            color = self.clip.to_pil()
+            alpha = extract_plane(self.alpha.frame, 0)
+            color.putalpha(alpha)
+            self._cache = color
+        return self._cache
+
+
+class VapourSynthAlphaClip:
+
+    def __init__(self, clip):
+        if not isinstance(clip, AlphaOutputClip):
+            raise ValueError("Passed non Alpha-Clip into the wrapper")
+        
+        self.clip = VapourSynthClip(clip[0])
+        if clip[1] is None:
+            self.alpha = None
+        else:
+            self.alpha = VapourSynthClip(clip[1])
+
+    def __len__(self):
+        if self.alpha is None:
+            return len(self.clip)
+        return min(map(len, (self.clip, self.alpha)))
+
+    def __getitem__(self, item):
+        if self.alpha is None:
+            return self.clip[item]
+        return VapourSynthAlphaFrameWrapper(clip=self.clip[item], alpha=self.alpha[item])

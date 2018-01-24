@@ -30,7 +30,7 @@ from yuuno.trait_types import Callable
 from yuuno.core.extension import Extension
 from yuuno.core.registry import Registry
 
-from yuuno.vs.utils import get_proxy_or_core
+from yuuno.vs.utils import get_proxy_or_core, AlphaOutputClip
 
 
 class VapourSynth(Extension):
@@ -92,10 +92,12 @@ Settings to a value less than one makes it default to the number of hardware thr
     def _init_registry(self):
         from vapoursynth import VideoNode, VideoFrame
         from yuuno.vs.clip import VapourSynthClip, VapourSynthFrame
+        from yuuno.vs.clip import VapourSynthAlphaClip
 
         registry = Registry()
         registry.register(VapourSynthClip, VideoNode)
         registry.register(VapourSynthFrame, VideoFrame)
+        registry.register(VapourSynthAlphaClip, AlphaOutputClip)
         return registry
 
     @classmethod

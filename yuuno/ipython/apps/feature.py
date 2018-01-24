@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -15,9 +15,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+from yuuno import Yuuno
 
 from yuuno.ipython.magic import MagicFeature, Magics
+from yuuno.ipython.formatter import InlineFormat
+
 from IPython.core.magic import line_magic, magics_class
 from IPython.display import display
 
@@ -28,6 +30,13 @@ class AppDrawer(Magics):
     def app_magic(self, app, line):
         local_ns = {'__app': app}
         return eval(f"__app({line})", self.shell.user_ns, local_ns)
+
+    @line_magic
+    def show(self, line):
+        def _show(clip, no=0):
+            return Yuuno.instance().wrap(clip)[no].to_pil()
+        local_ns = {'__show': _show}
+        return eval(f"__show({line})", self.shell.user_ns, local_ns)
 
     @line_magic
     def preview(self, line):
