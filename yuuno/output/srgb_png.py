@@ -2,7 +2,7 @@ import struct
 from PIL.Image import register_save
 from PIL.PngImagePlugin import PngInfo, putchunk, _save
 
-
+_EMPTY = []
 FORMAT_NAME = "png+srgb.yuuno"
 
 # These values are taken from the official PNG specification.
@@ -23,7 +23,9 @@ def putchunk_srgb(fp, cid, *data):
     return putchunk(fp, cid, *data)
 
 
-def save_srgb_png(im, fp, filename, chunk=putchunk_srgb, check=0):
+def save_srgb_png(im, fp, filename, chunk=putchunk_srgb, check=_EMPTY):
+    if check is _EMPTY:
+        return _save(im, fp, filename, chunk)
     return _save(im, fp, filename, chunk, check)
 
 
