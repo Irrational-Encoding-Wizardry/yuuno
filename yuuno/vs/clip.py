@@ -105,7 +105,7 @@ def extract_plane(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Ima
     :param compat:  Are we dealing with a compat format.
     :return: The extracted image.
     """
-    if get_proxy_or_core().version_number() > 36:
+    if is_version(36):
         return extract_plane_new(frame, planeno, compat=compat)
     else:
         return extract_plane_r36compat(frame, planeno, compat=compat)
