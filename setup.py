@@ -40,7 +40,7 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='0.8.0',
+    version='1.0.0.dev1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",
