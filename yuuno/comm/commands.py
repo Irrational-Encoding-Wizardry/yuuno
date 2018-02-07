@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from pil import Image
+from PIL import Image
 
 
 from yuuno import Yuuno
@@ -139,7 +139,7 @@ class OutputResponseCommand(Command):
         length = len(clip)
         p = clip[0].to_pil()
         
-        if settings.get("scale") != 1:
+        if settings.get("scale", 1) != 1:
             p = p.resize(p.width * settings["scale"], p.height * settings["scale"], Image.POINT)
 
         width = p.width

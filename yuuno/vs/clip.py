@@ -48,7 +48,7 @@ def calculate_size(frame: VideoFrame, planeno: int) -> Tuple[int, int]:
     return width, height
 
 
-def extract_plane_r36compat(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Image.Image:
+def extract_plane_r36compat(frame: VideoFrame, planeno: int, *, compat: bool=False , direction: int = -1) -> Image.Image:
     """
     Extracts the plane using the old VapourSynth API for reading a frame.
 
@@ -58,9 +58,10 @@ def extract_plane_r36compat(frame: VideoFrame, planeno: int, *, compat: bool=Fal
     This code will subseqently be dropped from this codebase when VapourSynth r36 is officially dropped
     with the official release of R39.
 
-    :param frame:   The frame
-    :param planeno: The plane number
-    :param compat:  Are we dealing with a compat format.
+    :param frame:     The frame
+    :param planeno:   The plane number
+    :param compat:    Are we dealing with a compat format.
+    :param direction: -1 bottom to top, 1 top to bottom
     :return: The extracted image.
     """
     width, height = calculate_size(frame, planeno)
@@ -69,18 +70,19 @@ def extract_plane_r36compat(frame: VideoFrame, planeno: int, *, compat: bool=Fal
     buf = (ctypes.c_byte*s_plane).from_address(frame.get_read_ptr(planeno).value)
 
     if not compat:
-        return Image.frombuffer('L', (width, height), buf, "raw", "L", stride, -1)
+        return Image.frombuffer('L', (width, height), buf, "raw", "L", stride, direction)
     else:
-        return Image.frombuffer('RGB', (width, height), buf, "raw", "BGRX", stride, -1)
+        return Image.frombuffer('RGB', (width, height), buf, "raw", "BGRX", stride, direction)
 
 
-def extract_plane_new(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Image.Image:
+def extract_plane_new(frame: VideoFrame, planeno: int, *, compat: bool=False, direction: int = -1) -> Image.Image:
     """
     Extracts the plane with the VapourSynth R37+ array-API.
 
-    :param frame:   The frame
-    :param planeno: The plane number
-    :param compat:  Are we dealing with a compat format.
+    :param frame:     The frame
+    :param planeno:   The plane number
+    :param compat:    Are we dealing with a compat format.
+    :param direction: -1 bottom to top, 1 top to bottom
     :return: The extracted image.
     """
     arr = frame.get_read_array(planeno)
@@ -88,12 +90,12 @@ def extract_plane_new(frame: VideoFrame, planeno: int, *, compat: bool=False) ->
     stride = frame.format.bytes_per_sample * width
 
     if not compat:
-        return Image.frombuffer('L', (width, height), bytes(arr), "raw", "L", stride, -1)
+        return Image.frombuffer('L', (width, height), bytes(arr), "raw", "L", stride, direction)
     else:
-        return Image.frombuffer('RGB', (width, height), bytes(arr), "raw", "BGRX", stride, -1)
+        return Image.frombuffer('RGB', (width, height), bytes(arr), "raw", "BGRX", stride, direction)
 
 
-def extract_plane(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Image.Image:
+def extract_plane(frame: VideoFrame, planeno: int, *, compat: bool=False, direction: int = -1) -> Image.Image:
     """
     Extracts the plane.
 
@@ -106,9 +108,9 @@ def extract_plane(frame: VideoFrame, planeno: int, *, compat: bool=False) -> Ima
     :return: The extracted image.
     """
     if is_version(36):
-        return extract_plane_new(frame, planeno, compat=compat)
+        return extract_plane_new(frame, planeno, compat=compat, direction=direction)
     else:
-        return extract_plane_r36compat(frame, planeno, compat=compat)
+        return extract_plane_r36compat(frame, planeno, compat=compat, direction=direction)
 
 
 class VapourSynthFrameWrapper(HasTraits, Frame):
@@ -202,7 +204,7 @@ class VapourSynthAlphaFrameWrapper(HasTraits):
     def to_pil(self):
         if self._cache is None:
             color = self.clip.to_pil()
-            alpha = extract_plane(self.alpha.frame, 0)
+            alpha = extract_plane(self.alpha.frame, 0, direction=1)
             color.putalpha(alpha)
             self._cache = color
         return self._cache

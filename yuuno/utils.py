@@ -35,5 +35,5 @@ def get_data_file(name) -> Path:
     :param name: Name of the file
     :return: A path object to the specified directory or file
     """
-    filename = resource_filename('yuuno', 'data' + os.path.sep + name)
+    filename = resource_filename('yuuno', 'static' + os.path.sep + name)
     return Path(filename)
