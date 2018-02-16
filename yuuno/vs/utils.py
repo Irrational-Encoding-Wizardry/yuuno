@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import abc
+import enum
 import types
 from typing import AnyStr, Callable
 
@@ -57,6 +58,13 @@ def filter_or_import(name: AnyStr) -> Callable:
 def is_version(version_number):
     core = get_proxy_or_core(resolve_proxy=True)
     return core.version_number() >= version_number
+
+
+class MessageLevel(enum.IntEnum):
+    mtDebug = enum.auto()
+    mtWarning = enum.auto()
+    mtCritical = enum.auto()
+    mtFatal = enum.auto()
 
 
 class VapourSynthEnvironment(object):

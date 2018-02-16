@@ -1,0 +1,22 @@
+<style>
+    .vs-log-{{ random_id }}.warning {
+        color: yellow;
+    }
+
+    .vs-log-{{ random_id }}.debug {
+        color: greenyellow;
+    }
+
+    .vs-log-{{ random_id }}.critical {
+        color: orange;
+    }
+
+    .vs-log-{{ random_id }}.fatal {
+        color: red;
+    }
+</style>
+
+<div id="vs-log-{{ random_id }} {{ level_class }}">
+    <span class="level">{{ level }}</span>
+    <span class="message">{{ message }}</span>
+</div>

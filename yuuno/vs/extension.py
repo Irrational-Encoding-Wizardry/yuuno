@@ -15,13 +15,16 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import sys
 from typing import Callable as TCallable, Union as TUnion
+from typing import List as TList
 
 from traitlets import observe
 from traitlets import Unicode, DottedObjectName
 from traitlets import Instance, default
 from traitlets import CInt, CBool
 from traitlets import Union
+from traitlets import List
 
 from yuuno.trait_types import Callable
 
@@ -29,6 +32,7 @@ from yuuno.core.extension import Extension
 from yuuno.core.registry import Registry
 
 from yuuno.vs.utils import get_proxy_or_core, is_version
+from yuuno.vs.utils import MessageLevel
 from yuuno.vs.alpha import AlphaOutputClip
 
 
@@ -37,6 +41,9 @@ class VapourSynth(Extension):
     Entry-Point for VapourSynth support of Yuuno
     """
 
+    hook_messages: bool = CBool(True, help="""Redirect the message handler to this extension so other parts of Yuuno can handle it.
+    
+Note that this feature is disabled on vsscript-environments (vsedit, vspipe, etc.)""", config=True)
     yuv_matrix: str = Unicode("709", help="The YUV-Matrix to use when converting to RGB", config=True)
     resizer: TUnion[str, TCallable] = Union([DottedObjectName(), Callable()],
         default_value="resize.Spline36",
@@ -62,6 +69,12 @@ Settings to a value less than one makes it default to the number of hardware thr
     core_add_cache: bool = CBool(True, help="For debugging purposes only. When set to `False` no caches will be automatically inserted between filters.", config=True)
     core_accept_lowercase: bool = CBool(False, help="When set to `True` function name lookups in the core are case insensitive. Don't distribute scripts that need it to be set.", config=True)
     core_max_cache_size: int = CBool(None, allow_none=True, help="Set the upper framebuffer cache size after which memory is aggressively freed. The value is in mediabytes.", config=True)
+
+    log_handlers: TList[TCallable[[int, str], None]] = List(Callable())
+
+    @default("log_handlers")
+    def _default_log_handlers(self):
+        return []
 
     def _update_core_values(name=None):
         def _func(self, change=None):
@@ -126,10 +139,28 @@ Settings to a value less than one makes it default to the number of hardware thr
             return self.resizer
         return filter_or_import(self.resizer)
 
+    def _on_vs_log(self, level: MessageLevel, message: str):
+        try:
+            for cb in self.log_handlers:
+                cb(level, message)
+        except Exception as e:
+            import traceback
+            print("During logging of a vapoursynth-message, this exception occured:", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+
+    @property
+    def can_hook_log(self):
+        import vapoursynth
+        return self.hook_messages and not vapoursynth._using_vsscript
+
     def initialize(self):
         self.parent.registry.add_subregistry(self.registry)
 
         import vapoursynth
+        if self.can_hook_log:
+            vapoursynth.set_message_handler(self._on_vs_log)
+        elif self.hook_messages:
+            print("vsscript-Environment detected. Skipping hook on message-handler.")
         core = get_proxy_or_core()
 
         self.parent.namespace['vs'] = vapoursynth
@@ -142,3 +173,7 @@ Settings to a value less than one makes it default to the number of hardware thr
 
         del self.parent.namespace['vs']
         del self.parent.namespace['core']
+
+        if self.can_hook_log:
+            import vapoursynth
+            vapoursynth.set_message_handler(None)
