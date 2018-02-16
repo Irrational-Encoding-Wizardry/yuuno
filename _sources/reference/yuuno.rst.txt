@@ -1,0 +1,32 @@
+yuuno package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    yuuno.comm
+    yuuno.core
+    yuuno.ipy_vs
+    yuuno.ipython
+    yuuno.output
+    yuuno.vs
+
+Submodules
+----------
+
+.. toctree::
+
+   yuuno.clip
+   yuuno.trait_types
+   yuuno.utils
+   yuuno.yuuno
+
+Module contents
+---------------
+
+.. automodule:: yuuno
+    :members:
+    :undoc-members:
+    :show-inheritance:

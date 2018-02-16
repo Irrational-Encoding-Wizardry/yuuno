@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="index.html"/>
+        <link rel="next" title="How Tos" href="howtos/index.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-yuuno">What is Yuuno?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-never-used-jupyter-how-do-i-start-it">I never used Jupyter. How do I start it?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-do-i-use-yuuno">How do I use Yuuno?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howtos/index.html">How Tos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/modules.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-yuuno">
+<h2>What is Yuuno?<a class="headerlink" href="#what-is-yuuno" title="Permalink to this headline">¶</a></h2>
+<p>Yuuno is an extension for IPython and provides formatting and automatic namespace inclusions
+for the <a class="reference external" href="https://ipython.org">IPython Shell</a> as well as the <a class="reference external" href="http://jupyter.org">Jupyter IPython Kernel</a> so that video-clips provided
+by frame-servers such as <a class="reference external" href="http://www.vapoursynth.com">VapourSynth</a> can be introspected inside the shell.</p>
+</div>
+<div class="section" id="i-never-used-jupyter-how-do-i-start-it">
+<h2>I never used Jupyter. How do I start it?<a class="headerlink" href="#i-never-used-jupyter-how-do-i-start-it" title="Permalink to this headline">¶</a></h2>
+<p>To start Jupyter in order to use Yuuno, use this code.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> jupyter notebook
+</pre></div>
+</div>
+<p>Your browser should navigate to a file-list after Jupyter has been initialized.</p>
+<p>Here you can choose an existing notebook-file ending with “.ipynb” or create a new one
+by clicking on “New” and then selecting “Python 3”</p>
+<p>When you select or create a new notebook, you will be able to enter code into cells.
+By pressing Shift+Enter you will be able to execute the code.</p>
+</div>
+<div class="section" id="how-do-i-use-yuuno">
+<h2>How do I use Yuuno?<a class="headerlink" href="#how-do-i-use-yuuno" title="Permalink to this headline">¶</a></h2>
+<p>Before you can enjoy Yuuno, you need to explicitely enable it inside your Jupyter Notebook:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">yuuno</span>
+</pre></div>
+</div>
+<p>After you have done this, values like <cite>vs</cite> and <cite>core</cite> have been pushed into your namespace so you
+don’t have to import vapoursynth and get its core instance.</p>
+<p>You can immediately preview the first frame of the clip when it is the result of a cell inside your notebook:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Which should yield a cyan colored blank clip.</p>
+<p>To be able to select your desired frame, use the <cite>%preview</cite> line magic that Yuuno provides:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">preview</span> <span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Doing this, you will now see a simple player that let’s you select an arbitrary frame from your clip.</p>
+<p>To compare between two or more clips use the <cite>%diff</cite>-magic:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">diff</span> <span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">]),</span> <span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>You can hover over the preview to switch to the second clip which should be yellow.</p>
+<p>When you are satisfied with your result, you can then output your clip to an encoder using y4m or raw format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">clip</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">vs</span><span class="o">.</span><span class="n">YUV444P8</span><span class="p">)</span>
+<span class="o">%</span><span class="n">encode</span> <span class="n">clip</span> <span class="o">--</span><span class="n">y4m</span> <span class="n">x264</span> <span class="o">--</span><span class="n">demuxer</span> <span class="n">y4m</span> <span class="o">-</span> <span class="o">--</span><span class="n">frames</span> <span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="n">clip</span><span class="p">)}</span> <span class="o">--</span><span class="n">output</span> <span class="n">test</span><span class="o">.</span><span class="n">mp4</span>
+</pre></div>
+</div>
+<p>This should yield the process output of the x264-encoder (which requires, that you have it installed, of course)</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="howtos/index.html" class="btn btn-neutral float-right" title="How Tos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

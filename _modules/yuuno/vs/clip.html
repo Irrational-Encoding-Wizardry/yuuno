@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>yuuno.vs.clip &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../howtos/index.html">How Tos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference/modules.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>yuuno.vs.clip</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for yuuno.vs.clip</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- encoding: utf-8 -*-</span>
+
+<span class="c1"># Yuuno - IPython + VapourSynth</span>
+<span class="c1"># Copyright (C) 2017 StuxCrystal (Roland Netzsch &lt;stuxcrystal@encode.moe&gt;)</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU Lesser General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU Lesser General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Lesser General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">observe</span>
+
+<span class="kn">import</span> <span class="nn">vapoursynth</span> <span class="k">as</span> <span class="nn">vs</span>
+<span class="kn">from</span> <span class="nn">vapoursynth</span> <span class="k">import</span> <span class="n">VideoNode</span><span class="p">,</span> <span class="n">VideoFrame</span>
+
+<span class="kn">from</span> <span class="nn">yuuno</span> <span class="k">import</span> <span class="n">Yuuno</span>
+<span class="kn">from</span> <span class="nn">yuuno.clip</span> <span class="k">import</span> <span class="n">Clip</span><span class="p">,</span> <span class="n">Frame</span>
+<span class="kn">from</span> <span class="nn">yuuno.vs.extension</span> <span class="k">import</span> <span class="n">VapourSynth</span>
+<span class="kn">from</span> <span class="nn">yuuno.vs.utils</span> <span class="k">import</span> <span class="n">get_proxy_or_core</span><span class="p">,</span> <span class="n">is_version</span>
+<span class="kn">from</span> <span class="nn">yuuno.vs.alpha</span> <span class="k">import</span> <span class="n">AlphaOutputClip</span>
+
+
+<div class="viewcode-block" id="calculate_size"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.calculate_size">[docs]</a><span class="k">def</span> <span class="nf">calculate_size</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the size of the plane</span>
+
+<span class="sd">    :param frame:    The frame</span>
+<span class="sd">    :param planeno:  The plane</span>
+<span class="sd">    :return: (width, height)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">height</span>
+    <span class="k">if</span> <span class="n">planeno</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">&gt;&gt;=</span> <span class="n">frame</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">subsampling_w</span>
+        <span class="n">height</span> <span class="o">&gt;&gt;=</span> <span class="n">frame</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">subsampling_h</span>
+    <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span></div>
+
+
+<div class="viewcode-block" id="extract_plane_r36compat"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.extract_plane_r36compat">[docs]</a><span class="k">def</span> <span class="nf">extract_plane_r36compat</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compat</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span> <span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the plane using the old VapourSynth API for reading a frame.</span>
+
+<span class="sd">    Since we are doing raw memory operations using ctypes, this function has proven to be prone</span>
+<span class="sd">    to SIGSEGV while developing.</span>
+
+<span class="sd">    This code will subseqently be dropped from this codebase when VapourSynth r36 is officially dropped</span>
+<span class="sd">    with the official release of R39.</span>
+
+<span class="sd">    :param frame:     The frame</span>
+<span class="sd">    :param planeno:   The plane number</span>
+<span class="sd">    :param compat:    Are we dealing with a compat format.</span>
+<span class="sd">    :param direction: -1 bottom to top, 1 top to bottom</span>
+<span class="sd">    :return: The extracted image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">calculate_size</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">)</span>
+    <span class="n">stride</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get_stride</span><span class="p">(</span><span class="n">planeno</span><span class="p">)</span>
+    <span class="n">s_plane</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">stride</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_byte</span><span class="o">*</span><span class="n">s_plane</span><span class="p">)</span><span class="o">.</span><span class="n">from_address</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">get_read_ptr</span><span class="p">(</span><span class="n">planeno</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">compat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">buf</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">buf</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;BGRX&quot;</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="extract_plane_new"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.extract_plane_new">[docs]</a><span class="k">def</span> <span class="nf">extract_plane_new</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compat</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the plane with the VapourSynth R37+ array-API.</span>
+
+<span class="sd">    :param frame:     The frame</span>
+<span class="sd">    :param planeno:   The plane number</span>
+<span class="sd">    :param compat:    Are we dealing with a compat format.</span>
+<span class="sd">    :param direction: -1 bottom to top, 1 top to bottom</span>
+<span class="sd">    :return: The extracted image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get_read_array</span><span class="p">(</span><span class="n">planeno</span><span class="p">)</span>
+    <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">stride</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">bytes_per_sample</span> <span class="o">*</span> <span class="n">width</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">compat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;BGRX&quot;</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="extract_plane"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.extract_plane">[docs]</a><span class="k">def</span> <span class="nf">extract_plane</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compat</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the plane.</span>
+
+<span class="sd">    Will use the new VapourSynth API for extracting the plane that has been added in R37 when available.</span>
+<span class="sd">    On older systems it will use the more error-prone get_read_ptr-API.</span>
+
+<span class="sd">    :param frame:   The frame</span>
+<span class="sd">    :param planeno: The plane number</span>
+<span class="sd">    :param compat:  Are we dealing with a compat format.</span>
+<span class="sd">    :return: The extracted image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_version</span><span class="p">(</span><span class="mi">36</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">extract_plane_new</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">,</span> <span class="n">compat</span><span class="o">=</span><span class="n">compat</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">extract_plane_r36compat</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">planeno</span><span class="p">,</span> <span class="n">compat</span><span class="o">=</span><span class="n">compat</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VapourSynthFrameWrapper"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthFrameWrapper">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthFrameWrapper</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">,</span> <span class="n">Frame</span><span class="p">):</span>
+
+    <span class="n">pil_cache</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VideoFrame</span><span class="p">)</span>
+    <span class="n">compat_frame</span><span class="p">:</span> <span class="n">VideoFrame</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VideoFrame</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VapourSynthFrameWrapper.to_pil"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthFrameWrapper.to_pil">[docs]</a>    <span class="k">def</span> <span class="nf">to_pil</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pil_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pil_cache</span> <span class="o">=</span> <span class="n">extract_plane</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compat_frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">compat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pil_cache</span></div></div>
+
+
+<div class="viewcode-block" id="VapourSynthClipMixin"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthClipMixin">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthClipMixin</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VapourSynth</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Yuuno</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">get_extension</span><span class="p">(</span><span class="n">VapourSynth</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_wrap_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VideoNode</span><span class="p">:</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="n">get_proxy_or_core</span><span class="p">()</span>
+
+        <span class="n">bc</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">BlankClip</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">fpsnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">fpsden</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">id</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bc</span><span class="o">.</span><span class="n">std</span><span class="o">.</span><span class="n">ModifyFrame</span><span class="p">([</span><span class="n">bc</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_to_compat_rgb32</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clip</span><span class="p">:</span> <span class="n">VideoNode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">color_family</span> <span class="o">==</span> <span class="n">vs</span><span class="o">.</span><span class="n">YUV</span><span class="p">:</span>
+            <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">resize_filter</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">vs</span><span class="o">.</span><span class="n">RGB24</span><span class="p">,</span> <span class="n">matrix_in_s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">yuv_matrix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">color_family</span> <span class="o">!=</span> <span class="n">vs</span><span class="o">.</span><span class="n">RGB</span> <span class="ow">or</span> <span class="n">clip</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">bits_per_sample</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">resize_filter</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">vs</span><span class="o">.</span><span class="n">RGB24</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">resize_filter</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">vs</span><span class="o">.</span><span class="n">COMPATBGR32</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VapourSynthClipMixin.to_compat_rgb32"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthClipMixin.to_compat_rgb32">[docs]</a>    <span class="k">def</span> <span class="nf">to_compat_rgb32</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VideoNode</span><span class="p">:</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_compat_rgb32</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VapourSynthFrameWrapper</span><span class="p">:</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">compat</span><span class="p">:</span> <span class="n">VideoNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_compat_rgb32</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VapourSynthFrameWrapper</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">compat_frame</span><span class="o">=</span><span class="n">compat</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="VapourSynthClip"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthClip">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthClip</span><span class="p">(</span><span class="n">VapourSynthClipMixin</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">):</span>
+
+    <span class="n">clip</span><span class="p">:</span> <span class="n">VideoNode</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VideoNode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VapourSynthClip</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VapourSynthFrame"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthFrame">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthFrame</span><span class="p">(</span><span class="n">VapourSynthClipMixin</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">):</span>
+
+    <span class="n">frame</span><span class="p">:</span> <span class="n">VideoFrame</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VideoFrame</span><span class="p">)</span>
+    <span class="n">clip</span><span class="p">:</span> <span class="n">VideoNode</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VideoNode</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="n">HasTraits</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_frame_observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_frame</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="VapourSynthAlphaFrameWrapper"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthAlphaFrameWrapper">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthAlphaFrameWrapper</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="n">clip</span><span class="p">:</span> <span class="n">VapourSynthFrameWrapper</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VapourSynthFrameWrapper</span><span class="p">)</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">VapourSynthFrameWrapper</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">VapourSynthFrameWrapper</span><span class="p">)</span>
+
+    <span class="n">_cache</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">clip</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="VapourSynthAlphaFrameWrapper.to_pil"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthAlphaFrameWrapper.to_pil">[docs]</a>    <span class="k">def</span> <span class="nf">to_pil</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="o">.</span><span class="n">to_pil</span><span class="p">()</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">extract_plane</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">putalpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span></div></div>
+
+
+<div class="viewcode-block" id="VapourSynthAlphaClip"><a class="viewcode-back" href="../../../reference/yuuno.vs.clip.html#yuuno.vs.clip.VapourSynthAlphaClip">[docs]</a><span class="k">class</span> <span class="nc">VapourSynthAlphaClip</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">AlphaOutputClip</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Passed non Alpha-Clip into the wrapper&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="n">VapourSynthClip</span><span class="p">(</span><span class="n">clip</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">VapourSynthClip</span><span class="p">(</span><span class="n">clip</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">VapourSynthAlphaFrameWrapper</span><span class="p">(</span><span class="n">clip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="n">item</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

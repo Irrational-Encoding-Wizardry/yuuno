@@ -1,0 +1,18 @@
+yuuno\.output package
+=====================
+
+Submodules
+----------
+
+.. toctree::
+
+   yuuno.output.pil2png
+   yuuno.output.srgb_png
+
+Module contents
+---------------
+
+.. automodule:: yuuno.output
+    :members:
+    :undoc-members:
+    :show-inheritance:

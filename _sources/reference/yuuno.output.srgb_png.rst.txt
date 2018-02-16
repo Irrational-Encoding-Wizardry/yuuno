@@ -1,0 +1,7 @@
+yuuno\.output\.srgb\_png module
+===============================
+
+.. automodule:: yuuno.output.srgb_png
+    :members:
+    :undoc-members:
+    :show-inheritance:

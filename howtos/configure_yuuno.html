@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuring Yuuno &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="../index.html"/>
+        <link rel="up" title="How Tos" href="index.html"/>
+        <link rel="next" title="Reference" href="../reference/modules.html"/>
+        <link rel="prev" title="Automatically import Yuuno" href="auto_import_yuuno.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How Tos</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="reuse_preview.html">Reuse Preview Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_vpy.html">Run vapoursynth scripts via Yuuno</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_import_yuuno.html">Automatically import Yuuno</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configuring Yuuno</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-yuuno-inside-the-current-session">Configuring Yuuno inside the current session</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permanently-set-a-value">Permanently set a value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/modules.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">How Tos</a> &raquo;</li>
+        
+      <li>Configuring Yuuno</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/howtos/configure_yuuno.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuring-yuuno">
+<h1>Configuring Yuuno<a class="headerlink" href="#configuring-yuuno" title="Permalink to this headline">¶</a></h1>
+<p>There are two ways to configure Yuuno.</p>
+<p>The first way is to temporarily configure Yuuno inside your notebook.
+This also allows you to see the current settings.</p>
+<p>The second way is defining the settings by a configuration file.</p>
+<p>We will discuss both ways here.</p>
+<div class="section" id="configuring-yuuno-inside-the-current-session">
+<h2>Configuring Yuuno inside the current session<a class="headerlink" href="#configuring-yuuno-inside-the-current-session" title="Permalink to this headline">¶</a></h2>
+<p>IPython provides you with the <cite>%config</cite>-magic. It allows you to configure
+the settings of IPython itself as well as the settings of Yuuno.</p>
+<p>Entering this magic without any arguments, will generate a list of categories
+of settings:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">config</span>
+<span class="n">Available</span> <span class="n">objects</span> <span class="k">for</span> <span class="n">config</span><span class="p">:</span>
+     <span class="n">AliasManager</span>
+     <span class="n">DisplayFormatter</span>
+     <span class="n">HistoryManager</span>
+     <span class="n">IPCompleter</span>
+     <span class="n">IPKernelApp</span>
+     <span class="n">LoggingMagics</span>
+     <span class="n">MagicsManager</span>
+     <span class="n">PrefilterManager</span>
+     <span class="n">ScriptMagics</span>
+     <span class="n">StoreMagics</span>
+     <span class="n">VapourSynth</span>
+     <span class="n">Yuuno</span>
+     <span class="n">YuunoIPythonEnvironment</span>
+     <span class="n">ZMQInteractiveShell</span>
+</pre></div>
+</div>
+<p>By entering one of those settings you can configure those settings.</p>
+<p>Important for us is <cite>YuunoIPythonnEnvironment</cite> which lets you define defaults and
+<cite>VapourSynth</cite> where you can configure how VapourSynth converts its clips to RGB24.</p>
+<p>By entering this section as a parameter to <cite>%config</cite> you can see a list of settings:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>%config YuunoIPythonEnvironment
+...
+YuunoIPythonEnvironment.inspect_default_sizes=&lt;List&gt;
+    Current: [1.0, 2.0, 5.0]
+    Default values for the inspect widget
+YuunoIPythonEnvironment.inspect_resizer=&lt;CaselessStrEnum&gt;
+    Current: &#39;NEAREST&#39;
+    Choices: [&#39;NEAREST&#39;, &#39;BILINEAR&#39;, &#39;BICUBIC&#39;, &#39;LANCZOS&#39;]
+    Which PIL scaler should be used to resize the image?
+...
+</pre></div>
+</div>
+<p>You can set a setting using this syntax:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">config</span> <span class="n">YuunoIPythonEnvironment</span><span class="o">.</span><span class="n">inspect_resizer</span><span class="o">=</span><span class="s1">&#39;BILINEAR&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="permanently-set-a-value">
+<h2>Permanently set a value<a class="headerlink" href="#permanently-set-a-value" title="Permalink to this headline">¶</a></h2>
+<p>Yuuno is configured using the IPython configuration mentioned in <span class="xref std std-ref">Automatically import Yuuno</span>.</p>
+<p>Yuuno has the same configuration values as in the impermanent configuration. However, all sections, except
+<cite>Yuuno</cite> itself, are subsections of the Yuuno section.</p>
+<p>Permanently set the configuration above like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">Yuuno</span><span class="o">.</span><span class="n">YuunoIPythonEnvironment</span><span class="o">.</span><span class="n">inspect_resizer</span> <span class="o">=</span> <span class="s1">&#39;BILINEAR&#39;</span>
+</pre></div>
+</div>
+<p>Save the file and restart your notebook-kernel.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../reference/modules.html" class="btn btn-neutral float-right" title="Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="auto_import_yuuno.html" class="btn btn-neutral" title="Automatically import Yuuno" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

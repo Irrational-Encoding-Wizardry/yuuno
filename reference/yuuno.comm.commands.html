@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>yuuno.comm.commands module &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="../index.html"/>
+        <link rel="up" title="yuuno.comm package" href="yuuno.comm.html"/>
+        <link rel="next" title="yuuno.comm.comms module" href="yuuno.comm.comms.html"/>
+        <link rel="prev" title="yuuno.comm package" href="yuuno.comm.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtos/index.html">How Tos</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="yuuno.html">yuuno package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="yuuno.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="yuuno.comm.html">yuuno.comm package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.core.html">yuuno.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.ipy_vs.html">yuuno.ipy_vs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.ipython.html">yuuno.ipython package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.output.html">yuuno.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.vs.html">yuuno.vs package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yuuno.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yuuno.html#module-yuuno">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Reference</a> &raquo;</li>
+        
+          <li><a href="yuuno.html">yuuno package</a> &raquo;</li>
+        
+          <li><a href="yuuno.comm.html">yuuno.comm package</a> &raquo;</li>
+        
+      <li>yuuno.comm.commands module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/yuuno.comm.commands.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-yuuno.comm.commands">
+<span id="yuuno-comm-commands-module"></span><h1>yuuno.comm.commands module<a class="headerlink" href="#module-yuuno.comm.commands" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="yuuno.comm.commands.Command">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">Command</code><a class="reference internal" href="../_modules/yuuno/comm/commands.html#Command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.Command.COMMAND_CLASSES">
+<code class="descname">COMMAND_CLASSES</code><em class="property"> = {‘update’: &lt;class ‘yuuno.comm.commands.UpdateCommand’&gt;, ‘request_output’: &lt;class ‘yuuno.comm.commands.OutputRequestCommand’&gt;, ‘response_output’: &lt;class ‘yuuno.comm.commands.OutputResponseCommand’&gt;, ‘request_frame’: &lt;class ‘yuuno.comm.commands.FrameRequestCommand’&gt;, ‘response_frame’: &lt;class ‘yuuno.comm.commands.FrameResponseCommand’&gt;}</em><a class="headerlink" href="#yuuno.comm.commands.Command.COMMAND_CLASSES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.comm.commands.Command.command_name">
+<code class="descname">command_name</code><em class="property"> = None</em><a class="headerlink" href="#yuuno.comm.commands.Command.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.Command.from_message">
+<em class="property">classmethod </em><code class="descname">from_message</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#Command.from_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.Command.from_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.Command.parse_msg">
+<em class="property">classmethod </em><code class="descname">parse_msg</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#Command.parse_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.Command.parse_msg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.Command.register">
+<em class="property">classmethod </em><code class="descname">register</code><span class="sig-paren">(</span><em>name</em>, <em>clazz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#Command.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.Command.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.Command.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#Command.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.Command.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="yuuno.comm.commands.FrameRequestCommand">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">FrameRequestCommand</code><span class="sig-paren">(</span><em>id</em>, <em>output</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#FrameRequestCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.FrameRequestCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yuuno.comm.commands.Command" title="yuuno.comm.commands.Command"><code class="xref py py-class docutils literal"><span class="pre">yuuno.comm.commands.Command</span></code></a></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.FrameRequestCommand.command_name">
+<code class="descname">command_name</code><em class="property"> = ‘request_frame’</em><a class="headerlink" href="#yuuno.comm.commands.FrameRequestCommand.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.FrameRequestCommand.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#FrameRequestCommand.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.FrameRequestCommand.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="yuuno.comm.commands.FrameResponseCommand">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">FrameResponseCommand</code><span class="sig-paren">(</span><em>id</em>, <em>pil_image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#FrameResponseCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.FrameResponseCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yuuno.comm.commands.Command" title="yuuno.comm.commands.Command"><code class="xref py py-class docutils literal"><span class="pre">yuuno.comm.commands.Command</span></code></a></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.FrameResponseCommand.command_name">
+<code class="descname">command_name</code><em class="property"> = ‘response_frame’</em><a class="headerlink" href="#yuuno.comm.commands.FrameResponseCommand.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.FrameResponseCommand.from_message">
+<em class="property">classmethod </em><code class="descname">from_message</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#FrameResponseCommand.from_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.FrameResponseCommand.from_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.comm.commands.FrameResponseCommand.output">
+<code class="descname">output</code><a class="headerlink" href="#yuuno.comm.commands.FrameResponseCommand.output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.FrameResponseCommand.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#FrameResponseCommand.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.FrameResponseCommand.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="yuuno.comm.commands.OutputRequestCommand">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">OutputRequestCommand</code><span class="sig-paren">(</span><em>id</em>, <em>output</em>, <em>settings=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputRequestCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputRequestCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yuuno.comm.commands.Command" title="yuuno.comm.commands.Command"><code class="xref py py-class docutils literal"><span class="pre">yuuno.comm.commands.Command</span></code></a></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.OutputRequestCommand.command_name">
+<code class="descname">command_name</code><em class="property"> = ‘request_output’</em><a class="headerlink" href="#yuuno.comm.commands.OutputRequestCommand.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.OutputRequestCommand.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputRequestCommand.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputRequestCommand.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="yuuno.comm.commands.OutputResponseCommand">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">OutputResponseCommand</code><span class="sig-paren">(</span><em>id</em>, <em>width</em>, <em>height</em>, <em>length</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputResponseCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputResponseCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yuuno.comm.commands.Command" title="yuuno.comm.commands.Command"><code class="xref py py-class docutils literal"><span class="pre">yuuno.comm.commands.Command</span></code></a></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.OutputResponseCommand.command_name">
+<code class="descname">command_name</code><em class="property"> = ‘response_output’</em><a class="headerlink" href="#yuuno.comm.commands.OutputResponseCommand.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.OutputResponseCommand.from_clip">
+<em class="property">classmethod </em><code class="descname">from_clip</code><span class="sig-paren">(</span><em>id</em>, <em>clip</em>, <em>settings=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputResponseCommand.from_clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputResponseCommand.from_clip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.OutputResponseCommand.from_message">
+<em class="property">classmethod </em><code class="descname">from_message</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputResponseCommand.from_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputResponseCommand.from_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.OutputResponseCommand.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#OutputResponseCommand.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.OutputResponseCommand.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="yuuno.comm.commands.UnknownCommandException">
+<em class="property">exception </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">UnknownCommandException</code><a class="reference internal" href="../_modules/yuuno/comm/commands.html#UnknownCommandException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.UnknownCommandException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">KeyError</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="yuuno.comm.commands.UpdateCommand">
+<em class="property">class </em><code class="descclassname">yuuno.comm.commands.</code><code class="descname">UpdateCommand</code><span class="sig-paren">(</span><em>change: yuuno.comm.output_mirror.ChangeSet = None</em>, <em>id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#UpdateCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.UpdateCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yuuno.comm.commands.Command" title="yuuno.comm.commands.Command"><code class="xref py py-class docutils literal"><span class="pre">yuuno.comm.commands.Command</span></code></a></p>
+<dl class="attribute">
+<dt id="yuuno.comm.commands.UpdateCommand.command_name">
+<code class="descname">command_name</code><em class="property"> = ‘update’</em><a class="headerlink" href="#yuuno.comm.commands.UpdateCommand.command_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="yuuno.comm.commands.UpdateCommand.from_message">
+<em class="property">classmethod </em><code class="descname">from_message</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#UpdateCommand.from_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.UpdateCommand.from_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.comm.commands.UpdateCommand.to_message">
+<code class="descname">to_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/comm/commands.html#UpdateCommand.to_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.comm.commands.UpdateCommand.to_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="yuuno.comm.comms.html" class="btn btn-neutral float-right" title="yuuno.comm.comms module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="yuuno.comm.html" class="btn btn-neutral" title="yuuno.comm package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

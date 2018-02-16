@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>yuuno.ipython.environment module &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="../index.html"/>
+        <link rel="up" title="yuuno.ipython package" href="yuuno.ipython.html"/>
+        <link rel="next" title="yuuno.ipython.feature module" href="yuuno.ipython.feature.html"/>
+        <link rel="prev" title="yuuno.ipython.apps.preview module" href="yuuno.ipython.apps.preview.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtos/index.html">How Tos</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="yuuno.html">yuuno package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="yuuno.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="yuuno.comm.html">yuuno.comm package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.core.html">yuuno.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.ipy_vs.html">yuuno.ipy_vs package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="yuuno.ipython.html">yuuno.ipython package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.output.html">yuuno.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yuuno.vs.html">yuuno.vs package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="yuuno.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yuuno.html#module-yuuno">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Reference</a> &raquo;</li>
+        
+          <li><a href="yuuno.html">yuuno package</a> &raquo;</li>
+        
+          <li><a href="yuuno.ipython.html">yuuno.ipython package</a> &raquo;</li>
+        
+      <li>yuuno.ipython.environment module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/yuuno.ipython.environment.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-yuuno.ipython.environment">
+<span id="yuuno-ipython-environment-module"></span><h1>yuuno.ipython.environment module<a class="headerlink" href="#module-yuuno.ipython.environment" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment">
+<em class="property">class </em><code class="descclassname">yuuno.ipython.environment.</code><code class="descname">YuunoIPythonEnvironment</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="yuuno.core.environment.html#yuuno.core.environment.Environment" title="yuuno.core.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">yuuno.core.environment.Environment</span></code></a></p>
+<p>Stores the state containing the current</p>
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.apps">
+<code class="descname">apps</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.apps" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.deinitialize">
+<code class="descname">deinitialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment.deinitialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.deinitialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.diff_scale">
+<code class="descname">diff_scale</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.diff_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.feature_classes">
+<code class="descname">feature_classes</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.feature_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.features">
+<code class="descname">features</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.features" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.formatter">
+<code class="descname">formatter</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.init_feature">
+<code class="descname">init_feature</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment.init_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.init_feature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.inspect_default_sizes">
+<code class="descname">inspect_default_sizes</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.inspect_default_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.inspect_resizer">
+<code class="descname">inspect_resizer</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.inspect_resizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum of strings where the case should be ignored.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.ipython">
+<code class="descname">ipython</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.ipython" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.load_features">
+<code class="descname">load_features</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment.load_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.load_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.namespace">
+<code class="descname">namespace</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.tile_size">
+<code class="descname">tile_size</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.tile_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.tile_viewport_size">
+<code class="descname">tile_viewport_size</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.tile_viewport_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.tiling_threshold">
+<code class="descname">tiling_threshold</code><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.tiling_threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yuuno.ipython.environment.YuunoIPythonEnvironment.unload_features">
+<code class="descname">unload_features</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yuuno/ipython/environment.html#YuunoIPythonEnvironment.unload_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.YuunoIPythonEnvironment.unload_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="yuuno.ipython.environment.load_ipython_extension">
+<code class="descclassname">yuuno.ipython.environment.</code><code class="descname">load_ipython_extension</code><span class="sig-paren">(</span><em>ipython: IPython.core.interactiveshell.InteractiveShell</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/yuuno/ipython/environment.html#load_ipython_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.load_ipython_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when IPython load this extension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ipython</strong> – The current IPython-console instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="yuuno.ipython.environment.unload_ipython_extension">
+<code class="descclassname">yuuno.ipython.environment.</code><code class="descname">unload_ipython_extension</code><span class="sig-paren">(</span><em>ipython</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/yuuno/ipython/environment.html#unload_ipython_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yuuno.ipython.environment.unload_ipython_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when IPython unloads the extension.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="yuuno.ipython.feature.html" class="btn btn-neutral float-right" title="yuuno.ipython.feature module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="yuuno.ipython.apps.preview.html" class="btn btn-neutral" title="yuuno.ipython.apps.preview module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

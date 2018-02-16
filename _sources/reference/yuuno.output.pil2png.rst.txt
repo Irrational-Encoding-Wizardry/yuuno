@@ -1,0 +1,7 @@
+yuuno\.output\.pil2png module
+=============================
+
+.. automodule:: yuuno.output.pil2png
+    :members:
+    :undoc-members:
+    :show-inheritance:

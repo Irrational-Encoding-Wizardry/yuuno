@@ -1,0 +1,7 @@
+yuuno\.ipy\_vs\.log module
+==========================
+
+.. automodule:: yuuno.ipy_vs.log
+    :members:
+    :undoc-members:
+    :show-inheritance:

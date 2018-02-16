@@ -1,0 +1,7 @@
+yuuno\.comm\.output\_mirror module
+==================================
+
+.. automodule:: yuuno.comm.output_mirror
+    :members:
+    :undoc-members:
+    :show-inheritance:

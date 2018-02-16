@@ -1,0 +1,7 @@
+yuuno\.comm\.extension module
+=============================
+
+.. automodule:: yuuno.comm.extension
+    :members:
+    :undoc-members:
+    :show-inheritance:

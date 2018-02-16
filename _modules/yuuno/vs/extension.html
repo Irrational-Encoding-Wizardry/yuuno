@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>yuuno.vs.extension &mdash; yuuno 1.0.0.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="yuuno 1.0.0.dev1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> yuuno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Yuuno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../howtos/index.html">How Tos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference/modules.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">yuuno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>yuuno.vs.extension</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for yuuno.vs.extension</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- encoding: utf-8 -*-</span>
+
+<span class="c1"># Yuuno - IPython + VapourSynth</span>
+<span class="c1"># Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch &lt;stuxcrystal@encode.moe&gt;)</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU Lesser General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU Lesser General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Lesser General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span> <span class="k">as</span> <span class="n">TCallable</span><span class="p">,</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">TUnion</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">TList</span>
+
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">observe</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">DottedObjectName</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">default</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">CInt</span><span class="p">,</span> <span class="n">CBool</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">yuuno.trait_types</span> <span class="k">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">yuuno.core.extension</span> <span class="k">import</span> <span class="n">Extension</span>
+<span class="kn">from</span> <span class="nn">yuuno.core.registry</span> <span class="k">import</span> <span class="n">Registry</span>
+
+<span class="kn">from</span> <span class="nn">yuuno.vs.utils</span> <span class="k">import</span> <span class="n">get_proxy_or_core</span><span class="p">,</span> <span class="n">is_version</span>
+<span class="kn">from</span> <span class="nn">yuuno.vs.utils</span> <span class="k">import</span> <span class="n">MessageLevel</span>
+<span class="kn">from</span> <span class="nn">yuuno.vs.alpha</span> <span class="k">import</span> <span class="n">AlphaOutputClip</span>
+
+
+<div class="viewcode-block" id="VapourSynth"><a class="viewcode-back" href="../../../reference/yuuno.vs.extension.html#yuuno.vs.VapourSynth">[docs]</a><span class="k">class</span> <span class="nc">VapourSynth</span><span class="p">(</span><span class="n">Extension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Entry-Point for VapourSynth support of Yuuno</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">hook_messages</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CBool</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Redirect the message handler to this extension so other parts of Yuuno can handle it.</span>
+<span class="s2">    </span>
+<span class="s2">Note that this feature is disabled on vsscript-environments (vsedit, vspipe, etc.)&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">yuv_matrix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;709&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The YUV-Matrix to use when converting to RGB&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">resizer</span><span class="p">:</span> <span class="n">TUnion</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TCallable</span><span class="p">]</span> <span class="o">=</span> <span class="n">Union</span><span class="p">([</span><span class="n">DottedObjectName</span><span class="p">(),</span> <span class="n">Callable</span><span class="p">()],</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;resize.Spline36&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Defines the resizer to use when converting from YUV to RGB.</span>
+<span class="s2">It is essentially a function which takes the same arguments as a VapourSynth internal</span>
+<span class="s2">resizer. The clip is passed as the first argument.</span>
+
+<span class="s2">Yuuno will first try to match it to a VapourSynth-function defined by a plugin before</span>
+<span class="s2">attempting to import it from a module and treat it as a normal function.</span>
+
+<span class="s2">If the passed object is a callable, it will just use the callable.</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">registry</span><span class="p">:</span> <span class="n">Registry</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Registry</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">push_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CBool</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Push vs and the current core instance onto the current environment.&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">core_num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">CInt</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;The number of concurrent threads used by the core. Can be set the change the number.</span>
+<span class="s2">Settings to a value less than one makes it default to the number of hardware threads.</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">core_add_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CBool</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;For debugging purposes only. When set to `False` no caches will be automatically inserted between filters.&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">core_accept_lowercase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">CBool</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;When set to `True` function name lookups in the core are case insensitive. Don&#39;t distribute scripts that need it to be set.&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">core_max_cache_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">CBool</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set the upper framebuffer cache size after which memory is aggressively freed. The value is in mediabytes.&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">log_handlers</span><span class="p">:</span> <span class="n">TList</span><span class="p">[</span><span class="n">TCallable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Callable</span><span class="p">())</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s2">&quot;log_handlers&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_log_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_update_core_values</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">core</span> <span class="o">=</span> <span class="n">get_proxy_or_core</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">core</span><span class="o">.</span><span class="n">num_threads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_num_threads</span>
+                <span class="n">core</span><span class="o">.</span><span class="n">add_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_add_cache</span>
+                <span class="n">core</span><span class="o">.</span><span class="n">accept_lowercase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_accept_lowercase</span>
+
+                <span class="c1"># There is no obvious default for max_cache_size</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_max_cache_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">core</span><span class="o">.</span><span class="n">max_cache_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_max_cache_size</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">change</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_func</span>
+
+    <span class="n">update_core_values</span> <span class="o">=</span> <span class="n">_update_core_values</span><span class="p">()</span>
+
+    <span class="n">_observe_num_threads</span>      <span class="o">=</span> <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;core_num_threads&quot;</span><span class="p">)(</span><span class="n">_update_core_values</span><span class="p">(</span><span class="s2">&quot;num_threads&quot;</span><span class="p">))</span>
+    <span class="n">_observe_add_cache</span>        <span class="o">=</span> <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;core_add_cache&quot;</span><span class="p">)(</span><span class="n">_update_core_values</span><span class="p">(</span><span class="s2">&quot;add_cache&quot;</span><span class="p">))</span>
+    <span class="n">_observe_accept_lowercase</span> <span class="o">=</span> <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;core_accept_lowercase&quot;</span><span class="p">)(</span><span class="n">_update_core_values</span><span class="p">(</span><span class="s2">&quot;accept_lowercase&quot;</span><span class="p">))</span>
+    <span class="n">_observe_max_cache_size</span>   <span class="o">=</span> <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;core_max_cache_size&quot;</span><span class="p">)(</span><span class="n">_update_core_values</span><span class="p">(</span><span class="s2">&quot;max_cache_size&quot;</span><span class="p">))</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s2">&quot;registry&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_init_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">vapoursynth</span> <span class="k">import</span> <span class="n">VideoNode</span><span class="p">,</span> <span class="n">VideoFrame</span>
+        <span class="kn">from</span> <span class="nn">yuuno.vs.clip</span> <span class="k">import</span> <span class="n">VapourSynthClip</span><span class="p">,</span> <span class="n">VapourSynthFrame</span>
+        <span class="kn">from</span> <span class="nn">yuuno.vs.clip</span> <span class="k">import</span> <span class="n">VapourSynthAlphaClip</span>
+
+        <span class="n">registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">()</span>
+        <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">VapourSynthClip</span><span class="p">,</span> <span class="n">VideoNode</span><span class="p">)</span>
+        <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">VapourSynthFrame</span><span class="p">,</span> <span class="n">VideoFrame</span><span class="p">)</span>
+        <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">VapourSynthAlphaClip</span><span class="p">,</span> <span class="n">AlphaOutputClip</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_version</span><span class="p">(</span><span class="mi">43</span><span class="p">):</span>
+            <span class="c1"># Required so that IPython automatically supports alpha outputs</span>
+            <span class="kn">from</span> <span class="nn">vapoursynth</span> <span class="k">import</span> <span class="n">AlphaOutputTuple</span>
+            <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">VapourSynthAlphaClip</span><span class="p">,</span> <span class="n">AlphaOutputTuple</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">registry</span>
+
+<div class="viewcode-block" id="VapourSynth.is_supported"><a class="viewcode-back" href="../../../reference/yuuno.vs.extension.html#yuuno.vs.VapourSynth.is_supported">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_supported</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">vapoursynth</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">core</span> <span class="o">=</span> <span class="n">vapoursynth</span><span class="o">.</span><span class="n">get_core</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">is_version</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">resize_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TCallable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the resize-filter for any image operations.</span>
+
+<span class="sd">        :return: The returned filter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">yuuno.vs.utils</span> <span class="k">import</span> <span class="n">filter_or_import</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resizer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resizer</span>
+        <span class="k">return</span> <span class="n">filter_or_import</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resizer</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_vs_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="n">MessageLevel</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_handlers</span><span class="p">:</span>
+                <span class="n">cb</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">traceback</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;During logging of a vapoursynth-message, this exception occured:&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">can_hook_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">vapoursynth</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_messages</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">vapoursynth</span><span class="o">.</span><span class="n">_using_vsscript</span>
+
+<div class="viewcode-block" id="VapourSynth.initialize"><a class="viewcode-back" href="../../../reference/yuuno.vs.extension.html#yuuno.vs.VapourSynth.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">add_subregistry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">)</span>
+
+        <span class="kn">import</span> <span class="nn">vapoursynth</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_hook_log</span><span class="p">:</span>
+            <span class="n">vapoursynth</span><span class="o">.</span><span class="n">set_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_vs_log</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_messages</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vsscript-Environment detected. Skipping hook on message-handler.&quot;</span><span class="p">)</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="n">get_proxy_or_core</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">[</span><span class="s1">&#39;vs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vapoursynth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">core</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_core_values</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="VapourSynth.deinitialize"><a class="viewcode-back" href="../../../reference/yuuno.vs.extension.html#yuuno.vs.VapourSynth.deinitialize">[docs]</a>    <span class="k">def</span> <span class="nf">deinitialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">remove_subregistry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">)</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">[</span><span class="s1">&#39;vs&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">namespace</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_hook_log</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">vapoursynth</span>
+            <span class="n">vapoursynth</span><span class="o">.</span><span class="n">set_message_handler</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, stuxcrystal.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0.dev1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

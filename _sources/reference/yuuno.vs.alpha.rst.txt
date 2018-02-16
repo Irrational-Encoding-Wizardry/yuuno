@@ -1,0 +1,7 @@
+yuuno\.vs\.alpha module
+=======================
+
+.. automodule:: yuuno.vs.alpha
+    :members:
+    :undoc-members:
+    :show-inheritance:
