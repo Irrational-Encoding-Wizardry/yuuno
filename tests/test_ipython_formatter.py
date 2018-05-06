@@ -13,10 +13,10 @@ import unittest
 
 from IPython.testing import globalipapp
 
-from yuuno_ipython import Yuuno
-from yuuno_ipython.clip import Clip
-from yuuno_ipython.core.extension import Extension
-from yuuno_ipython.core.settings import Settings
+from yuuno import Yuuno
+from yuuno.clip import Clip
+from yuuno.core.extension import Extension
+from yuuno.core.settings import Settings
 from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
@@ -54,7 +54,7 @@ class TestFormatter(unittest.TestCase):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
         Settings.DEFAULT_EXTENSION_TYPES.append("test_ipython_formatter.TestClipExtension")
         YuunoIPythonEnvironment.feature_classes = [
-            "yuuno.ipython.formatter.Formatter"
+            "yuuno_ipython.ipython.formatter.Formatter"
         ]
 
         self.shell = globalipapp.get_ipython()

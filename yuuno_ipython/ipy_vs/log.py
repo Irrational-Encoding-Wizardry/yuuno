@@ -20,12 +20,12 @@ import jinja2
 from IPython.display import display, HTML
 
 from yuuno import Yuuno
-from yuuno.utils import get_data_file
+from yuuno_ipython.utils import get_data_file
 
 from yuuno.vs.utils import MessageLevel
 from yuuno.vs.extension import VapourSynth
 
-from yuuno.ipy_vs.vs_feature import VSFeature
+from yuuno_ipython.ipy_vs.vs_feature import VSFeature
 
 
 class LogMessage(object):
@@ -54,8 +54,8 @@ class LogMessage(object):
     def _repr_pretty_(self, p, cycle):
         p.text("[VapourSynth] %s: %s" % (self.level, self.message))
 
+
 class LogWriterFeature(VSFeature):
-        
 
     def _push_log_msg(self, level: MessageLevel, msg: str) -> None:
         if level == MessageLevel.mtDebug:
@@ -71,8 +71,12 @@ class LogWriterFeature(VSFeature):
 
     def initialize(self):
         extension: VapourSynth = Yuuno.instance().get_extension(VapourSynth)
+        if extension is None:
+            return
         extension.log_handlers.append(self._push_log_msg)
 
     def deinitialize(self):
         extension: VapourSynth = Yuuno.instance().get_extension(VapourSynth)
+        if extension is None:
+            return
         extension.log_handlers.remove(self._push_log_msg)

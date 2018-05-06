@@ -15,8 +15,8 @@ from IPython.testing import globalipapp
 
 from traitlets import Bool
 
-from yuuno_ipython import Yuuno
-from yuuno_ipython.core.settings import Settings
+from yuuno import Yuuno
+from yuuno.core.settings import Settings
 from yuuno_ipython.ipython.feature import Feature
 from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension

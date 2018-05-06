@@ -12,7 +12,7 @@ Tests for `yuuno` module.
 import sys
 import unittest
 
-from yuuno_ipython import Yuuno
+from yuuno import Yuuno
 
 
 

@@ -1,5 +1,5 @@
-from yuuno_ipython import Yuuno
-from yuuno_ipython.core.environment import Environment
+from yuuno import Yuuno
+from yuuno.core.environment import Environment
 
 
 class AdditionalAsserts(object):
