@@ -15,6 +15,9 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from PIL import Image
+
+
 from yuuno import Yuuno
 from yuuno.output import YuunoImageOutput
 from yuuno_ipython.comm.output_mirror import ChangeSet
@@ -87,14 +90,16 @@ class UpdateCommand(Command):
 @Command.register("request_output")
 class OutputRequestCommand(Command):
 
-    def __init__(self, id, output):
+    def __init__(self, id, output, settings=None):
         self.id = id
         self.output = output
+        self.settings = settings
 
     def to_message(self):
         return {
             'id': self.id,
-            'output': self.output
+            'output': self.output,
+            'settings': self.settings or {}
         }
 
 
@@ -127,11 +132,19 @@ class OutputResponseCommand(Command):
         )
 
     @classmethod
-    def from_clip(cls, id, clip):
+    def from_clip(cls, id, clip, settings=None):
+        if settings is None:
+            settings = {}
+
         length = len(clip)
         p = clip[0].to_pil()
+        
+        if settings.get("scale", 1) != 1:
+            p = p.resize(p.width * settings["scale"], p.height * settings["scale"], Image.POINT)
+
         width = p.width
         height = p.height
+
         return cls(id, width, height, length)
 
 

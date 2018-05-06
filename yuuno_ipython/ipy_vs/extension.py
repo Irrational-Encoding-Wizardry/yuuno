@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -35,6 +35,7 @@ class IPythonVapoursynthExtension(Extension):
     """
 
     feature_classes: Listing[str] = List(DottedObjectName(), default_value=[
+        "yuuno_ipython.ipy_vs.log.LogWriterFeature",
         "yuuno_ipython.ipy_vs.encode.Encode",
         "yuuno_ipython.ipy_vs.runvpy.RunVPy"
     ], config=True, help="List of additional features to load.")

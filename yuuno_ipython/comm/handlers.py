@@ -45,7 +45,7 @@ class CommProtocolHandler(object):
     def on_request_output(self, comm: YuunoCommConnection, command: OutputRequestCommand):
         clip = VapourSynthEnvironment.get_global_outputs()[command.output]
         wrapper = self.yuuno.wrap(clip)
-        comm.send(OutputResponseCommand.from_clip(command.id, wrapper))
+        comm.send(OutputResponseCommand.from_clip(command.id, wrapper, command.settings))
 
     def on_request_frame(self, comm: YuunoCommConnection, command: FrameRequestCommand):
         clip = VapourSynthEnvironment.get_global_outputs()[command.output]

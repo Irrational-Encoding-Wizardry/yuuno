@@ -56,7 +56,6 @@ class YuunoKernelCommExtension(Extension):
         return self.parent.logger
 
     def lab_connect(self, comm, msg):
-        from yuuno_ipython.comm.commands import UpdateCommand
         conn = self.comm_manager.register(comm)
 
     def update_outputs(self):
