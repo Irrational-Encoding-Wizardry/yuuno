@@ -23,35 +23,9 @@ install: pip install .
 # command to run tests, e.g. python setup.py test
 script: python -m unittest discover tests
 
-before_deploy:
-  - pip install -r requirements_dev.txt
-  - pushd docs && sphinx-apidoc --separate ../yuuno -o reference && sed -i 0,/yuuno/{s/yuuno/Reference/} reference/modules.rst && make html && popd
-  - touch docs/_build/html/.nojekyll
-
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
 deploy:
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: docs/_build/html
-    repo: Irrational-Encoding-Wizardry/yuuno.encode.moe
-    target_branch: master
-    fqdn: yuuno.encode.moe
-    on:
-      branch: master
-      repo: Irrational-Encoding-Wizardry/yuuno
-
-  - provider: pages
-    local_dir: docs/_build/html
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    target_branch: gh-pages
-    fqdn: yuuno-devel.encode.moe
-    on:
-      branch: development
-      repo: Irrational-Encoding-Wizardry/yuuno
-
   - provider: pypi
     distributions: sdist --format=zip bdist_wheel
     user: stuxcrystal
