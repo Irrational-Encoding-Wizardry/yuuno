@@ -70,13 +70,13 @@ class LogWriterFeature(VSFeature):
         display(LogMessage(level, msg))
 
     def initialize(self):
-        extension: VapourSynth = Yuuno.instance().get_extension(VapourSynth)
+        extension: VapourSynth = Yuuno.instance().get_extension('VapourSynth')
         if extension is None:
             return
         extension.log_handlers.append(self._push_log_msg)
 
     def deinitialize(self):
-        extension: VapourSynth = Yuuno.instance().get_extension(VapourSynth)
+        extension: VapourSynth = Yuuno.instance().get_extension('VapourSynth')
         if extension is None:
             return
         extension.log_handlers.remove(self._push_log_msg)
