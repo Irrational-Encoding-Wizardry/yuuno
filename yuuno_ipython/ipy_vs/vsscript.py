@@ -117,7 +117,7 @@ class Use_VSScript(VSFeature, MagicFeature):
         if self.script is not None:
             self.script.dispose()
         self.script: VSScript = self.manager.create('ipython')
-        self._from_init = True
+        self._enter_env()
 
     def _enter_env(self):
         if self._cell_level > 0:
@@ -126,10 +126,6 @@ class Use_VSScript(VSFeature, MagicFeature):
 
     def _exit_env(self):
         if self._cell_level > 0:
-            return
-
-        if self._from_init:
-            self._from_init = False
             return
         env_from_script(self.script).__exit__()
 
