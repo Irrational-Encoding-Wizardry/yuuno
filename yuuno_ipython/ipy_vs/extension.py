@@ -37,7 +37,8 @@ class IPythonVapoursynthExtension(Extension):
     feature_classes: Listing[str] = List(DottedObjectName(), default_value=[
         "yuuno_ipython.ipy_vs.log.LogWriterFeature",
         "yuuno_ipython.ipy_vs.encode.Encode",
-        "yuuno_ipython.ipy_vs.runvpy.RunVPy"
+        "yuuno_ipython.ipy_vs.runvpy.RunVPy",
+        "yuuno_ipython.ipy_vs.vsscript.Use_VSScript"
     ], config=True, help="List of additional features to load.")
 
     features: Listing[Feature] = List(Instance(Feature))

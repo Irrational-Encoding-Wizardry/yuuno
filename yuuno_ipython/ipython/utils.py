@@ -16,20 +16,61 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import ast
+from IPython.core.interactiveshell import ExecutionResult
 
 from typing import Callable
 
 from yuuno.yuuno import Yuuno
 
 
-def execute_code(expr, file):
+RESULT_VAR = '_yuuno_exec_last_'
+
+
+def execute_code(expr, file, fail_on_error=True):
     ipy = Yuuno.instance().environment.ipython
     expr = ipy.input_transformer_manager.transform_cell(expr)
     expr_ast = ipy.compile.ast_parse(expr)
     expr_ast = ipy.transform_ast(expr_ast)
 
-    if not ipy.run_ast_nodes(expr_ast.body, file, 'last_expr'):
-        return ipy.user_ns['_']
+    if isinstance(expr_ast.body[-1], ast.Expr):
+        last_expr = expr_ast.body[-1]
+        assign = ast.Assign(
+            targets=[ast.Name(
+                id=RESULT_VAR,
+                ctx=ast.Store(),
+                lineno=last_expr.lineno,
+                col_offset=last_expr.col_offset
+            )],
+            value=last_expr.value
+        )
+        assign.lineno = last_expr.lineno
+        assign.col_offset = last_expr.col_offset
+        expr_ast.body[-1] = assign
+        expr_ast.body.append(
+            ast.Expr(
+                value=ast.Name(
+                    id=RESULT_VAR,
+                    ctx=ast.Load(),
+                    lineno=last_expr.lineno,
+                    col_offset=last_expr.col_offset
+                ),
+                lineno=last_expr.lineno,
+                col_offset=last_expr.col_offset
+            )
+        )
+
+    _nothing = []
+    before = ipy.user_ns.get(RESULT_VAR, _nothing)
+
+    if ipy.run_ast_nodes(expr_ast.body, file, 'none'):
+        if fail_on_error:
+            raise RuntimeError("Failed to execute code.")
+        return
+
+    result = ipy.user_ns.pop(RESULT_VAR, None)
+    if before is not _nothing:
+        ipy.user_ns[RESULT_VAR] = before
+    return result
 
 
 class fake_dict(object):

@@ -43,6 +43,8 @@ class YuunoIPythonEnvironment(Environment):
     ipython: InteractiveShell = Instance(InteractiveShell)
     features: Sequence[Feature] = List(Instance(Feature))
 
+    no_env_wrap: bool = Bool(True, help="Overwrite the setting of Yuuno to execute all formatting calls inside the correct environment", config=True)
+
     formatter: bool = Bool(True, help="Register IPython-formatters for objects", config=True)
     namespace: bool = Bool(True, help="Automatically push modules and extensions into the user namespace.", config=True)
     apps: bool = Bool(True, help="Register interactive apps as line-magics to IPython", config=True)
@@ -94,7 +96,6 @@ class YuunoIPythonEnvironment(Environment):
         "yuuno_ipython.ipython.formatter.Formatter",
         "yuuno_ipython.ipython.namespace.Namespace",
         "yuuno_ipython.ipython.apps.feature.Apps",
-        "yuuno_ipython.ipython.vsscript.Use_VSScript"
     ], config=True)
 
     def init_feature(self, cls):
@@ -124,6 +125,13 @@ class YuunoIPythonEnvironment(Environment):
     def unload_features(self):
         for feature in self.features:
             feature.deinitialize()
+
+    def post_extension_load(self):
+        if self.no_env_wrap:
+            vs = self.parent.get_extension('VapourSynth')
+            if vs is not None:
+                vs.vsscript_environment_wrap = False
+                self.parent.log.debug("Disabling Env-Wrapping for VapourSynth clips.")
 
     def initialize(self):
         self.ipython.configurables += [self.parent, self.parent.output]

@@ -24,6 +24,7 @@ from IPython.core.magic import line_magic, cell_magic, magics_class
 from yuuno import Yuuno
 from yuuno_ipython.ipython.magic import MagicFeature, Magics
 from yuuno_ipython.ipython.utils import execute_code
+from yuuno_ipython.ipy_vs.vs_feature import VSFeature
 
 if TYPE_CHECKING:
     from vapoursynth import Environment
@@ -40,7 +41,7 @@ class CoreControlMagics(Magics):
 
     @property
     def vsscript_feature(self) -> 'Use_VSScript':
-        for feature in Yuuno.instance().environment.features:
+        for feature in Yuuno.instance().get_extension('ipy_vs').features:
             if isinstance(feature, Use_VSScript):
                 return feature
         raise Exception("Couldn't find Feature Instance? Report this error.")
@@ -58,7 +59,9 @@ class CoreControlMagics(Magics):
         try:
             with env:
                 with self.vsscript_feature.protect():
-                    execute_code(cell, '<yuuno:isolated_core>')
+                    result = execute_code(cell, '<yuuno:isolated_core>', False)
+                    if result is not None:
+                        return result
                 return script.perform(lambda: vapoursynth.get_outputs()).result()
         finally:
             script.dispose()
@@ -70,7 +73,7 @@ class CoreControlMagics(Magics):
 
 
 # noinspection PyPep8Naming
-class Use_VSScript(MagicFeature):
+class Use_VSScript(VSFeature, MagicFeature):
 
     def __init__(self, *args, **kwargs):
         super(Use_VSScript, self).__init__(*args, **kwargs)
@@ -79,6 +82,10 @@ class Use_VSScript(MagicFeature):
     def initialize(self):
         mgr = self.environment.parent.get_extension('MultiScript')
         if mgr is None or not self.environment.use_vsscript:
+            # VSScript is not enabled. Don't do anything.
+            return
+        self.manager: ScriptManager = mgr.get_manager('VSScript')
+        if self.manager is None:
             # VSScript is not enabled. Don't do anything.
             return
 
@@ -125,7 +132,6 @@ class Use_VSScript(MagicFeature):
             self._from_init = False
             return
         env_from_script(self.script).__exit__()
-
 
     def deinitialize(self):
         if not self.events:
