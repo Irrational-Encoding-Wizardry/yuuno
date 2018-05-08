@@ -56,7 +56,7 @@ class RunVPyMagic(Magics):
         outputs = VapourSynthEnvironment()
 
         with outputs:
-            execute_code(cell, "%%vpy")
+            execute_code(cell, '<yuuno:runvpy>')
 
         raw_split = line.split(" ", 2)
         var_name = raw_split[0]

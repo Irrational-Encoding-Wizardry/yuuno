@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,7 @@ from typing import Sequence, Tuple as TTuple
 from IPython.core.interactiveshell import InteractiveShell
 
 from traitlets import Instance
-from traitlets import List, Tuple
+from traitlets import List
 from traitlets import Bool, Integer, Float
 from traitlets import DottedObjectName
 from traitlets import CaselessStrEnum
@@ -46,6 +46,8 @@ class YuunoIPythonEnvironment(Environment):
     formatter: bool = Bool(True, help="Register IPython-formatters for objects", config=True)
     namespace: bool = Bool(True, help="Automatically push modules and extensions into the user namespace.", config=True)
     apps: bool = Bool(True, help="Register interactive apps as line-magics to IPython", config=True)
+
+    use_vsscript: bool = Bool(True, help="Use VSScript", config=True)
 
     tiling_threshold: TTuple[int, int] = List(
         Integer(),
@@ -91,7 +93,8 @@ class YuunoIPythonEnvironment(Environment):
     feature_classes: Sequence[str] = List(DottedObjectName(), default_value=[
         "yuuno_ipython.ipython.formatter.Formatter",
         "yuuno_ipython.ipython.namespace.Namespace",
-        "yuuno_ipython.ipython.apps.feature.Apps"
+        "yuuno_ipython.ipython.apps.feature.Apps",
+        "yuuno_ipython.ipython.vsscript.Use_VSScript"
     ], config=True)
 
     def init_feature(self, cls):
@@ -102,6 +105,12 @@ class YuunoIPythonEnvironment(Environment):
         feature = cls(environment=self)
         feature.initialize()
         return feature
+
+    def additional_extensions(self):
+        result = []
+        if self.use_vsscript:
+            result.append("yuuno.multi_scripts.extension.MultiScriptExtension")
+        return result
 
     def load_features(self):
         features = []

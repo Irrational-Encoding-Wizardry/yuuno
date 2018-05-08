@@ -201,8 +201,7 @@ class EncodeMagic(Magics):
                 match = False
 
         commandline = self.environment.ipython.var_expand(line)
-        clip = execute_code(cell, "<yuuno.ipython encode>")
-
+        clip = execute_code(cell, '<yuuno:encode>')
         return self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m, with_progress=progress)
 
     @line_cell_magic

@@ -28,8 +28,8 @@ def execute_code(expr, file):
     expr_ast = ipy.compile.ast_parse(expr)
     expr_ast = ipy.transform_ast(expr_ast)
 
-    code = ipy.compile(ast.Expression(expr_ast.body[0].value), file, 'eval')
-    return eval(code, ipy.user_ns, {})
+    if not ipy.run_ast_nodes(expr_ast.body, file, 'last_expr'):
+        return ipy.user_ns['_']
 
 
 class fake_dict(object):
