@@ -25,6 +25,8 @@ import vapoursynth
 from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import line_cell_magic
 
+from yuuno import Yuuno
+
 from yuuno_ipython.ipython.magic import MagicFeature
 from yuuno_ipython.ipython.utils import execute_code
 
@@ -38,12 +40,16 @@ class RunVPyMagic(Magics):
     Implements the Magics
     """
 
+    @property
+    def environment(self):
+        return Yuuno.instance().environment
+
     @line_cell_magic
     def runvpy(self, line: str, cell: Optional[str]=None) -> Dict[int, vapoursynth.VideoNode]:
         if cell is None:
             return self.runvpy_line(line)
 
-        return self.runpy_cell(line, cell)
+        return self.runvpy_cell(line, cell)
 
     def runvpy_line(self, line: str) -> Dict[int, vapoursynth.VideoNode]:
         outputs = VapourSynthEnvironment()

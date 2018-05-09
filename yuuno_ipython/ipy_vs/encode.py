@@ -33,12 +33,12 @@ from IPython.core.magic import line_cell_magic
 from ipywidgets import IntProgress, Layout
 
 from yuuno import Yuuno
+from yuuno.multi_scripts.os import popen, interrupt_process
 
 from yuuno_ipython.ipython.utils import execute_code
 from yuuno_ipython.ipython.magic import MagicFeature
 from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 
-from yuuno_ipython.multi_scripts.os import popen, interrupt_process
 from yuuno_ipython.ipy_vs.vs_feature import VSFeature
 
 

@@ -34,42 +34,36 @@ def execute_code(expr, file, fail_on_error=True):
 
     if isinstance(expr_ast.body[-1], ast.Expr):
         last_expr = expr_ast.body[-1]
-        assign = ast.Assign(
+        assign = ast.Assign(                                # _yuuno_exec_last_ = <LAST_EXPR>
             targets=[ast.Name(
                 id=RESULT_VAR,
-                ctx=ast.Store(),
-                lineno=last_expr.lineno,
-                col_offset=last_expr.col_offset
+                ctx=ast.Store()
             )],
             value=last_expr.value
         )
-        assign.lineno = last_expr.lineno
-        assign.col_offset = last_expr.col_offset
         expr_ast.body[-1] = assign
-        expr_ast.body.append(
-            ast.Expr(
-                value=ast.Name(
-                    id=RESULT_VAR,
-                    ctx=ast.Load(),
-                    lineno=last_expr.lineno,
-                    col_offset=last_expr.col_offset
-                ),
-                lineno=last_expr.lineno,
-                col_offset=last_expr.col_offset
+    else:
+        assign = ast.Assign(                                # _yuuno_exec_last_ = None
+            targets=[ast.Name(
+                id=RESULT_VAR,
+                ctx=ast.Store(),
+            )],
+            value=ast.NameConstant(
+                value=None,
+                lineno=last_stmt.lineno,
+                col_offset=last_stmt.col_offset
             )
         )
+        expr_ast.body.append(assign)
+    ast.fix_missing_locations(expr_ast)
 
-    _nothing = []
-    before = ipy.user_ns.get(RESULT_VAR, _nothing)
-
-    if ipy.run_ast_nodes(expr_ast.body, file, 'none'):
-        if fail_on_error:
-            raise RuntimeError("Failed to execute code.")
-        return
-
-    result = ipy.user_ns.pop(RESULT_VAR, None)
-    if before is not _nothing:
-        ipy.user_ns[RESULT_VAR] = before
+    code = compile(expr_ast, file, 'exec')
+    
+    try:
+        exec(code, ipy.user_ns)
+        result = ipy.user_ns.get(RESULT_VAR, None)
+    finally:
+        ipy.user_ns.pop(RESULT_VAR, None)
     return result
 
 
