@@ -15,6 +15,7 @@ from IPython.testing import globalipapp
 
 from yuuno import Yuuno
 from yuuno.clip import Clip
+from yuuno.utils import inline_resolved
 from yuuno.core.extension import Extension
 from yuuno.core.settings import Settings
 from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
@@ -35,6 +36,7 @@ class TestClip(Clip):
     def __len__(self):
         pass
 
+    @inline_resolved
     def __getitem__(self, item):
         return SinglePixelFrame(format="RGB")
 
