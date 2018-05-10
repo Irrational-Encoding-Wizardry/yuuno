@@ -36,4 +36,4 @@ class Compare(ImageChooser, InitialFrameMixin):
     def set_image(self, value):
         img = Yuuno.instance().registry.wrap(self.images[int(value)])
         fno = min(self.frame_number, len(img)-1)
-        self.image.image = img[fno].to_pil()
+        self.image.image = img[fno].result().to_pil()

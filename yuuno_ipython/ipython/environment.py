@@ -116,6 +116,7 @@ class YuunoIPythonEnvironment(Environment):
     def load_features(self):
         features = []
         for feature in self.feature_classes:
+            self.parent.log.debug(f"Loading feature: {feature}")
             feature_class = import_item(feature)
             feature_instance = self.init_feature(feature_class)
             if feature_instance is not None:

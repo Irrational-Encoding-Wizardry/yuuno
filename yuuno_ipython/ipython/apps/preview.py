@@ -94,4 +94,4 @@ class Preview(VBox, ClipWrapperMixin):
         self._ui_intslider.value += difference
 
     def _update_image(self, clip, frame):
-        self._current.image = clip[frame].to_pil()
+        self._current.image = clip[frame].result().to_pil()

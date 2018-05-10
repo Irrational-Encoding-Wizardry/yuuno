@@ -54,7 +54,7 @@ class Inspect(ImageChooser, InitialFrameMixin, ClipWrapperMixin):
             return
 
         factor = float(value)
-        image = self._clip[self.frame_number].to_pil()
+        image = self._clip[self.frame_number].result().to_pil()
         resized = image.resize((int(image.width*factor), int(image.height*factor)), self.scaler)
         with self.image.hold_trait_notifications():
             self.image.image = resized

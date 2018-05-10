@@ -18,6 +18,7 @@
 
 
 from yuuno import Yuuno
+from yuuno.utils import gather, future_yield_coro
 
 from yuuno_ipython.ipython.apps.image import Image
 from yuuno_ipython.ipython.apps.mixins import Jinja2Mixin, InitialFrameMixin
@@ -34,11 +35,13 @@ class Diff(InitialFrameMixin, Jinja2Mixin):
 
     def __init__(self, *clips, **kwargs):
         super(Diff, self).__init__(**kwargs)
-        self.clips = map(self.convert_clip, clips)
+        self.clips = gather([self.convert_clip(c) for c in clips]).result()
 
+    @future_yield_coro
     def convert_clip(self, clip):
         clip = Yuuno.instance().registry.wrap(clip)
-        return Image.get_bytelink(clip[self.frame_number].to_pil())
+        img = (yield clip[self.frame_number]).to_pil()
+        return Image.get_bytelink(img)
 
     def _repr_html_(self):
         return self.render("diff.html", {

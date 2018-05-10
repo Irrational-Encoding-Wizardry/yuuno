@@ -18,8 +18,10 @@
 from weakref import ref
 from typing import Optional, Dict, List
 from collections import namedtuple
+from contextlib import contextmanager
 
-from yuuno.vs.utils import VapourSynthEnvironment, get_proxy_or_core
+from yuuno import Yuuno
+from yuuno.vs.utils import VapourSynthEnvironment, get_proxy_or_core, is_single
 
 
 class ChangeSet(namedtuple("_ChangeSet", "changed deleted")):
@@ -30,6 +32,20 @@ class ChangeSet(namedtuple("_ChangeSet", "changed deleted")):
             'created': self.changed,
             'deleted': self.deleted
         }
+
+@contextmanager
+def find_environment():
+    if is_single():
+        return (yield)
+
+    mgr = Yuuno.instance().get_extension('MultiScript')
+    if mgr is None:
+        return (yield)
+
+    import vapoursynth as vs
+    env = mgr.get_manager('VSScript').get('ipython').perform(lambda: vs.vpy_current_environment()).result()
+    with env:
+        yield
 
 
 class OutputMirror(object):
@@ -42,8 +58,9 @@ class OutputMirror(object):
     def _recreate_mirror(self):
         current_ids = set(self.current_output_ids.keys())
 
-        current_core = get_proxy_or_core(resolve_proxy=True)
-        outputs = VapourSynthEnvironment.get_global_outputs()
+        with find_environment():
+            current_core = get_proxy_or_core(resolve_proxy=True)
+            outputs = VapourSynthEnvironment.get_global_outputs()
         self.last_seen_core = ref(current_core)
 
         self.current_output_ids = {
@@ -54,18 +71,21 @@ class OutputMirror(object):
         return ChangeSet(list(outputs.keys()), current_ids-outputs.keys())
 
     def current_as_changeset(self):
-        return ChangeSet(list(VapourSynthEnvironment.get_global_outputs().keys()), [])
+        with find_environment():
+            return ChangeSet(list(VapourSynthEnvironment.get_global_outputs().keys()), [])
 
     def update_mirror(self):
-        current_core = get_proxy_or_core(resolve_proxy=True)
-        core = self.last_seen_core()
+        with find_environment():
+            current_core = get_proxy_or_core(resolve_proxy=True)
+            core = self.last_seen_core()
 
         # Our core expired or we have a new core
         # expire the mirror and recreate it
         if core is None or core is not current_core:
             self._recreate_mirror()
 
-        outputs = VapourSynthEnvironment.get_global_outputs()
+        with find_environment():
+            outputs = VapourSynthEnvironment.get_global_outputs()
         changes = []
 
         for index, output in outputs.items():
@@ -82,8 +102,9 @@ class OutputMirror(object):
 
     def __getitem__(self, item):
         import vapoursynth
-        item = vapoursynth.get_output(item)
-        if id(item) != self.current_output_ids[item]:
-            return None
+        with find_environment():
+            item = vapoursynth.get_output(item)
+            if id(item) != self.current_output_ids[item]:
+                return None
 
         return item

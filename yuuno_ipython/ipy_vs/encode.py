@@ -145,7 +145,6 @@ class EncodeMagic(Magics):
         if stdout is None:
             stdout = sys.stdout
 
-
         stderr = OutputFeeder(process, process.stderr, sys.stderr)
         stderr.start()
         stdout = OutputFeeder(process, process.stdout, stdout)
@@ -188,9 +187,7 @@ class EncodeMagic(Magics):
         progress = True
 
         # Switch to Argparse if this gets more complicated
-        match = True
-        while match:
-            print(line)
+        while True:
             if line.startswith("--y4m"):
                 y4m = True
                 line = line[6:]
@@ -198,7 +195,7 @@ class EncodeMagic(Magics):
                 progress = False
                 line = line[14:]
             else:
-                match = False
+                break
 
         commandline = self.environment.ipython.var_expand(line)
         clip = execute_code(cell, '<yuuno:encode>')

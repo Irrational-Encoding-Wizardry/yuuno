@@ -23,7 +23,7 @@ from traitlets import HasTraits, Instance, Any
 
 from IPython.display import Image as IPyImage
 
-from yuuno.clip import Clip
+from yuuno.clip import Clip, Frame
 from yuuno_ipython.ipython.feature import Feature
 from yuuno_ipython.ipython.environment import Environment
 
@@ -36,31 +36,38 @@ class InlineFormat(HasTraits):
     clip: Clip = Any()
     environment: Environment = Instance(Environment)
 
-    first_frame: Image = Any(allow_none=True)
-    ipy_image: IPyImage = Any(allow_none=True)
+    first_frame: Frame = Any(allow_none=True)
+    _ipy_image_cache: IPyImage = None
 
     @observe("clip")
     def _update_initial_frame(self, value):
         value = value['new']
-        self.first_frame = value[0].to_pil()
-        self.ipy_image = self._ipy_image()
+        self.first_frame = value[0].result()
+        self._ipy_image_cache = None
 
-    def _ipy_image(self) -> IPyImage:
+    @property
+    def ipy_image(self) -> IPyImage:
         """
         Converts a clip to an image.
         """
-        raw = self.environment.parent.output.bytes_of(self.first_frame)
-        return IPyImage(
+        if self._ipy_image_cache is not None:
+            return self._ipy_image_cache
+
+        size = self.first_frame.size()
+        raw = self.environment.parent.output.bytes_of(self.first_frame.to_pil())
+        self._ipy_image_cache = IPyImage(
             data=raw,
             format="png",
             embed=True,
             unconfined=True,
-            width=self.first_frame.width,
-            height=self.first_frame.height
+            width=size.width,
+            height=size.height
         )
+        return self._ipy_image_cache
 
     def _repr_pretty_(self, pp, cycle):
-        pp.text(f"<{self.clip.clip!r} {self.first_frame.width}x{self.first_frame.height}, {len(self.clip)} frames>")
+        size = self.first_frame.size()
+        pp.text(f"<{self.clip.clip!r} {size.width}x{size.height}, {len(self.clip)} frames>")
 
     def _repr_html_(self, *args, **kwargs):
         return self.ipy_image._repr_html_(*args, **kwargs)

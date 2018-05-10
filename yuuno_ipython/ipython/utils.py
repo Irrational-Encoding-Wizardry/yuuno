@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import ast
-from IPython.core.interactiveshell import ExecutionResult
 
 from typing import Callable
 
@@ -49,16 +48,14 @@ def execute_code(expr, file, fail_on_error=True):
                 ctx=ast.Store(),
             )],
             value=ast.NameConstant(
-                value=None,
-                lineno=last_stmt.lineno,
-                col_offset=last_stmt.col_offset
+                value=None
             )
         )
         expr_ast.body.append(assign)
     ast.fix_missing_locations(expr_ast)
 
     code = compile(expr_ast, file, 'exec')
-    
+
     try:
         exec(code, ipy.user_ns)
         result = ipy.user_ns.get(RESULT_VAR, None)

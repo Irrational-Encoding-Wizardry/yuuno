@@ -41,20 +41,24 @@ class CoreControlMagics(Magics):
 
     @property
     def vsscript_feature(self) -> 'Use_VSScript':
-        for feature in Yuuno.instance().get_extension('ipy_vs').features:
+        for feature in self.yuuno.get_extension('ipy_vs').features:
             if isinstance(feature, Use_VSScript):
                 return feature
         raise Exception("Couldn't find Feature Instance? Report this error.")
 
     @property
     def script_manager(self) -> 'ScriptManager':
-        return Yuuno.instance().get_extension('MultiScript').get_manager('VSScript')
+        return self.yuuno.get_extension('MultiScript').get_manager('VSScript')
+
+    @property
+    def yuuno(self):
+        return Yuuno.instance()
 
     @cell_magic
     def isolated_core(self, line, cell):
         import vapoursynth
 
-        script: VSScript = self.script_manager.create('isolated-1')
+        script: VSScript = self.script_manager.create('isolated-1', initialize=True)
         env = env_from_script(script)
         try:
             with env:
@@ -62,7 +66,6 @@ class CoreControlMagics(Magics):
                     result = execute_code(cell, '<yuuno:isolated_core>', False)
                     if result is not None:
                         return result
-                return script.perform(lambda: vapoursynth.get_outputs()).result()
         finally:
             script.dispose()
 
@@ -116,7 +119,8 @@ class Use_VSScript(VSFeature, MagicFeature):
     def reset_script(self):
         if self.script is not None:
             self.script.dispose()
-        self.script: VSScript = self.manager.create('ipython')
+
+        self.script: VSScript = self.manager.create('ipython', initialize=True)
         self._enter_env()
 
     def _enter_env(self):

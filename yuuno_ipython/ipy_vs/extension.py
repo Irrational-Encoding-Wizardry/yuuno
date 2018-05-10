@@ -69,6 +69,7 @@ class IPythonVapoursynthExtension(Extension):
 
     def initialize(self):
         for feature in self.feature_classes:
+            self.yuuno.log.debug(f"Loading feature: {feature}")
             feature = import_item(feature)
             feature_inst = feature(extension=self)
             self.features.append(feature_inst)
