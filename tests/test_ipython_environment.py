@@ -22,7 +22,7 @@ from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
 from tests.helpers import AdditionalAsserts
-from tests.test_yuuno import SupportedTestExtension
+from tests._test_yuuno import SupportedTestExtension
 
 
 class TestFeature(Feature):

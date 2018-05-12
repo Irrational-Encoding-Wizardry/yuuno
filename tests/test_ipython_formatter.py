@@ -23,7 +23,7 @@ from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipy
 
 from yuuno_ipython.ipython.formatter import Formatter, InlineFormat
 
-from test_png_output import SinglePixelFrame, TestPNGOutput
+from tests._test_png_output import SinglePixelFrame, TestPNGOutput
 
 
 class StaticObject(object):
