@@ -37,6 +37,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install vapoursynth
+            pip install git+https://github.com/Irrational-Encoding-Wizardry/yuuno-core@$CIRCLE_BRANCH
             pip install .
 
       - save_cache:
