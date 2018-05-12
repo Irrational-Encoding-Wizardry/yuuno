@@ -45,7 +45,7 @@ class TestIPythonEnvironment(AdditionalAsserts, unittest.TestCase):
 
     def setUp(self):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
-        Settings.DEFAULT_EXTENSION_TYPES.append("tests.test_yuuno.SupportedTestExtension")
+        Settings.DEFAULT_EXTENSION_TYPES.append("tests._test_yuuno.SupportedTestExtension")
         YuunoIPythonEnvironment.feature_classes = ["test_ipython_environment.TestFeature"]
 
         self.shell = globalipapp.get_ipython()
