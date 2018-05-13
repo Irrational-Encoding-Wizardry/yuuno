@@ -43,7 +43,10 @@ def find_environment():
         return (yield)
 
     import vapoursynth as vs
-    env = mgr.get_manager('VSScript').get('ipython').perform(lambda: vs.vpy_current_environment()).result()
+    vss = mgr.get_manager('VSScript')
+    if vss is None:
+        return (yield)
+    env = vss.get('ipython').perform(lambda: vs.vpy_current_environment()).result()
     with env:
         yield
 
