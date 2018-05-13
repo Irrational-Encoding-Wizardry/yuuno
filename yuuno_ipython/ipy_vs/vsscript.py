@@ -56,8 +56,6 @@ class CoreControlMagics(Magics):
 
     @cell_magic
     def isolated_core(self, line, cell):
-        import vapoursynth
-
         script: VSScript = self.script_manager.create('isolated-1', initialize=True)
         env = env_from_script(script)
         try:
