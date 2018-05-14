@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,7 @@ import sys
 
 __author__ = """stuxcrystal"""
 __email__ = 'stuxcrystal@encode.moe'
-__version__ = '1.0rc1'
+__version__ = '1.0'
 
 
 if sys.version_info < (3, 6):

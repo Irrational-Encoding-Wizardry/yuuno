@@ -50,11 +50,13 @@ class AppDrawer(Magics):
 
     @line_magic
     def compare(self, line):
+        print("Deprecation Warning: This function will be replaced by a new preview-widget.")
         from yuuno_ipython.ipython.apps.compare import Compare
         return self.app_magic(Compare, line)
 
     @line_magic
     def inspect(self, line):
+        print("Deprecation Warning: This function will be replaced by a new preview-widget.")
         from yuuno_ipython.ipython.apps.inspect import Inspect
         return self.app_magic(Inspect, line)
 

@@ -2,6 +2,14 @@
 History
 =======
 
+1.0.0 (Marun Field)
+-------------------
+
+* Split up the core-parts of Yuuno into its own repository.
+* Show log messages sent from VapourSynth
+* From VapourSynth R44 onwards, we can reset core objects.
+* Deprecated %inspect and %compare
+
 0.8.0 (Glastig Uaine)
 ---------------------
 

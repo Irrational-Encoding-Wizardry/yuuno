@@ -19,8 +19,8 @@ Yuuno
 .. image:: https://img.shields.io/pypi/v/yuuno.svg
         :target: https://pypi.python.org/pypi/yuuno
 
-.. image:: https://img.shields.io/travis/Irrational-Encoding-Wizardry/yuuno.svg
-        :target: https://travis-ci.org/Irrational-Encoding-Wizardry/yuuno
+.. image:: https://circleci.com/gh/Irrational-Encoding-Wizardry/yuuno.svg?style=svg
+    :target: https://circleci.com/gh/Irrational-Encoding-Wizardry/yuuno
 
 
 Yuuno = Jupyter + VapourSynth
