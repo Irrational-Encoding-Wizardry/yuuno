@@ -18,10 +18,8 @@ from yuuno import Yuuno
 from yuuno.core.settings import Settings
 from yuuno.core.extension import Extension
 
-from yuuno.ipython.environment import YuunoIPythonEnvironment
-from yuuno.ipython.environment import load_ipython_extension, unload_ipython_extension
-
-from yuuno.ipython.namespace import Namespace
+from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
+from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
 
 class TestExtension(Extension):
@@ -43,7 +41,7 @@ class TestIPythonNamespace(unittest.TestCase):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
         Settings.DEFAULT_EXTENSION_TYPES.append('test_ipython_namespace.TestExtension')
         YuunoIPythonEnvironment.feature_classes = [
-            "yuuno.ipython.namespace.Namespace"
+            "yuuno_ipython.ipython.namespace.Namespace"
         ]
 
         self.shell = globalipapp.get_ipython()

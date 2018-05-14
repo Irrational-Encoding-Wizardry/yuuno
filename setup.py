@@ -20,10 +20,10 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+with open('README.rst', encoding="utf8") as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open('HISTORY.rst', encoding="utf8") as history_file:
     history = history_file.read()
 
 requirements = [
@@ -31,7 +31,9 @@ requirements = [
     "traitlets",
     "jinja2",
     "ipywidgets<7",
-    "pillow"
+    "pillow",
+
+    "yuuno-core"
 ]
 
 test_requirements = [
@@ -40,15 +42,15 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='0.8.0',
+    version='1.0rc1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",
     author_email='stuxcrystal@encode.moe',
     url='https://github.com/stuxcrystal/yuuno',
     packages=find_packages(exclude=("tests", )),
-    package_dir={'yuuno': 'yuuno'},
-    package_data={'yuuno': ['data/*']},
+    package_dir={'yuuno_ipython': 'yuuno_ipython'},
+    package_data={'yuuno_ipython': ['static/*']},
     include_package_data=True,
     install_requires=requirements,
     license="GNU Lesser General Public License v3 (LGPLv3)",
@@ -57,7 +59,7 @@ setup(
     classifiers=[
         'Natural Language :: English',
 
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
         'Intended Audience :: Other Audience',
@@ -74,5 +76,15 @@ setup(
         'Topic :: Multimedia :: Video :: Non-Linear Editor',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    entry_points={
+        'yuuno.environments': [
+            'load_ipython_extension = yuuno_ipython.ipython.environment:load_ipython_extension',
+            'unload_ipython_extension = yuuno_ipython.ipython.environment:unload_ipython_extension'
+        ],
+        'yuuno.extensions': [
+            'ipy_vs = yuuno_ipython.ipy_vs.extension:IPythonVapoursynthExtension',
+            'ipy_comm = yuuno_ipython.comm.extension:YuunoKernelCommExtension'
+        ]
+    }
 )

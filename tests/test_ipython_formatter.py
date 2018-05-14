@@ -15,14 +15,15 @@ from IPython.testing import globalipapp
 
 from yuuno import Yuuno
 from yuuno.clip import Clip
+from yuuno.utils import inline_resolved
 from yuuno.core.extension import Extension
 from yuuno.core.settings import Settings
-from yuuno.ipython.environment import YuunoIPythonEnvironment
-from yuuno.ipython.environment import load_ipython_extension, unload_ipython_extension
+from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
+from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
-from yuuno.ipython.formatter import Formatter, InlineFormat
+from yuuno_ipython.ipython.formatter import Formatter, InlineFormat
 
-from test_png_output import SinglePixelFrame, TestPNGOutput
+from tests._test_png_output import SinglePixelFrame, TestPNGOutput
 
 
 class StaticObject(object):
@@ -35,6 +36,7 @@ class TestClip(Clip):
     def __len__(self):
         pass
 
+    @inline_resolved
     def __getitem__(self, item):
         return SinglePixelFrame(format="RGB")
 
@@ -54,7 +56,7 @@ class TestFormatter(unittest.TestCase):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
         Settings.DEFAULT_EXTENSION_TYPES.append("test_ipython_formatter.TestClipExtension")
         YuunoIPythonEnvironment.feature_classes = [
-            "yuuno.ipython.formatter.Formatter"
+            "yuuno_ipython.ipython.formatter.Formatter"
         ]
 
         self.shell = globalipapp.get_ipython()

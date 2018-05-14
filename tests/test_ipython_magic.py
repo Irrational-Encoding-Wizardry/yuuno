@@ -19,9 +19,9 @@ from IPython.core.magic import line_magic, cell_magic
 
 from yuuno import Yuuno
 from yuuno.core.settings import Settings
-from yuuno.ipython.magic import MagicFeature
-from yuuno.ipython.environment import YuunoIPythonEnvironment
-from yuuno.ipython.environment import load_ipython_extension, unload_ipython_extension
+from yuuno_ipython.ipython.magic import MagicFeature
+from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
+from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
 
 class TestMagicFeature(MagicFeature):
