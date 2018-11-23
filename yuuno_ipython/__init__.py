@@ -21,8 +21,15 @@ import sys
 
 __author__ = """stuxcrystal"""
 __email__ = 'stuxcrystal@encode.moe'
-__version__ = '1.0'
+__version__ = '1.1'
 
+def _jupyter_nbextension_paths():
+    return [{
+        'section': 'notebook',
+        'src': 'build',
+        'dest': 'yuuno-ipython',
+        'require': 'yuuno-ipython/extension'
+    }]
 
 if sys.version_info < (3, 6):
     raise ImportError(

@@ -21,16 +21,17 @@ import io
 import sys
 import time
 import shlex
+import queue
+import codecs
+import signal
 import subprocess
-from threading import Thread
+from threading import Thread, Lock, Event
 
 from traitlets import Instance, default
 
 from IPython.display import display
 from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import line_cell_magic
-
-from ipywidgets import IntProgress, Layout
 
 from yuuno import Yuuno
 from yuuno.multi_scripts.os import popen, interrupt_process
@@ -41,61 +42,50 @@ from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 
 from yuuno_ipython.ipy_vs.vs_feature import VSFeature
 
+from collections import deque
 
-class ClipFeeder(Thread):
-
-    def __init__(self, clip, pipe, progress=None, *args, **kwargs):
-        super(ClipFeeder, self).__init__(name=f"<YuunoClipFeeder {clip!r} to {pipe!r}>")
-        self.clip = clip
-        self.pipe = pipe
-
-        self.args = args
-        self.kwargs = kwargs
-        self.progress = progress
-
-        if progress:
-            kwargs["progress_update"] = self.update_progress
-
-    def stop(self):
-        try:
-            self.pipe.close()
-        except OSError:
-            pass
-        self.join()
-
-    def run(self):
-        try:
-            self.clip.output(self.pipe, *self.args, **self.kwargs)
-        except Exception as e:
-            if e.__class__.__name__ != "Error":
-                raise
-        self.pipe.close()
-
-    def update_progress(self, current_frame, total_frames):
-        self.progress.max = total_frames
-        self.progress.value = current_frame
-        self.progress.description = "{0}/{1}".format(current_frame, total_frames)
+from ipywidgets import DOMWidget
+from traitlets import Unicode, Tuple, Integer, Bool
 
 
-class OutputFeeder(Thread):
+class EncodeWidget(DOMWidget):
+    _view_name = Unicode('EncodeWindowWidget').tag(sync=True)
+    _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
+    _view_module_version = Unicode('1.1').tag(sync=True)
 
-    def __init__(self, process, pipe, output):
-        super(OutputFeeder, self).__init__(name=f"<YuunoOutputFeeder {pipe!r} to {output!r}>")
-        self.process = process
-        self.pipe = pipe
-        self.output = output
+    current = Integer(0).tag(sync=True)
+    length = Integer(1).tag(sync=True)
+    terminated = Bool(False).tag(sync=True)
+    _win32 = Bool(sys.platform=="win32").tag(sync=True)
 
-    def run(self):
-        while self.process.poll() is None:
-            ld = self.pipe.read(1).decode("utf-8")
-            if not ld:
-                time.sleep(0)
-                continue
-            print(ld, end='', file=self.output)
+    def __init__(self, *args, kill, process, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._lock = Lock()
+        self._kill = kill
+        self._process = process
+        self._latest_writes = deque(maxlen=10000)
+        self.on_msg(self._rcv_message)
 
-        res = self.pipe.read().decode("utf-8")
-        if res:
-            print(res, file=self.output)
+    def write(self, string):
+        string = string.replace("\n", "\r\n")
+        if not string:
+            return
+
+        with self._lock:
+            self._latest_writes.append(string)
+        self.send({'type': 'write', 'data': string, 'target': 'broadcast'})
+
+    def _rcv_message(self, _, content, buffer):
+        if content['type'] == "refresh":
+            with self._lock:
+                self.send({'type': 'write', 'data': ''.join(self._latest_writes), 'target': content['source']})
+                self.send({'type': 'refresh_finish', 'data': None, 'target': content['source']})
+
+        elif content['type'] == 'kill':
+            self._kill.set()
+
+        elif content['type'] == "interrupt":
+            self._process.send_signal(signal.CTRL_C_EVENT)
 
 
 @magics_class
@@ -110,7 +100,64 @@ class EncodeMagic(Magics):
     def _default_environment(self):
         return Yuuno.instance().environment
 
-    def begin_encode(self, clip, commandline, stdout=None, with_progress=True, **kwargs):
+    def _reader(self, dead: Event, process: subprocess.Popen, pipe_r, term_q, encode):
+
+        while process.poll() is None and not dead.is_set():
+            d = pipe_r.read(1)
+            if d:
+                term_q.put(d)
+
+        if process.poll() is None:
+            process.terminate()
+
+        process.stdin.close()
+        if not dead.is_set():
+            dead.set()
+
+        encode.terminated = True
+
+        d = pipe_r.read()
+        if d:
+            term_q.put(d)
+        term_q.put(b"\n\n[Process Terminated]")
+        term_q.put(None)
+
+    def _terminal_writer(self, term_q, encode: EncodeWidget):
+        decoder = codecs.getincrementaldecoder(sys.getdefaultencoding())('replace')
+
+        killed = False
+        while not killed:
+            data = []
+            while not term_q.empty():
+                raw = term_q.get_nowait()
+                if raw is None:
+                    killed = True
+                    break
+                data.append(raw)
+            data = b''.join(data)
+            if not data:
+                time.sleep(0.1)
+            encode.write(decoder.decode(data))
+        encode.write(decoder.decode(b'', final=True))
+
+    def _state_updater(self, dead, encode, state):
+        while not dead.is_set():
+            encode.current, encode.length = state
+            time.sleep(0.5)
+        encode.current, encode.length = state
+
+    def _clip_output(self, clip, dead, encode, stdin, state, y4m):
+        def _progress(current, length):
+            state[0], state[1] = current, length
+        try:
+            clip.output(stdin, y4m=y4m, progress_update=_progress)
+        except Exception as e:
+            if dead.is_set():
+                return
+            raise e
+        stdin.close()
+
+    def begin_encode(self, clip, commandline, stdout=None, **kwargs):
         """
         Implements the actual encoding process
 
@@ -119,65 +166,19 @@ class EncodeMagic(Magics):
         :param stdout:      Where to send the stdout.
         :return:            The return code.
         """
-
+        kill = Event()
+        state = [0, len(clip)]
+        process = popen(commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+        encode = EncodeWidget(kill=kill, process=process)
         commandline = shlex.split(commandline)
 
-        process = popen(
-            commandline,
-            stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-        )
+        q = queue.Queue()
+        Thread(target=self._reader, args=(kill, process, process.stdout, q, encode), daemon=True).start()
+        Thread(target=self._terminal_writer, args=(q, encode), daemon=True).start()
+        Thread(target=self._clip_output, args=(clip, kill, encode, process.stdin, state, kwargs.get("y4m", False))).start()
+        Thread(target=self._state_updater, args=(kill, encode, state), daemon=True).start()
 
-        progress = None
-        if with_progress:
-            progress = IntProgress(
-                value=0,
-                min=0,
-                max=len(clip),
-                orientation="horizontal",
-                step=1,
-                description="0/{clip__len}".format(clip__len=len(clip)),
-                layout=Layout(flex="2 2 auto")
-            )
-            display(progress)
-        feeder = ClipFeeder(clip, process.stdin, progress=progress, **kwargs)
-        feeder.start()
-
-        if stdout is None:
-            stdout = sys.stdout
-
-        stderr = OutputFeeder(process, process.stderr, sys.stderr)
-        stderr.start()
-        stdout = OutputFeeder(process, process.stdout, stdout)
-        stdout.start()
-
-        try:
-            while process.poll() is None:
-                if not feeder.is_alive():
-                    try:
-                        process.wait(timeout=0.5)
-                    except subprocess.TimeoutExpired:
-                        pass
-                else:
-                    feeder.join(timeout=0.5)
-
-        except KeyboardInterrupt:
-            interrupt_process(process)
-            feeder.stop()
-            try:
-                process.wait(timeout=10)
-            except TimeoutError:
-                process.terminate()
-
-        except:
-            process.terminate()
-            raise
-
-        finally:
-            stderr.join()
-            stdout.join()
-            time.sleep(.5)
-
-        return process.returncode
+        return encode
 
     def prepare_encode(self, line, cell, stdout=None):
         if cell is None:

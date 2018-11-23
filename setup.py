@@ -30,7 +30,7 @@ requirements = [
     "jupyter",
     "traitlets",
     "jinja2",
-    "ipywidgets<7",
+    "ipywidgets",
     "pillow",
 
     "yuuno-core"
@@ -42,7 +42,7 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='1.0',
+    version='1.1.dev1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",

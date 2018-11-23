@@ -76,6 +76,9 @@ venv/
 .idea/
 .issues/
 
+!yuuno-jupyter/build/
+yuuno_ipython/build/
+
 
 # Created by https://www.gitignore.io/api/node,jupyternotebook
 

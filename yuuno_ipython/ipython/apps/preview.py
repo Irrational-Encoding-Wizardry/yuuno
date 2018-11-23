@@ -19,79 +19,79 @@
 
 from typing import Any as TAny
 
-from ipywidgets import HBox, VBox, Layout
-from ipywidgets import IntSlider, Button
+from ipywidgets import DOMWidget
 
 from traitlets import default, directional_link, observe
-from traitlets import Instance
-from traitlets import Integer
+from traitlets import Any
+from traitlets import Integer, Unicode, Float
 
-from yuuno_ipython.ipython.apps.image import Image
-from yuuno_ipython.ipython.apps.mixins import ClipWrapperMixin
+from yuuno.clip import Clip
+from yuuno.utils import future_yield_coro
+from yuuno import Yuuno
 
 
-class Preview(VBox, ClipWrapperMixin):
+class Preview(DOMWidget):
     """
     Implements a preview widget
 
     .. automethod:: __init__
     """
+    _view_name = Unicode('PreviewWindowWidget').tag(sync=True)
+    _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
+    _view_module_version = Unicode('1.1').tag(sync=True)
 
-    _current: Image = Instance(Image)
+    # Ignore the changes
+    clip = Any(Clip).tag(sync=True, to_json=(lambda v,w: id(v)), from_json=(lambda v, w: w.clip))
 
-    _ui_intslider: IntSlider = Instance(IntSlider)
+    frame = Integer(0).tag(sync=True)
+    zoom = Float(1.0).tag(sync=True)
 
-    frame: int = Integer(default_value=0)
+    def __init__(self, clip, **kwargs):
+        super(Preview, self).__init__(**kwargs, clip=clip)
+        self._cache = [0, None]
+        self.on_msg(self._handle_request_length)
+        self.on_msg(self._handle_request_frame)
 
-    @default("_current")
-    def _default_current(self):
-        return Image()
+    def _handle_request_length(self, _, content, buffers):
+        if content.get('type', '') != 'length':
+            return
 
-    @default("_ui_intslider")
-    def _default_ui_intslider(self):
-        return IntSlider(
-            continuous_update=False,
-            orientation="horizontal",
-            step=1,
-            min=0,
-            value=self.frame,
-            max=1,
-            layout=Layout(flex="2 2 auto")
-        )
+        rqid = content.get('id', None)
 
-    @observe("_clip")
-    def _update_islider(self, proposal):
-        clip: TAny = proposal.new
-        current_frame = self.frame
+        self.send({
+            'type': 'response',
+            'id': rqid,
+            'payload': len(self.clip),
+        })
 
-        with self.hold_trait_notifications():
-            self.frame = min(len(clip)-1, current_frame)
+    @property
+    def _wrapped_clip(self):
+        if self._cache[0] != id(self.clip):
+            self._cache = [id(self.clip), Yuuno.instance().wrap(self.clip)]
+        return self._cache[1]
 
-        self._ui_intslider.max = len(clip)-1
-        self._ui_intslider.value = self.frame
+    @future_yield_coro
+    def _handle_request_frame(self, _, content, buffers):
+        if content.get('type', '') != 'frame':
+            return
 
-        self._update_image(clip, self.frame)
+        rqid = content.get('id', None)
 
-    @observe("frame")
-    def _update_shown_frame(self, proposal):
-        self._update_image(self._clip, proposal.new)
-
-    def __init__(self, clip=None, *args, **kwargs):
-        super(Preview, self).__init__(*args, **kwargs, clip=clip)
-        self.links = [directional_link((self._ui_intslider, 'value'), (self, 'frame'))]
-
-        prev = Button(icon="fa-step-backward", layout=Layout(width="50px"))
-        prev.on_click(lambda s: self.step(-1))
-        next = Button(icon="fa-step-forward", layout=Layout(width="50px"))
-        next.on_click(lambda s: self.step(1))
-
-        self.children = [
-            HBox([prev, next, self._ui_intslider]),
-            self._current
-        ]
-
-    def step(self, difference):
-        self._ui_intslider.value += difference
-
-    def _update_image(self, clip, frame):
-        self._current.image = clip[frame].result().to_pil()
+        try:
+            frame = yield self._wrapped_clip[content.get("payload", None) or self.frame]
+        except Exception as e:
+            import traceback
+            self.send({
+                'type': 'failure',
+                'id': rqid,
+                'payload': traceback.format_exception(type(e), e, e.__traceback__)
+            })
+            raise
+        data = Yuuno.instance().output.bytes_of(frame.to_pil())
+        self.send({
+            'type': 'response',
+            'id': rqid,
+            'payload': {
+                'size': frame.size()
+            }
+        }, [data])
