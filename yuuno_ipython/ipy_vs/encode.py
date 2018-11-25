@@ -152,9 +152,9 @@ class EncodeMagic(Magics):
                     break
                 data.append(raw)
             data = b''.join(data)
-            if not data:
-                time.sleep(0.1)
-            encode.write(decoder.decode(data))
+            if data:
+                encode.write(decoder.decode(data))
+            time.sleep(0.1)
         encode.write(decoder.decode(b'', final=True))
 
     def _state_updater(self, dead, encode, state):

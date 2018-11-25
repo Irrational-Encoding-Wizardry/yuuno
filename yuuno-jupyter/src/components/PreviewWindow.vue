@@ -15,14 +15,14 @@
         <div class="spacer"></div>
         <div class="right">
           <span class="info-group" v-if="updating">
-              <span class="notification_widget btn btn-xs navbar-btn">Updating</span>
+              <span class="notification_widget btn btn-xs navbar-btn" disabled="disabled">Updating</span>
           </span>
           <span class="info-group">
               <div class="btn-group">
-                  <button class="btn btn-xs btn-default" @click="download"><i class="fa fa-download"></button>
+                  <button class="navbar-btn btn btn-xs" @click="download"><i class="fa fa-download"></button>
               </div>
               <div class="btn-group">
-                  <button class="btn btn-xs btn-default" @click="toggleModal"><i class="fa" :class="[in_modal?'fa-window-restore':'fa-window-maximize']"></button>
+                  <button class="navbar-btn btn btn-xs" @click="toggleModal"><i class="fa" :class="[in_modal?'fa-window-restore':'fa-window-maximize']"></button>
               </div>
           </span>
         </div>
@@ -99,6 +99,11 @@
     & > .image {
         flex-grow: 1;
         flex-shrink: 1;
+    }
+
+    .navbar-btn {
+        margin-right: 0;
+        margin-top: 0;
     }
 
     & > .bottom-bar {

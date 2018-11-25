@@ -107,6 +107,7 @@ export default class PreviewWindowWidget extends DOMWidgetView {
             }
         });
         this._vue = new Vue({
+            name: 'Preview',
             store: this._state,
             render: function (h) {return !this.in_modal?h(PreviewWindow):h(Modal, [h(PreviewWindow)])},
             computed: {

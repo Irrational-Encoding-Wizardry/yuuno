@@ -16,7 +16,7 @@
             </div>
             <div class="right">
                 <div class="info-group" v-if="terminated">
-                    <span class="notification_widget btn btn-xs navbar-btn">Terminated</span>
+                    <span class="notification_widget btn btn-xs navbar-btn" disabled="disabled">Terminated</span>
                 </div>
                 <div class="info-group">
                     <div class="btn-group">

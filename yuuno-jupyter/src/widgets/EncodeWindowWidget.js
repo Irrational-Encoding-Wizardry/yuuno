@@ -11,6 +11,7 @@ export default class EncodeWindowWidget extends DOMWidgetView {
         const $this = this;
         this._own_widget_id = _widget_id++;
         this._vue = new Vue({
+            name: 'Encode',
             render: function(h) {
                 return h(EncodeWindow, {
                     ref: 'encode',
