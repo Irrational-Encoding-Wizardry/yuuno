@@ -162,6 +162,9 @@ setup(
         'yuuno.extensions': [
             'ipy_vs = yuuno_ipython.ipy_vs.extension:IPythonVapoursynthExtension',
             'ipy_comm = yuuno_ipython.comm.extension:YuunoKernelCommExtension'
+        ],
+        'yuuno.commands': [
+            'jupyter = yuuno_ipython.commands:jupyter'
         ]
     }
 )
