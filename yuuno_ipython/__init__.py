@@ -21,7 +21,7 @@ import sys
 
 __author__ = """stuxcrystal"""
 __email__ = 'stuxcrystal@encode.moe'
-__version__ = '1.1.dev7'
+__version__ = '1.1'
 
 def _jupyter_nbextension_paths():
     return [{

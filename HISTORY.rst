@@ -2,6 +2,13 @@
 History
 =======
 
+1.1.0 (São Paulo)
+-----------------
+
+* Removed %inspect and %compare (See deprecation of 1.0.0)
+* Recreated %encode and %preview in JavaScript.
+* Added %reattach to reattach to encodes.
+
 1.0.0 (Marun Field)
 -------------------
 
