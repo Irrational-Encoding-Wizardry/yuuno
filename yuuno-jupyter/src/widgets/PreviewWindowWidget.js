@@ -37,6 +37,8 @@ export default class PreviewWindowWidget extends DOMWidgetView {
                     raw: null
                 },
 
+                error: null,
+
                 updating: 0,
                 in_modal: false
             },
@@ -54,7 +56,12 @@ export default class PreviewWindowWidget extends DOMWidgetView {
                     state.length = length;
                 },
 
+                setError(state, {error}) {
+                    state.error = error;
+                },
+
                 setImage(state, {raw, size}) {
+                    state.error = null;
                     state.image.raw = raw;
                     state.image.size.width = size.width;
                     state.image.size.height = size.height;
@@ -89,7 +96,13 @@ export default class PreviewWindowWidget extends DOMWidgetView {
                 async renderFrame({commit, dispatch, state}) {
                     $this._rate_limit.fire(async () => {
                         await dispatch('update', async () => {
-                            const result = await $this._request_frame();
+                            let result;
+                            try {
+                                result = await $this._request_frame();
+                            } catch (e) {
+                                commit('setError', {error: e.payload.join('')});
+                                return;
+                            }
                             commit('setImage', {raw: result.buffers[0], size: {width: result.payload.size[0], height: result.payload.size[1]}});
                         });
                     });

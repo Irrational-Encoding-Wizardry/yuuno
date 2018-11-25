@@ -94,10 +94,11 @@ class EncodeWidget(DOMWidget):
                 self.send({'type': 'refresh_finish', 'data': None, 'target': content['source']})
 
         elif content['type'] == 'kill':
+            self._process.terminate()
             self._kill.set()
 
         elif content['type'] == "interrupt":
-            self._process.send_signal(signal.CTRL_C_EVENT)
+            interrupt_process(self._process)
 
 
 @magics_class
@@ -171,9 +172,10 @@ class EncodeMagic(Magics):
         except Exception as e:
             if dead.is_set():
                 return
+            encode._process.terminate()
             raise e
         try:
-            process.stdin.close()
+            stdin.close()
         except OSError:
             pass
 
@@ -186,12 +188,14 @@ class EncodeMagic(Magics):
         :param stdout:      Where to send the stdout.
         :return:            The return code.
         """
+        raw = commandline
+        commandline = shlex.split(commandline)
+
         kill = Event()
         state = [0, len(clip)]
-        process = popen(commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-        encode = EncodeWidget(kill=kill, process=process, commandline=commandline)
+        process = popen(commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        encode = EncodeWidget(kill=kill, process=process, commandline=raw)
         _running[str(process.pid)] = encode
-        commandline = shlex.split(commandline)
 
         q = queue.Queue()
         Thread(target=self._reader, args=(kill, process, process.stdout, q, encode), daemon=True).start()

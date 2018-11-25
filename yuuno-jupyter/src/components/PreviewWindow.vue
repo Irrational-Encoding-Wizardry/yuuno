@@ -5,21 +5,24 @@
           <span class="info-group">
               {{ length }} frames
           </span>
-          <span class="info-group" :title="`Displayed as ${display_size.width}x${display_size.height}`">
+          <span class="info-group" :title="`Displayed as ${display_size.width}x${display_size.height}`" v-if="!error">
               {{ size.width }}x{{ size.height }}
           </span>
-          <span class="info-group" v-if="zoom != 1">
+          <span class="info-group" v-if="zoom != 1 && !error">
               {{ size.width*zoom }}x{{ size.height*zoom }} (zoomed)
           </span>
         </div>
         <div class="spacer"></div>
         <div class="right">
+          <span class="info-group" v-if="!!error">
+              <span class="notification_widget btn btn-xs navbar-btn" disabled="disabled">Error</span>
+          </span>
           <span class="info-group" v-if="updating">
               <span class="notification_widget btn btn-xs navbar-btn" disabled="disabled">Updating</span>
           </span>
           <span class="info-group">
               <div class="btn-group">
-                  <button class="navbar-btn btn btn-xs" @click="download"><i class="fa fa-download"></button>
+                  <button class="navbar-btn btn btn-xs" @click="download" v-if="!error"><i class="fa fa-download"></button>
               </div>
               <div class="btn-group">
                   <button class="navbar-btn btn btn-xs" @click="toggleModal"><i class="fa" :class="[in_modal?'fa-window-restore':'fa-window-maximize']"></button>
@@ -27,7 +30,8 @@
           </span>
         </div>
       </div>
-      <image-view class="image" :style="{minHeight: `${size.height>400?400:size.height}px`}"></image-view>
+      <image-view class="image" :style="{minHeight: `${size.height>400?400:size.height}px`}" v-if="!error"></image-view>
+      <code class="error" v-if="!!error">{{ error }}</code>
       <div class="navbar navbar-default bottom-bar">
         <input class="bottom-bar--frame-no" v-model.number="frame" :max="length-1" type="number">
         <input class="bottom-bar--frame-slide" v-model.number="frame" type="range" min="0" :max="length-1">
@@ -101,6 +105,11 @@
         flex-shrink: 1;
     }
 
+    & > .error {
+        color: #faa;
+        background: #330101;
+    }
+
     .navbar-btn {
         margin-right: 0;
         margin-top: 0;
@@ -170,6 +179,8 @@ export default {
             length: state => state.length,
             size: state => state.image.size,
             updating: state => state.updating,
+
+            error: state => state.error,
 
             in_modal: state => state.in_modal
         }),
