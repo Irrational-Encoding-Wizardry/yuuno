@@ -4289,6 +4289,11 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
+leftpad@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/leftpad/-/leftpad-0.0.1.tgz#86b1a4de4face180ac545a83f1503523d8fed115"
+  integrity sha1-hrGk3k+s4YCsVFqD8VA1I9j+0RU=
+
 less-loader@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.1.0.tgz#2c1352c5b09a4f84101490274fd51674de41363e"
@@ -4704,6 +4709,11 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+moment@^2.22.2:
+  version "2.22.2"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
+  integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
 
 moment@~2.21.0:
   version "2.21.0"

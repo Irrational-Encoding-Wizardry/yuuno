@@ -32,15 +32,16 @@
         <input class="bottom-bar--frame-no" v-model.number="frame" :max="length-1" type="number">
         <input class="bottom-bar--frame-slide" v-model.number="frame" type="range" min="0" :max="length-1">
         <select v-model.number="zoom" class="bottom-bar--zoom-level">
-            <option :value="zoom" v-if="[0.25,0.50,0.75,1,1.25,1.5,2,3].indexOf(zoom) < 0">Custom</option>
+            <option :value="zoom" v-if="[0.25,0.50,1,2,3,4].indexOf(zoom) < 0">Custom</option>
             <option :value="0.25">25%</option>
             <option :value="0.50">50%</option>
-            <option :value="0.75">75%</option>
+            <!-- <option :value="0.75">75%</option> -->
             <option :value="1">100%</option>
-            <option :value="1.25">125%</option>
-            <option :value="1.50">150%</option>
+            <!-- <option :value="1.25">125%</option> -->
+            <!-- <option :value="1.50">150%</option> -->
             <option :value="2">200%</option>
             <option :value="3">300%</option>
+            <option :value="4">400%</option>
         </select>
       </div>
   </div>
@@ -115,7 +116,7 @@
             flex-grow: 0;
             flex-shrink: 0;
 
-            max-width: 50px;
+            max-width: 5em;
 
             background: transparent;
             border: 0;

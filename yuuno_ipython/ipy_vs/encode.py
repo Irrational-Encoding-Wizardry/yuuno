@@ -31,7 +31,7 @@ from traitlets import Instance, default
 
 from IPython.display import display
 from IPython.core.magic import Magics, magics_class
-from IPython.core.magic import line_cell_magic
+from IPython.core.magic import line_cell_magic, line_magic
 
 from yuuno import Yuuno
 from yuuno.multi_scripts.os import popen, interrupt_process
@@ -48,6 +48,9 @@ from ipywidgets import DOMWidget
 from traitlets import Unicode, Tuple, Integer, Bool
 
 
+_running = {}
+
+
 class EncodeWidget(DOMWidget):
     _view_name = Unicode('EncodeWindowWidget').tag(sync=True)
     _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
@@ -56,14 +59,20 @@ class EncodeWidget(DOMWidget):
     current = Integer(0).tag(sync=True)
     length = Integer(1).tag(sync=True)
     terminated = Bool(False).tag(sync=True)
+
+    start_time = Integer(0).tag(sync=True)
+    end_time = Integer(0).tag(sync=True)
+
     _win32 = Bool(sys.platform=="win32").tag(sync=True)
 
-    def __init__(self, *args, kill, process, **kwargs):
+    def __init__(self, *args, kill, process, commandline, **kwargs):
         super().__init__(*args, **kwargs)
         self._lock = Lock()
         self._kill = kill
         self._process = process
+        self._commandline = commandline
         self._latest_writes = deque(maxlen=10000)
+        self.start_time = int(time.time())
         self.on_msg(self._rcv_message)
 
     def write(self, string):
@@ -74,6 +83,9 @@ class EncodeWidget(DOMWidget):
         with self._lock:
             self._latest_writes.append(string)
         self.send({'type': 'write', 'data': string, 'target': 'broadcast'})
+
+    def join(self, timeout=None):
+        self._kill.wait(timeout=timeout)
 
     def _rcv_message(self, _, content, buffer):
         if content['type'] == "refresh":
@@ -101,7 +113,6 @@ class EncodeMagic(Magics):
         return Yuuno.instance().environment
 
     def _reader(self, dead: Event, process: subprocess.Popen, pipe_r, term_q, encode):
-
         while process.poll() is None and not dead.is_set():
             d = pipe_r.read(1)
             if d:
@@ -110,11 +121,17 @@ class EncodeMagic(Magics):
         if process.poll() is None:
             process.terminate()
 
-        process.stdin.close()
+        try:
+            process.stdin.close()
+        except OSError:
+            pass
+
         if not dead.is_set():
             dead.set()
 
+        encode.end_time = int(time.time())
         encode.terminated = True
+        del _running[str(process.pid)]
 
         d = pipe_r.read()
         if d:
@@ -155,7 +172,10 @@ class EncodeMagic(Magics):
             if dead.is_set():
                 return
             raise e
-        stdin.close()
+        try:
+            process.stdin.close()
+        except OSError:
+            pass
 
     def begin_encode(self, clip, commandline, stdout=None, **kwargs):
         """
@@ -169,7 +189,8 @@ class EncodeMagic(Magics):
         kill = Event()
         state = [0, len(clip)]
         process = popen(commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-        encode = EncodeWidget(kill=kill, process=process)
+        encode = EncodeWidget(kill=kill, process=process, commandline=commandline)
+        _running[str(process.pid)] = encode
         commandline = shlex.split(commandline)
 
         q = queue.Queue()
@@ -185,7 +206,7 @@ class EncodeMagic(Magics):
             cell, line = line.split(" ", 1)
 
         y4m = False
-        progress = True
+        multi = False
 
         # Switch to Argparse if this gets more complicated
         while True:
@@ -193,14 +214,42 @@ class EncodeMagic(Magics):
                 y4m = True
                 line = line[6:]
             elif line.startswith("--no-progress"):
-                progress = False
-                line = line[14:]
+                print("--no-progress has no use anymore and is ignored.")
+            elif line.startswith("--multi"):
+                multi = True
+                line = line[8:]
             else:
                 break
 
+        if not multi and len(_running):
+            print(r"You are already running an encode. Use %reattach to view the latest encode or use --multi to run multiple instances")
+            return
+
         commandline = self.environment.ipython.var_expand(line)
         clip = execute_code(cell, '<yuuno:encode>')
-        return self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m, with_progress=progress)
+        encode = self.begin_encode(clip, commandline, stdout=stdout, y4m=y4m)
+        return encode
+
+    @line_magic
+    def reattach(self, line):
+        if not line and not len(_running):
+            print("There is no encode running.")
+            return
+        if not line and len(_running) > 1:
+            print("You are running more than one encode. Use the following id to attach to a specific one.")
+            print(r"Usage: %reattach [ID]")
+            print()
+            print("Running Encodes:")
+            print("ID\t- Stats")
+            for eid, edata in _running.items():
+                print(f"{eid} \t- {edata.current}/{edata.length}\t- {edata._commandline[:40]}")
+            return
+        if not line and len(_running) == 1:
+            return next(iter(_running.values()))
+        if line not in _running:
+            print("Encode was not found.")
+            return
+        return _running[line]
 
     @line_cell_magic
     def encode(self, line, cell=None):
@@ -211,18 +260,6 @@ class EncodeMagic(Magics):
         :return: The result-code
         """
         return self.prepare_encode(line, cell)
-
-    @line_cell_magic
-    def render(self, line, cell=None):
-        """
-        Renders the video into a bytes-io buffer.
-        :param line: The line
-        :param cell: The cell
-        :return: The IO.
-        """
-        res = io.BytesIO()
-        self.prepare_encode(line, cell, stdout=res)
-        return res
 
 
 class Encode(VSFeature, MagicFeature):

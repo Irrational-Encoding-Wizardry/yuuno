@@ -19,6 +19,9 @@ export default class EncodeWindowWidget extends DOMWidgetView {
                         length: this.length,
                         terminated: this.terminated,
 
+                        start_time: $this.model.get('start_time'),
+                        end_time: $this.model.get('end_time'),
+
                         _win32: $this.model.get('_win32')
                     },
                     on: {
@@ -60,6 +63,7 @@ export default class EncodeWindowWidget extends DOMWidgetView {
         this.model.on('change:length', this._sync_progress, this);
         this.model.on('change:current', this._sync_progress, this);
         this.model.on('change:terminated', this._sync_termination, this);
+        this.model.on('change:end_time', this._sync_end_time, this)
 
         this._accept_broadcast = false;
         this.send({'type': 'refresh', 'source': this._own_widget_id});
@@ -87,7 +91,13 @@ export default class EncodeWindowWidget extends DOMWidgetView {
         this._vue.terminated = this.model.get('terminated')
     }
 
+    _sync_end_time() {
+        this._vue.end_time = this.model.get('end_time')
+    }
+
     remove() {
+        this.model.off('change:length', this._sync_progress, this);
+        this.model.off('change:end_time', this._sync_termination, this);
         this.model.off('change:terminated', this._sync_termination, this);
         this.model.off('change:progress', this._sync_progress, this);
         this._vue.$destroy();

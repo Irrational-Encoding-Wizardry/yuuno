@@ -68,7 +68,7 @@ class OutputMirror(object):
 
         self.current_output_ids = {
             index: id(output)
-            for index, output in outputs.keys()
+            for index, output in outputs.items()
         }
 
         return ChangeSet(list(outputs.keys()), current_ids-outputs.keys())
