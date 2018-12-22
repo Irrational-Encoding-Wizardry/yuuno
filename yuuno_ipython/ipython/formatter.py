@@ -26,6 +26,7 @@ from IPython.display import Image as IPyImage
 from yuuno.clip import Clip, Frame
 from yuuno_ipython.ipython.feature import Feature
 from yuuno_ipython.ipython.environment import Environment
+from yuuno_ipython.ipython.apps.preview import Preview
 
 
 class InlineFormat(HasTraits):
@@ -35,6 +36,7 @@ class InlineFormat(HasTraits):
 
     clip: Clip = Any()
     environment: Environment = Instance(Environment)
+    preview: Preview = Instance(Preview, allow_none=True)
 
     first_frame: Frame = Any(allow_none=True)
     _ipy_image_cache: IPyImage = None
@@ -44,6 +46,11 @@ class InlineFormat(HasTraits):
         value = value['new']
         self.first_frame = value[0].result()
         self._ipy_image_cache = None
+        self.preview.clip = value
+
+    @default("preview")
+    def _default_preview(self):
+        return Preview(self.clip)
 
     @property
     def ipy_image(self) -> IPyImage:
@@ -65,34 +72,66 @@ class InlineFormat(HasTraits):
         )
         return self._ipy_image_cache
 
-    def _repr_pretty_(self, pp, cycle):
-        size = self.first_frame.size()
-        pp.text(f"<{self.clip.clip!r} {size.width}x{size.height}, {len(self.clip)} frames>")
-
-    def _repr_html_(self, *args, **kwargs):
-        return self.ipy_image._repr_html_(*args, **kwargs)
-
-    def _repr_png_(self, *args, **kwargs):
-        return self.ipy_image._repr_png_(*args, **kwargs)
-
-
-class Formatter(Feature):
-
-    type_to_repr = {
-        'image/png': '_repr_png_',
-        # 'text/html': '_repr_html_',
-        'text/plain': '_repr_pretty_'
+    REPR_TYPES = {
+        'image/png': '_repr_png',
+        'text/plain': '_repr_pretty',
+        'application/vnd.jupyter.widget-view+json': '_repr_preview'
     }
 
-    cache: WeakKeyDictionary = Instance(WeakKeyDictionary)
+    def _repr_pretty(self):
+        size = self.first_frame.size()
+        return f"<{self.clip.clip!r} {size.width}x{size.height}, {len(self.clip)} frames>"
 
+    def _repr_png(self, *args, **kwargs):
+        return self.ipy_image._repr_png_(*args, **kwargs)
+
+    def _repr_preview(self):
+        if self.preview._view_name is None:
+            return
+
+        return self.preview.get_view_spec()
+
+    def _repr_mimebundle_(self, include=None, exclude=None):
+        data_dict = {}
+        md_dict = {}
+
+        mimes = set(include) if include is not None else set(self.REPR_TYPES.keys())
+        mimes &= set(self.REPR_TYPES.keys())
+        if exclude is not None:
+            mimes ^= set(exclude)
+
+        for mime in mimes:
+            funcname = self.REPR_TYPES[mime]
+
+            if not hasattr(self, funcname):
+                continue
+
+            raw = getattr(self, funcname)()
+            if isinstance(raw, tuple) and len(raw) == 2:
+                data, md = raw
+            else:
+                data = raw
+                md = None
+
+            if data is None:
+                continue
+
+            data_dict[mime] = data
+            if md is not None:
+                md_dict[mime] = md
+
+        return data_dict, md_dict
+
+class Formatter(Feature):
+    cache: WeakKeyDictionary = Instance(WeakKeyDictionary)
+    
     @default("cache")
     def _default__cache(self):
         return WeakKeyDictionary()
 
     @property
     def display_formatters(self):
-        return self.environment.ipython.display_formatter.formatters
+        return self.environment.ipython.display_formatter
 
     def wrap_cached(self, obj) -> InlineFormat:
         if obj in self.cache:
@@ -103,23 +142,16 @@ class Formatter(Feature):
         self.cache[obj] = wrapped
         return wrapped
 
-    def display(self, format):
-        formatter_type = self.type_to_repr.get(format)
-
-        def _callback(obj, *args, **kwargs):
-            wrapper = self.wrap_cached(obj)
-            return getattr(wrapper, formatter_type)(*args, **kwargs)
-        return _callback
+    def display(self, obj, *args, **kwargs):
+        wrapper = self.wrap_cached(obj)
+        return wrapper._repr_mimebundle_(*args, **kwargs)
 
     def initialize(self):
         for type in self.environment.parent.registry.all_types():
             self.environment.parent.log.debug(f"Registering {type!r} to IPython")
-            for format in self.type_to_repr:
-                cb = self.display(format)
-                self.display_formatters[format].for_type(type, cb)
+            self.display_formatters.mimebundle_formatter.for_type(type, self.display)
 
     def deinitialize(self):
         for type in self.environment.parent.registry.all_types():
             self.environment.parent.log.debug(f"Unregistering {type!r} from IPython")
-            for format in self.type_to_repr:
-                self.display_formatters[format].pop(type)
+            self.display_formatters.mimebundle_formatter.pop(type)

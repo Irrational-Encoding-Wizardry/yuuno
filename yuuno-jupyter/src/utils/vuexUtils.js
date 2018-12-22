@@ -6,7 +6,7 @@ export function modelReadWrite(states) {
     Object.keys(states).forEach((name) => {
         computed[name] = {
             get: mappedStates[name],
-            set: function(value){this.$store.commit('import', {name, value})},
+            set: function(value){this.$store.commit('model/sync', {key: name, value})},
             vuex: true
         }
     })

@@ -10,15 +10,20 @@ export default class LRUCache {
     }
 
     async get(target, cb) {
+        let result;
+        if ((result = this._lru.get(target)) !== undefined) {
+            return result;
+        }
+
         if (!!this._active[target])
             return (await this._active[target]);
 
         const delegate = new PromiseDelegate();
         this._active[target] = delegate.promise;
-
-        let result;
-        if ((result = this._lru.get(target)) !== undefined)
-            return delegate.resolve(result);
+        delegate.promise.then(
+            () => delete this._active[target],
+            () => delete this._active[target]
+        );
 
         try {
             result = await cb();
@@ -28,7 +33,7 @@ export default class LRUCache {
             delegate.reject(e);
         }
 
-        return delegate.promise;
+        return await delegate.promise;
     }
 
 }

@@ -10,8 +10,19 @@ function attachBackbone(bridge, backbone_model, name) {
     return binding;
 }
 
-function attachVueX(bridge, vuex, name) {
-    const binding = bridge.add((value) => vuex.commit('import', {name, value}));
+function syncToVuex(binding, payload) {
+    const {vuex, moduleName} = binding;
+
+    let mutationName;
+    if (!!moduleName) mutationName = `${moduleName}/sync`;
+    else              mutationName = 'sync';
+
+    vuex.commit(mutationName, payload);
+}
+
+function attachVueX(bridge, storeBinding, name) {
+    const {vuex} = storeBinding;
+    const binding = bridge.add((value) => syncToVuex(storeBinding, {key: name, value}));
     const unwatch = vuex.watch((state) => state.model[name], (value) => binding.setValue(value));
     binding.addDisposer(() => unwatch());
     return binding;
@@ -21,13 +32,13 @@ export default function VuexBackboneBridge(backbone_model, vuex, names, cb=null)
     const bridges = [];
 
     names.forEach((name) => {
-        let bridge = new DataModelBridge();
-        vuex.commit('import', {name, value: backbone_model.get(name)});
+        const bridge = new DataModelBridge();
+        syncToVuex(vuex, {key: name, value: backbone_model.get(name)});
         attachBackbone(bridge, backbone_model, name);
         attachVueX(bridge, vuex, name);
         if (!!cb) bridge.add((value) => cb(name, value));
         bridges.push(bridge);
-    })
+    });
 
     return new Disposer(() => {
         for (var bridge of bridges)

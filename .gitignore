@@ -151,6 +151,10 @@ typings/
 
 # End of https://www.gitignore.io/api/node,jupyternotebook
 
+
+## Cache Loader
+.cache-loader/
+
 ## Visual Studio Code
 
 .vscode/

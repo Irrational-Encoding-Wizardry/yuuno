@@ -113,7 +113,7 @@ class EncodeMagic(Magics):
     def _default_environment(self):
         return Yuuno.instance().environment
 
-    def _reader(self, dead: Event, process: subprocess.Popen, pipe_r, term_q, encode):
+    def _reader(self, dead: Event, process: subprocess.Popen, pipe_r, term_q, encode, after_exit):
         while process.poll() is None and not dead.is_set():
             d = pipe_r.read(1)
             if d:
@@ -137,6 +137,10 @@ class EncodeMagic(Magics):
         d = pipe_r.read()
         if d:
             term_q.put(d)
+
+        if after_exit is not None:
+            after_exit()
+
         term_q.put(b"\n\n[Process Terminated]")
         term_q.put(None)
 
@@ -179,7 +183,7 @@ class EncodeMagic(Magics):
         except OSError:
             pass
 
-    def begin_encode(self, clip, commandline, stdout=None, **kwargs):
+    def begin_encode(self, clip, commandline, stdout=None, after_exit=None, **kwargs):
         """
         Implements the actual encoding process
 
@@ -190,17 +194,19 @@ class EncodeMagic(Magics):
         """
         raw = commandline
         commandline = shlex.split(commandline)
+        shell = kwargs.pop('shell', False)
 
         kill = Event()
         state = [0, len(clip)]
-        process = popen(commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = popen(raw if shell else commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell)
         encode = EncodeWidget(kill=kill, process=process, commandline=raw)
         _running[str(process.pid)] = encode
 
         q = queue.Queue()
-        Thread(target=self._reader, args=(kill, process, process.stdout, q, encode), daemon=True).start()
+        Thread(target=self._reader, args=(kill, process, process.stdout, q, encode, after_exit), daemon=True).start()
         Thread(target=self._terminal_writer, args=(q, encode), daemon=True).start()
-        Thread(target=self._clip_output, args=(clip, kill, encode, process.stdin, state, kwargs.get("y4m", False))).start()
+        if clip is not None:
+            Thread(target=self._clip_output, args=(clip, kill, encode, process.stdin, state, kwargs.get("y4m", False))).start()
         Thread(target=self._state_updater, args=(kill, encode, state), daemon=True).start()
 
         return encode

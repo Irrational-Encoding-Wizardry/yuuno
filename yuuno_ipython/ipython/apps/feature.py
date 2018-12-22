@@ -31,22 +31,16 @@ class AppDrawer(Magics):
         return eval(f"__app({line})", self.shell.user_ns, local_ns)
 
     @line_magic
-    def show(self, line):
-        def _show(clip, no=0):
-            return Yuuno.instance().wrap(clip)[no].to_pil()
-        local_ns = {'__show': _show}
-        return eval(f"__show({line})", self.shell.user_ns, local_ns)
-
-    @line_magic
     def preview(self, line):
         from yuuno_ipython.ipython.apps.preview import Preview
         return self.app_magic(Preview, line)
 
     @line_magic
     def diff(self, line):
-        from yuuno_ipython.ipython.apps.diff import Diff
-        display(self.app_magic(Diff, line))
-        return None
+        from yuuno_ipython.ipython.apps.preview import Preview
+        def Diff(a, b, **kwargs):
+            return Preview(a, diff=b, **kwargs)
+        return self.app_magic(Diff, line)
 
 
 class Apps(MagicFeature):

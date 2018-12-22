@@ -1,52 +1,33 @@
-import Disposer from '../utils/Disposer';
-import Vue from 'vue';
-const {Modal: VueModal} = require('../components/Modal');
-import {createMountedElement} from '../utils/domUtils';
-const nextTick = require('next-tick');
+import ModalComponent from '../components/Modal';
+import Disposer from "../utils/Disposer";
 
-
-export default class Modal extends Disposer {
+export default class Modal extends Disposer{
 
     constructor(el) {
         super(null);
-        this._el = el;
-        this._original_parent = this._el.parent;
-
-        this._shown = false;
-        this._modal_el = null;
-        this._modal_parent = document.body;
-        this._vue = null;
+        this._state = false;
+        this.el = el;
+        this._parent = null;
     }
 
     setShown(state) {
-        if (this._shown === state) return;
-        this._shown = state;
+        if (this._state === state) return;
 
-        if (this._shown) {
-            this._modal_el = createMountedElement(this._modal_parent, 'div');
-            this._vue = new Vue({
-                render: (h) => h(VueModal, [h("div", {ref: "target"})]),
+        if (!this._parent)
+            this._parent = this.el.parentNode;
 
-                beforeUpdate() {
-                    if (this.$refs["target"].firstChild === $this._el) return;
-                    while (this.$refs["target"].firstChild)
-                        this.$refs["target"].firstChild.remove();
-                    this.$refs.appendChild($this._el);
-                }
-            });
-            nextTick(() => this._vue.$mount(this._modal_el), this);
+        this._state = state;
+
+        this.el.remove();
+        if (this._state) {
+            document.body.appendChild(this.el);
         } else {
-            this._el.remove();
-
-            this._vue.$destroy();
-            this._vue = null;
-
-            this._original_parent.appendChild(this._el);
-            if (!!this._modal_el) {
-                this._modal_el.remove();
-                this._modal_el = null;
-            }
+            this._parent.appendChild(this.el);
         }
+    }
+
+    modalizeRender(store, hCb) {
+        return (h) => store.state.modal.shown?h(ModalComponent, [hCb(h)]):hCb(h);
     }
 
     target() {

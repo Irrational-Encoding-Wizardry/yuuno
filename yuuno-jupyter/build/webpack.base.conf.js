@@ -9,7 +9,6 @@ function resolve (dir) {
 }
 
 
-
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
@@ -25,7 +24,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
+      'vue$': 'vue/dist/vue.runtime.esm.js',
       '@': resolve('src'),
     }
   },
@@ -33,13 +32,12 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: vueLoaderConfig
+        use: [...((process.env.NODE_ENV)?['cache-loader']:[]), {loader: 'vue-loader', options: vueLoaderConfig}]
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        use: [...((process.env.NODE_ENV)?['cache-loader']:[]), 'babel-loader'],
+        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

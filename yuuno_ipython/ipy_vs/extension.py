@@ -33,12 +33,14 @@ class IPythonVapoursynthExtension(Extension):
     """
     This extension implements VapourSynth-specific features for IPython.
     """
+    _name = "ipy_vs"
 
     feature_classes: Listing[str] = List(DottedObjectName(), default_value=[
         "yuuno_ipython.ipy_vs.log.LogWriterFeature",
         "yuuno_ipython.ipy_vs.encode.Encode",
         "yuuno_ipython.ipy_vs.runvpy.RunVPy",
-        "yuuno_ipython.ipy_vs.vsscript.Use_VSScript"
+        "yuuno_ipython.ipy_vs.vsscript.Use_VSScript",
+        "yuuno_ipython.ipy_vs.stateful_editor.StatefulEditorFeature"
     ], config=True, help="List of additional features to load.")
 
     features: Listing[Feature] = List(Instance(Feature))

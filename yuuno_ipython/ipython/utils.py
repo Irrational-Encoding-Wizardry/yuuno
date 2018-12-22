@@ -25,13 +25,18 @@ from yuuno.yuuno import Yuuno
 RESULT_VAR = '_yuuno_exec_last_'
 
 
-def execute_code(expr, file, fail_on_error=True):
+def execute_code(expr, file, fail_on_error=True, ns=None):
     ipy = Yuuno.instance().environment.ipython
     expr = ipy.input_transformer_manager.transform_cell(expr)
     expr_ast = ipy.compile.ast_parse(expr)
     expr_ast = ipy.transform_ast(expr_ast)
 
-    if isinstance(expr_ast.body[-1], ast.Expr):
+    if len(expr_ast.body) == 0:
+        # There is no code to execute.
+        # Take the fast path and skip executing.
+        return None
+
+    elif isinstance(expr_ast.body[-1], ast.Expr):
         last_expr = expr_ast.body[-1]
         assign = ast.Assign(                                # _yuuno_exec_last_ = <LAST_EXPR>
             targets=[ast.Name(
@@ -56,11 +61,14 @@ def execute_code(expr, file, fail_on_error=True):
 
     code = compile(expr_ast, file, 'exec')
 
+    if ns is None:
+        ns = ipy.user_ns
+
     try:
-        exec(code, ipy.user_ns)
+        exec(code, ipy.user_ns, ns)
         result = ipy.user_ns.get(RESULT_VAR, None)
     finally:
-        ipy.user_ns.pop(RESULT_VAR, None)
+        ns.pop(RESULT_VAR, None)
     return result
 
 

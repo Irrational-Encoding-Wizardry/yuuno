@@ -21,9 +21,9 @@ def jupyter():
         subprocess.check_call([executable, "-m", "notebook"] + sys.argv[2:])
         return
     if sys.argv[1] == "install":
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "widgetsnbextension"])
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "install", "--py", "--sys-prefix", "yuuno_ipython"])
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "yuuno_ipython"])
+        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "widgetsnbextension"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.check_call([executable, "-m", "notebook.nbextensions", "install", "--py", "--sys-prefix", "yuuno_ipython"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "yuuno_ipython"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return
         
     print("Command not found.")

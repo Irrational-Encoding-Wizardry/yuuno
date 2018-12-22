@@ -46,8 +46,9 @@ class NPMBuild(build_py):
 
     def popen(self, cmd, *args, **kwargs):
         self.announce(f"running command: {cmd}", level=INFO)
+        import shlex
         import subprocess
-        return subprocess.check_call(cmd, *args, **kwargs)
+        return subprocess.check_call(shlex.split(cmd), *args, **kwargs)
 
     def run(self):
         cwd = DIRNAME
@@ -59,9 +60,8 @@ class NPMBuild(build_py):
 
         jspath = os.path.join(cwd, 'yuuno-jupyter')
         pm = self.get_js_package_manager()
-        self.popen(f'{pm} install', cwd=jspath)
-        self.popen(f'{pm} run build', cwd=jspath)
-        super().run()
+        self.popen(f'"{pm}" install', cwd=jspath)
+        self.popen(f'"{pm}" run build', cwd=jspath)
 
 
 class SDistNPM(sdist):
@@ -113,7 +113,7 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='1.1',
+    version='1.2b1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",

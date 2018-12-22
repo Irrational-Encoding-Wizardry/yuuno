@@ -31,6 +31,20 @@ if TYPE_CHECKING:
     from yuuno.vs.vsscript.script import ScriptManager, VSScript
 
 
+_cur_env = None
+
+def get_current_env() -> 'Environment':
+    global _cur_env
+    if _cur_env is None:
+        import vapoursynth
+        _cur_env = vapoursynth.vpy_current_environment
+    try:
+        _cur_env()
+    except RuntimeError:
+        return None
+
+
+
 def env_from_script(script: 'VSScript') -> 'Environment':
     import vapoursynth
     return script.perform(lambda: vapoursynth.vpy_current_environment()).result()
@@ -69,8 +83,31 @@ class CoreControlMagics(Magics):
 
     @line_magic
     def reset_core(self, line):
-        self.vsscript_feature._exit_env()
         self.vsscript_feature.reset_script()
+
+
+class VSScriptWrapper(object):
+
+    def __init__(self, script):
+        self.script = script
+        self._env = env_from_script(self.script)
+
+    def replace(self):
+        """
+        Replaces the top-most VapourSynth-Environment stack
+        with the given VapourSynth environment.
+        """
+        cur_env = get_current_env()
+        if get_current_env() != self._env:
+            if cur_env is not None:
+                # Hack to forcibly remove the environment from the stack.
+                cur_env.__exit__()
+            self._env.__enter__()
+
+    def dispose(self):
+        if get_current_env() == self._env:
+            self._env.__exit__()
+        self.script.dispose()
 
 
 # noinspection PyPep8Naming
@@ -118,18 +155,18 @@ class Use_VSScript(VSFeature, MagicFeature):
         if self.script is not None:
             self.script.dispose()
 
-        self.script: VSScript = self.manager.create('ipython', initialize=True)
+        self.script: VSScriptWrapper = VSScriptWrapper(self.manager.create('ipython', initialize=True))
         self._enter_env()
 
     def _enter_env(self):
         if self._cell_level > 0:
             return
-        env_from_script(self.script).__enter__()
+        self.script.replace()
 
     def _exit_env(self):
         if self._cell_level > 0:
             return
-        env_from_script(self.script).__exit__()
+        # Do nothing anymore.
 
     def deinitialize(self):
         if not self.events:

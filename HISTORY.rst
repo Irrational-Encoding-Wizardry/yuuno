@@ -2,6 +2,17 @@
 History
 =======
 
+1.2.0 (New York)
+----------------
+
+* Added %%vspreview and %%vspipe (which just emulates vspipe for now) implements a new workflow for
+  Yuuno users.
+* %diff is now an alias for %preview
+* Previews can now do a diff.
+* Removed the completely useless %show
+* Instead of showing the first frame, we are now showing a preview on browsers. It will gracefully degrade.
+* Auto-Completion for core.* works again!
+
 1.1.0 (São Paulo)
 -----------------
 

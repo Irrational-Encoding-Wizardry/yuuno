@@ -1,19 +1,19 @@
 import { DOMWidgetView } from '@jupyter-widgets/base';
-import EncodeWindow from '../components/EncodeWindow';
+import EncodeWindowComponent from '../components/encode/EncodeWindow';
 import Vue from 'vue';
 
 const nextTick = require('next-tick');
 let _widget_id = 0;
 
 
-export default class EncodeWindowWidget extends DOMWidgetView {
+export default class EncodeWindow extends DOMWidgetView {
     render() {
         const $this = this;
         this._own_widget_id = _widget_id++;
         this._vue = new Vue({
             name: 'Encode',
             render: function(h) {
-                return h(EncodeWindow, {
+                return h(EncodeWindowComponent, {
                     ref: 'encode',
                     props: {
                         current: this.current,
