@@ -1,6 +1,6 @@
 import shutil
-import tempfile
 from collections import ChainMap
+from contextlib import contextmanager
 
 from IPython.display import display
 
@@ -16,6 +16,10 @@ from yuuno.vs.utils import VapourSynthEnvironment
 from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import cell_magic
 
+
+@contextmanager
+def _noop():
+    return (yield)
 
 @magics_class
 class EditorMagics(Magics):
@@ -91,6 +95,7 @@ class EditorMagics(Magics):
             print()
             print("General options")
             print("--reset-core          - Reset the core before running the cell.")
+            print("--isolate-core        - Use a temporary core for the encode.")
             print("--isolate-variables   - Make sure that variables set inside this cell do not affect the global environment.")
             return
 
@@ -125,16 +130,25 @@ class EditorMagics(Magics):
         if reset_core:
             self.vsscript_feature.reset_script()
 
-        env = VapourSynthEnvironment()
-        with env:
-            execute_code(cell, "<vspreview>", True, ns=ns)
+        script = _noop()
+        after_exit = None
+        if "isolate-core" in line:
+            from yuuno_ipython.ipy_vs.vsscript import VSScriptWrapper
+            script = VSScriptWrapper.with_name("vspipe-emulation")
+            after_exit = lambda: script.dispose()
+
+        with script:
+            env = VapourSynthEnvironment()
+            with env:
+                execute_code(cell, "<vspreview>", True, ns=ns)
+            outputs = env.outputs
 
         if main not in env.outputs:
             print("Couldn't find your output. Aborting.")
             return
 
-        clip = env.outputs[main][start:end]
-        encode = self.encode.begin_encode(clip, ' '.join(line['--']), y4m=('y4m' in line), prefetch=requests)
+        clip = outputs[main][start:end]
+        encode = self.encode.begin_encode(clip, ' '.join(line['--']), y4m=('y4m' in line), prefetch=requests, after_exit=after_exit)
         display(encode)
 
     @cell_magic

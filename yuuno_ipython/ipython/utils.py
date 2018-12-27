@@ -16,13 +16,39 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import ast
+import time
+import hashlib
+import linecache
 
 from typing import Callable
 
 from yuuno.yuuno import Yuuno
 
 
+EXECUTE_CODE_LINENO = 0
 RESULT_VAR = '_yuuno_exec_last_'
+
+
+def _code_name(code, file, number=0):
+    hash_digest = hashlib.sha1(code.encode("utf-8")).hexdigest()
+    return f"<{file}-{number}-{hash_digest[:12]}>"
+
+
+def compile_with_cache(ipython, code, ast, file, symbol):
+    # Increment the cache name.
+    global EXECUTE_CODE_LINENO
+    exec_no = EXECUTE_CODE_LINENO
+    EXECUTE_CODE_LINENO += 1
+
+    # Directly drop the fake python file into the cache.
+    name = _code_name(code, file, exec_no)
+    entry = (len(code), time.time(), [line + '\n' for line in code.splitlines()], name)
+    linecache.cache[name] = entry
+    if hasattr(linecache, '_ipython_cache'):
+        linecache._ipython_cache[name] = entry
+
+    # Compile the code
+    return ipython.compile(ast, name, symbol)
 
 
 def execute_code(expr, file, fail_on_error=True, ns=None):
@@ -30,6 +56,7 @@ def execute_code(expr, file, fail_on_error=True, ns=None):
     expr = ipy.input_transformer_manager.transform_cell(expr)
     expr_ast = ipy.compile.ast_parse(expr)
     expr_ast = ipy.transform_ast(expr_ast)
+
 
     if len(expr_ast.body) == 0:
         # There is no code to execute.
@@ -59,7 +86,7 @@ def execute_code(expr, file, fail_on_error=True, ns=None):
         expr_ast.body.append(assign)
     ast.fix_missing_locations(expr_ast)
 
-    code = compile(expr_ast, file, 'exec')
+    code = compile_with_cache(ipy, expr, expr_ast, file, "exec")
 
     if ns is None:
         ns = ipy.user_ns
@@ -70,16 +97,3 @@ def execute_code(expr, file, fail_on_error=True, ns=None):
     finally:
         ns.pop(RESULT_VAR, None)
     return result
-
-
-class fake_dict(object):
-    """
-    Decorator for functions so that they behave like a dict
-    """
-
-    def __init__(self, func: Callable[[object], object]) -> None:
-        self.func = func
-
-    def __getitem__(self, it: object) -> object:
-        return self.func(it)
-

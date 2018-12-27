@@ -92,6 +92,27 @@ class VSScriptWrapper(object):
         self.script = script
         self._env = env_from_script(self.script)
 
+    @classmethod
+    def with_name(cls, name):
+        mgr = Yuuno.instance().get_extension('MultiScript')
+        environment = Yuuno.instance().environment
+        if mgr is None or not environment.use_vsscript:
+            # VSScript is not enabled. Don't do anything.
+            return
+
+        manager: ScriptManager = mgr.get_manager('VSScript')
+        if manager is None:
+            # VSScript is not enabled. Don't do anything.
+            return
+
+        return cls(manager.create(name, initialize=True))
+
+    def __enter__(self):
+        return self._env.__enter__()
+
+    def __exit__(self, *args, **kwargs):
+        return self._env.__exit__(*args, **kwargs)
+
     def replace(self):
         """
         Replaces the top-most VapourSynth-Environment stack
