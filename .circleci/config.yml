@@ -61,8 +61,7 @@ jobs:
             pip install wheel
             pip install vapoursynth
             pip install git+https://github.com/Irrational-Encoding-Wizardry/yuuno-core@$CIRCLE_BRANCH
-            pushd
-            cd yuuno-jupyter
+            pushd yuuno-jupyter
             npm install
             popd
 
