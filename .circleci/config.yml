@@ -40,6 +40,7 @@ jobs:
             fi
             cp ./vendor/archives/*.deb /var/cache/apt/archives
             apt install ./vendor/archives/*.deb
+            npm install -g yarn
 
       - save_cache:
           paths:
