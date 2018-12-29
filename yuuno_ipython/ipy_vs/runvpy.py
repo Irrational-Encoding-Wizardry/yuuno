@@ -51,10 +51,14 @@ class RunVPyMagic(Magics):
 
         return self.runvpy_cell(line, cell)
 
+    @line_magic
+    def execvpy(self, line: str):
+        runpy.run_path(line, {}, "__vapoursynth__")
+
     def runvpy_line(self, line: str) -> Dict[int, vapoursynth.VideoNode]:
         outputs = VapourSynthEnvironment()
         with outputs:
-            runpy.run_path(line, {}, "__vapoursynth__")
+            self.execvpy(line)
 
         return outputs.outputs
 

@@ -151,6 +151,7 @@ class EditorMagics(Magics):
         encode = self.encode.begin_encode(clip, ' '.join(line['--']), y4m=('y4m' in line), prefetch=requests, after_exit=after_exit)
         display(encode)
 
+
     @cell_magic
     def vspreview(self, line, cell):
         line = self.parse_parameters(line)

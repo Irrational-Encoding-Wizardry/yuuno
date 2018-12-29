@@ -30,8 +30,8 @@ Yuuno = Jupyter + VapourSynth
 
 Start your journey here:
 ------------------------
-* `Installation <https://yuuno.encode.moe/installation.html>`_
-* `Usage <https://yuuno.encode.moe/usage.html>`_
+* `Installation <https://yuuno.encode.moe/ipython/installation.html>`_
+* `Usage <https://yuuno.encode.moe/ipython/getting-started.html>`_
 
 Features
 --------
@@ -39,7 +39,7 @@ Features
 * Automatic importing of a VapourSynth-core as well as the VapourSynth-module itself.
 * Inline-rendering of the first frame of a clip.
 * Encoding of VapourSynth-Clips from the Notebook/IPython-shell
-* Interactive Clip Introspection using IPython-magics (%preview, %diff, %compare and %inspect)
+* Interactive Clip Introspection using IPython-magics (%preview, %diff)
 
 Credits
 -------

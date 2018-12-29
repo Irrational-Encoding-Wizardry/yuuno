@@ -51,47 +51,6 @@ class YuunoIPythonEnvironment(Environment):
 
     use_vsscript: bool = Bool(True, help="Use VSScript", config=True)
 
-    tiling_threshold: TTuple[int, int] = List(
-        Integer(),
-        help="From which image size on should Yuuno tile the image to prevent the browser from crashing. "
-             "(For interactive applications only.)",
-        default_value=(5*1920, 5*1080),
-        config=True,
-        maxlen=2,
-        minlen=2
-    )
-    tile_size: TTuple[int, int] = List(
-        Integer(),
-        help="The size of the tiles when an interactive application shows a tiled image.",
-        default_value=(512, 512),
-        config=True,
-        maxlen=2,
-        minlen=2
-    )
-    tile_viewport_size: TTuple[int, int] = List(
-        Integer(),
-        help="Size of the viewport on tiled images.",
-        default_value=(960, 540),
-        config=True,
-        maxlen=2,
-        minlen=2
-    )
-
-    inspect_default_sizes: Sequence[float] = List(
-        Float(),
-        default_value=(1, 2, 5),
-        help="Default values for the inspect widget",
-        config=True
-    )
-    inspect_resizer: str = CaselessStrEnum(
-        ['NEAREST', 'BILINEAR', 'BICUBIC', 'LANCZOS'],
-        default_value='NEAREST',
-        help="Which PIL scaler should be used to resize the image?",
-        config=True
-    )
-
-    diff_scale: bool = Bool(True, help="Apply CSS-Scale on the diff widget")
-
     feature_classes: Sequence[str] = List(DottedObjectName(), default_value=[
         "yuuno_ipython.ipython.formatter.Formatter",
         "yuuno_ipython.ipython.namespace.Namespace",
