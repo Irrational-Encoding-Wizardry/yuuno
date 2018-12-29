@@ -28,8 +28,8 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-apt-{{ checksum "setup.py" }}
-          - v1-apt-
+          - v2-apt-{{ checksum "setup.py" }}
+          - v2-apt-
 
       - run:
           name: Install packages.
@@ -43,8 +43,8 @@ jobs:
 
       - save_cache:
           paths:
-          - "./vendor/apt"
-          key: v1-apt-{{ checksum "setup.py" }}
+          - "./vendor/archives"
+          key: v2-apt-{{ checksum "setup.py" }}
 
       # Download and cache dependencies
       - restore_cache:
