@@ -23,7 +23,7 @@ from typing import Dict, Optional
 import vapoursynth
 
 from IPython.core.magic import Magics, magics_class
-from IPython.core.magic import line_cell_magic
+from IPython.core.magic import line_magic, line_cell_magic
 
 from yuuno import Yuuno
 
