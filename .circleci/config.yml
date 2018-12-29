@@ -50,16 +50,17 @@ jobs:
           key: v1-dependencies-{{ checksum "setup.py" }}
 
       - run:
-          name: Install repository
-          command: |
-            . venv/bin/activate
-            pip install .
-
-      - run:
           name: Build widget-js
           command: |
             . venv/bin/activate
             python setup.py build_npm
+
+
+      - run:
+          name: Install repository
+          command: |
+            . venv/bin/activate
+            pip install .
 
       - run:
           name: run tests
