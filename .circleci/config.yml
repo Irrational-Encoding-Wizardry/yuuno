@@ -34,12 +34,12 @@ jobs:
       - run:
           name: Install packages.
           command: |
-            if ! [[ -d ./vendor/apt/archives ]]; then
-              apt update -q && apt install --yes --download-only python3 python3-pip python3-venv vapoursynth
-              apt update -q && apt install --yes --download-only npm
-              cp -R /var/apt/cache ./vendor/
+            if ! [[ -d ./vendor/archives ]]; then
+              apt update -q && apt install --yes --download-only python3 python3-pip python3-venv vapoursynth npm
+              cp -R /var/cache/apt ./vendor/
+              find ./vendor -type f
             fi
-            dpkg -i ./vendor/apt/archives/*.deb
+            dpkg -i ./vendor/archives/*.deb
 
       - save_cache:
           paths:
