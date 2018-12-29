@@ -32,21 +32,19 @@ jobs:
           - v1-apt-
 
       - run:
-          name: Download uncached packages
+          name: Install packages.
           command: |
-            apt update -q && apt install --yes --download-only python3 python3-pip python3-venv vapoursynth
-            apt update -q && apt install --yes --download-only npm
-            cp -R /var/cache/apt vendor/
+            if ! [[ -d vendor/apt/archives ]]; then
+              apt update -q && apt install --yes --download-only python3 python3-pip python3-venv vapoursynth
+              apt update -q && apt install --yes --download-only npm
+              cp -R /var/cache/apt vendor/
+            fi
+            dpkg -i ./vendor/apt/archives/*.deb
 
       - save_cache:
           paths:
           - "./vendor/apt"
           key: v1-apt-{{ checksum "setup.py" }}
-
-      - run:
-          name: Installing cached packages
-          command: |
-            dpkg -i ./vendor/apt/archives/*.deb
 
       # Download and cache dependencies
       - restore_cache:
