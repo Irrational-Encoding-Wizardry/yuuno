@@ -34,7 +34,7 @@ STATIC_OBJECT = StaticObject()
 class TestClip(Clip):
 
     def __len__(self):
-        pass
+        return 0
 
     @inline_resolved
     def __getitem__(self, item):
@@ -76,18 +76,13 @@ class TestFormatter(unittest.TestCase):
         self.assertEqual(inline.ipy_image.data, TestPNGOutput.EXPECTED_RESULT_SIMPLE)
 
     def test_002_formatter_lookup_success(self):
-        self.assertIsNotNone(self.shell.display_formatter.formatters['image/png'].lookup(STATIC_OBJECT))
-        self.assertIsNotNone(self.shell.display_formatter.formatters['text/plain'].lookup(STATIC_OBJECT))
+        self.assertIsNotNone(self.shell.display_formatter.mimebundle_formatter.lookup(STATIC_OBJECT))
 
-        raw, _ = self.shell.display_formatter.formatters['image/png'].lookup(STATIC_OBJECT)(STATIC_OBJECT)
-        self.assertEqual(raw, base64.b64encode(TestPNGOutput.EXPECTED_RESULT_SIMPLE).decode('ascii') + '\n')
+        raw, _ = self.shell.display_formatter.mimebundle_formatter.lookup(STATIC_OBJECT)(STATIC_OBJECT)
 
     def test_003_formatter_unload_success(self):
         self.loaded = False
         unload_ipython_extension(self.shell)
 
         with self.assertRaises(KeyError):
-            self.shell.display_formatter.formatters['image/png'].lookup(STATIC_OBJECT)
-
-        with self.assertRaises(KeyError):
-            self.shell.display_formatter.formatters['text/plain'].lookup(STATIC_OBJECT)
+            self.shell.display_formatter.mimebundle_formatter.lookup(STATIC_OBJECT)
