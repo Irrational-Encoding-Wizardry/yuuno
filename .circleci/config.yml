@@ -39,7 +39,7 @@ jobs:
               cp -R /var/cache/apt ./vendor/
               find ./vendor -type f
             fi
-            dpkg -i ./vendor/archives/*.deb
+            apt install ./vendor/archives/*.deb
 
       - save_cache:
           paths:
