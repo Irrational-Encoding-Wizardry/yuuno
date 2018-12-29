@@ -23,6 +23,7 @@ jobs:
       - run: apt update -q && apt install -y software-properties-common git
       - run: add-apt-repository ppa:djcj/vapoursynth -y
       - run: apt update -q && apt install -y python3 python3-pip python3-venv vapoursynth
+      - run: apt update -q && apt install -y npm
 
       # Download and cache dependencies
       - restore_cache:
