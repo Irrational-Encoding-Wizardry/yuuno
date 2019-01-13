@@ -28,6 +28,14 @@
                         <option-group>
                             {{ clip.image.size.width }}x{{ clip.image.size.height }}
                         </option-group>
+                        <option-group v-if="Object.keys(clip.image.metadata).length > 0">
+                            <tooltip position="bottom">
+                                <template slot="text">Properties</template>
+                                <template slot="bubble">
+                                    <metadata-table :table="clip.image.metadata" :format="clip.image.format" style="border-radius: 6px;" />
+                                </template>
+                            </tooltip>
+                        </option-group>
                         <option-group class="no-border">
                             <div class="btn-group">
                                 <button class="navbar-btn btn btn-xs" @click="download(clip, 'clip')"><i class="fa fa-download"></i></button>
@@ -46,7 +54,15 @@
                             <button class="navbar-btn btn btn-xs" @click="download(diff, 'comparison')"><i class="fa fa-download"></i></button>
                         </div>
                     </option-group>
-                    <option-group class="no-border">
+                    <option-group v-if="Object.keys(diff.image.metadata).length > 0" class="no-border">
+                        <tooltip position="bottom">
+                            <template slot="text">Properties</template>
+                            <template slot="bubble">
+                                <metadata-table :table="diff.image.metadata" :format="diff.image.format" style="border-radius: 6px;" />
+                            </template>
+                        </tooltip>
+                    </option-group>
+                    <option-group>
                         {{ diff.length }} frames
                     </option-group>
                     <option-group>
@@ -66,6 +82,14 @@
                     </option-group>
                     <option-group>
                         {{ clip.image.size.width }}x{{ clip.image.size.height }}
+                    </option-group>
+                    <option-group v-if="Object.keys(clip.image.metadata).length > 0">
+                        <tooltip position="bottom">
+                            <template slot="text">Properties</template>
+                            <template slot="bubble">
+                                <metadata-table :table="clip.image.metadata" :format="clip.image.format" style="border-radius: 6px;" />
+                            </template>
+                        </tooltip>
                     </option-group>
                 </template>
                 <template slot="left" v-else>
@@ -93,6 +117,10 @@
 import Options from '../Options';
 import OptionGroup from '../OptionGroup';
 import OptionBadge from '../OptionBadge';
+
+import Tooltip from './Tooltip';
+import MetadataTable from './MetadataTable';
+
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { createMountedElement } from '../../utils/DOMUtils';
 
@@ -101,8 +129,11 @@ export default {
     components: {
         Options,
         OptionGroup,
-        OptionBadge
-        },
+        OptionBadge,
+
+        Tooltip,
+        MetadataTable
+    },
 
     computed: {
         ...mapState({

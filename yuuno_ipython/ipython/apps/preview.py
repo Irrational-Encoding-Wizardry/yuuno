@@ -24,7 +24,7 @@ from traitlets import default, directional_link, observe
 from traitlets import Any
 from traitlets import Integer, Unicode, Float
 
-from yuuno.clip import Clip
+from yuuno.clip import Clip, RawFormat
 from yuuno.utils import future_yield_coro
 from yuuno import Yuuno
 
@@ -78,13 +78,62 @@ class Preview(DOMWidget):
         self._clip_cache  = _Cache(lambda: self.clip, self._wrap_for)
         self._diff_cache = _Cache(lambda: self.diff, self._wrap_for)
 
-        self.on_msg(self._handle_request_length)
-        self.on_msg(self._handle_request_frame)
+        self._handlers = {
+            'length': self._handle_request_length,
+            'frame': self._handle_request_frame,
+            'metadata': self._handle_request_metadata
+        }
+
+        self.on_msg(self._request_dispatch)
+
+    def _request_dispatch(self, _, content, buffers):
+        type = content.get('type')
+        if type not in self._handlers:
+            return
+        self._handlers[type](_, content, buffers)
+
+    @future_yield_coro
+    def _handle_request_metadata(self, _, content, buffers):
+        rqid = content.get('id', None)
+        try:
+            frame = yield self._get_frame_from_request(content)
+            if frame is None:
+                return
+
+            meta = yield frame.get_metadata()
+            format = frame.format()
+            meta['$$$format'] = [
+                {
+                    RawFormat.ColorFamily.GREY: "GRAYSCALE",
+                    RawFormat.ColorFamily.RGB:  "RGB",
+                    RawFormat.ColorFamily.YUV:  "YUV"
+                }[format.family],
+                format.bits_per_sample,
+                {
+                    RawFormat.SampleType.INTEGER: "Integer",
+                    RawFormat.SampleType.FLOAT:   "Float"
+                }[format.sample_type],
+                format.subsampling_w,
+                format.subsampling_h
+            ]
+            self.send({
+                'type': 'response',
+                'id': rqid,
+                'payload': meta
+            })
+
+        except Exception as e:
+            import traceback
+            self.send({
+                'type': 'failure',
+                'id': rqid,
+                'payload': {
+                    'message': ''.join(traceback.format_exception(type(e), e, e.__traceback__))
+                }
+            })
+            raise
 
     def _handle_request_length(self, _, content, buffers):
-        if content.get('type', '') != 'length':
-            return
-
         rqid = content.get('id', None)
         target = self._target_for(content)
         if target is None:
@@ -120,11 +169,9 @@ class Preview(DOMWidget):
             target = Yuuno.instance().wrap(target)
         return target
 
-    @future_yield_coro
-    def _handle_request_frame(self, _, content, buffers):
-        if content.get('type', '') != 'frame':
-            return
 
+    @future_yield_coro
+    def _get_frame_from_request(self, content):
         rqid = content.get('id', None)
         wrapped = self._target_for(content)
 
@@ -142,8 +189,28 @@ class Preview(DOMWidget):
         if frameno >= len(wrapped):
             frameno = len(wrapped) - 1
 
+        frame = yield wrapped[frameno]
+        return frame
+
+
+    @future_yield_coro
+    def _handle_request_frame(self, _, content, buffers):
+        rqid = content.get('id', None)
         try:
-            frame = yield wrapped[frameno]
+            frame = yield self._get_frame_from_request(content)
+            if frame is None:
+                return
+                
+            data = Yuuno.instance().output.bytes_of(frame)
+
+            self.send({
+                'type': 'response',
+                'id': rqid,
+                'payload': {
+                    'size': frame.get_size()
+                }
+            }, [data])
+
         except Exception as e:
             import traceback
             self.send({
@@ -154,11 +221,3 @@ class Preview(DOMWidget):
                 }
             })
             raise
-        data = Yuuno.instance().output.bytes_of(frame.to_pil())
-        self.send({
-            'type': 'response',
-            'id': rqid,
-            'payload': {
-                'size': frame.size()
-            }
-        }, [data])

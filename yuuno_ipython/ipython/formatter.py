@@ -60,8 +60,8 @@ class InlineFormat(HasTraits):
         if self._ipy_image_cache is not None:
             return self._ipy_image_cache
 
-        size = self.first_frame.size()
-        raw = self.environment.parent.output.bytes_of(self.first_frame.to_pil())
+        size = self.first_frame.get_size()
+        raw = self.environment.parent.output.bytes_of(self.first_frame)
         self._ipy_image_cache = IPyImage(
             data=raw,
             format="png",
@@ -79,7 +79,7 @@ class InlineFormat(HasTraits):
     }
 
     def _repr_pretty(self):
-        size = self.first_frame.size()
+        size = self.first_frame.get_size()
         return f"<{self.clip.clip!r} {size.width}x{size.height}, {len(self.clip)} frames>"
 
     def _repr_png(self, *args, **kwargs):

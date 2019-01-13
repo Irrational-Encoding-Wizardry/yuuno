@@ -10,6 +10,8 @@ const createImageModule = function() {
 
         state: {
             raw: null,
+            metadata: {},
+            format: null,
             size: {
                 width: 0,
                 height: 0
@@ -17,6 +19,17 @@ const createImageModule = function() {
             error: null
         },
         mutations: {
+            setMetadata(state, {response, buffers}) {
+                if (!!response['$$$format']) {
+                    const data = response['$$$format'];
+                    delete response['$$$format'];
+                    state.format = data;
+                } else {
+                    state.format = null;
+                }
+                state.metadata = response;
+            },
+
             setImage(state, {response, buffers}) {
                 state.error = null;
                 state.size.width = response.size[0];
@@ -57,6 +70,15 @@ const createClipModule = function(model, type) {
                 try {
                     const [response, buffers] = await model.requestFrame(type);
                     commit('image/setImage', {response, buffers});
+                } catch (error) {
+                    commit('image/setError', error);
+                }
+            },
+
+            async metadata({commit}) {
+                try {
+                    const [response, buffers] = await model.requestMeta(type);
+                    commit('image/setMetadata', {response, buffers});
                 } catch (error) {
                     commit('image/setError', error);
                 }
@@ -200,8 +222,11 @@ export default function makeStore(model) {
                 await dispatch('updates/update', async () => {
                     const promises = [];
                     promises.push(dispatch('clip/frame'));
-                    if (!!state.model.diff)
+                    promises.push(dispatch('clip/metadata'));
+                    if (!!state.model.diff) {
                         promises.push(dispatch('diff/frame'));
+                        promises.push(dispatch('diff/metadata'));
+                    }
                     await Promise.all(promises);
                 });
             }

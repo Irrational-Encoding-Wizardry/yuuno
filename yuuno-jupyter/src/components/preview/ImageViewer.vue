@@ -20,6 +20,7 @@
         color: #2f902f;
         font-family: 'Courier New', Courier, monospace;
         padding: 1em;
+        min-width: 500px;
 
         & > .character {
             font-weight: bold;

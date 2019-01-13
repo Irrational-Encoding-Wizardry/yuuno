@@ -43,7 +43,7 @@ class YuunoIPythonEnvironment(Environment):
     ipython: InteractiveShell = Instance(InteractiveShell)
     features: Sequence[Feature] = List(Instance(Feature))
 
-    no_env_wrap: bool = Bool(True, help="Overwrite the setting of Yuuno to execute all formatting calls inside the correct environment", config=True)
+    no_env_wrap: bool = Bool(False, help="Overwrite the setting of Yuuno to execute all formatting calls inside the correct environment", config=True)
 
     formatter: bool = Bool(True, help="Register IPython-formatters for objects", config=True)
     namespace: bool = Bool(True, help="Automatically push modules and extensions into the user namespace.", config=True)

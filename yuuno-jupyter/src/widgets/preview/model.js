@@ -28,8 +28,14 @@ export default class PreviewModel extends Disposer {
 
     async requestFrame(type) {
         // Make sure we don't have a race condition and always send the requested frame.
-        return await cache.get(`${this.widget.model.get(type)}-${this.widget.model.get('frame')}`, async()=>{
+        return await cache.get(`frame-${this.widget.model.get(type)}-${this.widget.model.get('frame')}`, async()=>{
             return await this._rawRequest({type: 'frame', payload: {image: type, frame: this.widget.model.get('frame')}});
+        });
+    }
+
+    async requestMeta(type) {
+        return await cache.get(`meta-${this.widget.model.get(type)}-${this.widget.model.get('frame')}`, async()=>{
+            return await this._rawRequest({type: 'metadata', payload: {image: type, frame: this.widget.model.get('frame')}});
         });
     }
 
