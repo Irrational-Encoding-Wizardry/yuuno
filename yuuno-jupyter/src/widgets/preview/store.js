@@ -20,14 +20,17 @@ const createImageModule = function() {
         },
         mutations: {
             setMetadata(state, {response, buffers}) {
-                if (!!response['$$$format']) {
-                    const data = response['$$$format'];
-                    delete response['$$$format'];
-                    state.format = data;
-                } else {
-                    state.format = null;
-                }
                 state.metadata = response;
+            },
+
+            setFormat(state, {response, buffers}) {
+                state.format = [
+                    ['Grayscale', 'RGB', 'YUV'][response[2]],
+                    response[0],
+                    ['Integer', 'Float'][response[3]],
+                    response[5],
+                    response[4]
+                ];
             },
 
             setImage(state, {response, buffers}) {
@@ -79,6 +82,15 @@ const createClipModule = function(model, type) {
                 try {
                     const [response, buffers] = await model.requestMeta(type);
                     commit('image/setMetadata', {response, buffers});
+                } catch (error) {
+                    commit('image/setError', error);
+                }
+            },
+
+            async format({commit}) {
+                try {
+                    const [response, buffers] = await model.requestFormat(type);
+                    commit('image/setFormat', {response, buffers});
                 } catch (error) {
                     commit('image/setError', error);
                 }
@@ -219,13 +231,17 @@ export default function makeStore(model) {
             },
 
             async fetchFrames({state, dispatch}) {
+                const _rqData = function(p, type) {
+                    p.push(dispatch(`${type}/frame`));
+                    p.push(dispatch(`${type}/metadata`));
+                    p.push(dispatch(`${type}/format`));
+                };
+
                 await dispatch('updates/update', async () => {
                     const promises = [];
-                    promises.push(dispatch('clip/frame'));
-                    promises.push(dispatch('clip/metadata'));
+                    _rqData(promises, 'clip');
                     if (!!state.model.diff) {
-                        promises.push(dispatch('diff/frame'));
-                        promises.push(dispatch('diff/metadata'));
+                        _rqData(promises, 'diff');
                     }
                     await Promise.all(promises);
                 });

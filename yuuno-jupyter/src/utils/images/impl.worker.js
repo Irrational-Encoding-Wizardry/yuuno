@@ -12,9 +12,10 @@ const dispatchers = {
 
 
 self.onmessage = (event) => {
-    const {id, type, payload} = event.data;
+    console.log(event.data);
+    const {id, type, payload} = event.data.data;
     dispatchers[type](payload).then(
-        (response) => self.postMessage({id, type: "response", payload: response[0]}, response[1]),
-        (error) => self.postMessage({id, type: "failure", payload: error})
+        (response) => self.postMessage({data: {id, type: "response", payload: response[0]}, binaries: response[1]}, response[1]),
+        (error) => self.postMessage({data: {id, type: "failure", payload: error}, binaries: []})
     );
 }

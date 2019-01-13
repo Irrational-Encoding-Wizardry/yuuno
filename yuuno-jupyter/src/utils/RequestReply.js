@@ -7,11 +7,14 @@ let _inst_ctr = 0;
 
 export class RequestReply extends Disposer {
 
-    constructor() {
+    constructor(connection) {
         super(null);
         this._requests = {};
         this._instance = _inst_ctr++;
         this._current_id = 0;
+
+        this.connection = connection;
+        this.connection.receive = (data, binaries) => this.receive(data, binaries);
     }
 
     target() {
@@ -21,12 +24,9 @@ export class RequestReply extends Disposer {
         this._requests = {}
     }
 
-    _send(data) {
-
-    }
-
-    receive(data) {
+    receive(data, buffers) {
         const id = data.id;
+        data.$buffers = buffers;
         if (!this._requests[id]) return;
         const delegate = this._requests[id];
 
@@ -38,57 +38,13 @@ export class RequestReply extends Disposer {
         delete this._requests[id];
     }
 
-    send(data) {
+    send(data, binaries) {
         const id = `${this._instance}--${this._current_id++}`;
         const delegate = this._requests[id] = new PromiseDelegate();
-        this._send({
+        this.connection.send({
             id,
             ...data
-        });
+        }, binaries);
         return delegate.promise;
-    }
-}
-
-export class WidgetRequestReply extends RequestReply {
-    constructor(widget) {
-        super();
-        this.widget = widget;
-        this.widget.model.on('msg:custom', this.receive, this);
-    }
-
-    _send(data) {
-        const buffers = data.$buffers || [];
-        delete data['$buffers'];
-        this.widget.send(data, buffers);
-    }
-
-    target() {
-        this.widget.model.off('msg:custom', this._receive, this);
-        super.target();
-    }
-
-    receive(content, buffers) {
-        content.$buffers = buffers;
-        super.receive(content);
-    }
-}
-
-export class MessageRequestReply extends RequestReply {
-    constructor(messagable) {
-        super();
-        this.messagable = messagable;
-        this._previous = this.messagable.onmessage;
-        this.messagable.onmessage = (event) => this.receive(event.data);
-    }
-
-    _send(data) {
-        const transfers = data.$transfers || [];
-        delete data['$transfers'];
-        this.messagable.postMessage(data, transfers);
-    }
-
-    target() {
-        this.messagable.onmessage = this._previous;
-        super.target();
     }
 }

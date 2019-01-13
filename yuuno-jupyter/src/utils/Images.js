@@ -1,7 +1,7 @@
 import Worker from "worker-loader?inline=true&name=worker.js&publicPath=/nbextensions/yuuno-ipython/!./images/impl.worker";
-import MessageablePool from './MessageablePool';
 import Disposer from './Disposer';
-import { MessageRequestReply } from './RequestReply';
+import { RequestReply } from './RequestReply';
+import { MessageConnection } from './Connection';
 import MessagablePool from "./MessageablePool";
 
 
@@ -13,7 +13,7 @@ const pool = new MessagablePool({
     create_life: 5 * 1000,
     maxsize: 5,
 });
-const reqrepl = new MessageRequestReply(pool);
+const reqrepl = new RequestReply(new MessageConnection(pool));
 
 
 export default class ImageOperations extends Disposer {
