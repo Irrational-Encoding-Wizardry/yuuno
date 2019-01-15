@@ -32,7 +32,7 @@
                             <tooltip position="bottom">
                                 <template slot="text">Properties</template>
                                 <template slot="bubble">
-                                    <metadata-table :table="clip.image.metadata" :format="clip.image.format" style="border-radius: 6px;" />
+                                    <metadata-table :table="clip.image.metadata" :clipmeta="clip.metadata" :format="clip.image.format" style="border-radius: 6px;" />
                                 </template>
                             </tooltip>
                         </option-group>
@@ -58,7 +58,7 @@
                         <tooltip position="bottom">
                             <template slot="text">Properties</template>
                             <template slot="bubble">
-                                <metadata-table :table="diff.image.metadata" :format="diff.image.format" style="border-radius: 6px;" />
+                                <metadata-table :table="diff.image.metadata" :format="diff.image.format" :clipmeta="diff.metadata" style="border-radius: 6px;" />
                             </template>
                         </tooltip>
                     </option-group>
@@ -87,7 +87,7 @@
                         <tooltip position="bottom">
                             <template slot="text">Properties</template>
                             <template slot="bubble">
-                                <metadata-table :table="clip.image.metadata" :format="clip.image.format" style="border-radius: 6px;" />
+                                <metadata-table :clipmeta="clip.metadata" :table="clip.image.metadata" :format="clip.image.format" style="border-radius: 6px;" />
                             </template>
                         </tooltip>
                     </option-group>

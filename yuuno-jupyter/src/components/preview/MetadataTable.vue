@@ -18,11 +18,21 @@
                 </template>
             </template>
 
-            <tr><td class="metadata-section" colspan="2">Frame Properties</td></tr>
-            <tr :key="key" v-for="(value, key) in table">
-                <td class="key">{{ key }}</td>
-                <td class="value">{{ value }}</td>
-            </tr>
+            <template v-if="Object.keys(clipmeta).length > 0">
+                <tr><td class="metadata-section" colspan="2">Clip Properties</td></tr>
+                <tr :key="key" v-for="(value, key) in clipmeta">
+                    <td class="key">{{ key }}</td>
+                    <td class="value">{{ value }}</td>
+                </tr>
+            </template>
+
+            <template v-if="Object.keys(table).length > 0">
+                <tr><td class="metadata-section" colspan="2">Frame Properties</td></tr>
+                <tr :key="key" v-for="(value, key) in table">
+                    <td class="key">{{ key }}</td>
+                    <td class="value">{{ value }}</td>
+                </tr>
+            </template>
         </table>
     </div>
 </template>
@@ -64,7 +74,7 @@
 <script>
 export default {
     name: 'MetadataTable',
-    props: ['table', 'format']
+    props: ['table', 'format', 'clipmeta']
 }
 </script>
 

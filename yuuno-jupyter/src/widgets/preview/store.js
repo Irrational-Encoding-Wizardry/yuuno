@@ -60,12 +60,17 @@ const createClipModule = function(model, type) {
         },
         state: {
             length: 0,
-            clip_id: null
+            clip_id: null,
+            metadata: {}
         },
         mutations: {
             setLength(state, {response}) {
                 state.length = response.length;
                 state.clip_id = response.clip_id;
+            },
+
+            setMetadata(state, {response}) {
+                state.metadata = response;
             }
         },
         actions: {
@@ -82,6 +87,15 @@ const createClipModule = function(model, type) {
                 try {
                     const [response, buffers] = await model.requestMeta(type);
                     commit('image/setMetadata', {response, buffers});
+                } catch (error) {
+                    commit('image/setError', error);
+                }
+            },
+
+            async clipMetadata({commit}) {
+                try {
+                    const [response, buffers] = await model.requestClipMeta(type);
+                    commit('setMetadata', {response, buffers});
                 } catch (error) {
                     commit('image/setError', error);
                 }
@@ -220,11 +234,16 @@ export default function makeStore(model) {
 
         actions: {
             async fetchLengths({state, dispatch}) {
+                const _rqData = function(p, type) {
+                    p.push(dispatch(`${type}/length`));
+                    p.push(dispatch(`${type}/clipMetadata`));
+                };
+
                 await dispatch('updates/update', async () => {
                     const promises = [];
-                    promises.push(dispatch('clip/length'));
+                    _rqData(promises, 'clip');
                     if (!!state.model.diff)
-                        promises.push(dispatch('diff/length'));
+                        _rqData(promises, 'diff');
                     await Promise.all(promises);
                     promises.push(dispatch('fetchFrames'));
                 });

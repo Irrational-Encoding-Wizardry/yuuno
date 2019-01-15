@@ -41,6 +41,10 @@ export default class PreviewModel extends Disposer {
         return await this._rawRequest(type, {type: 'metadata', payload: {frame: this.widget.model.get('frame')}});
     }
 
+    async requestClipMeta(type) {
+        return await this._rawRequest(type, {type: 'metadata', payload: {frame: null}});
+    }
+
     async requestFormat(type) {
         return await this._rawRequest(type, {type: 'format', payload: {frame: this.widget.model.get('frame')}});
     }

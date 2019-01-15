@@ -139,7 +139,11 @@ class Formatter(Feature):
 
         clip = self.environment.parent.registry.wrap(obj)
         wrapped = InlineFormat(environment=self.environment, clip=clip)
-        self.cache[obj] = wrapped
+        try:
+            self.cache[obj] = wrapped
+        except TypeError:
+            pass
+
         return wrapped
 
     def display(self, obj, *args, **kwargs):
