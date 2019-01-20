@@ -1,0 +1,3 @@
+[submodule "yuuno-js"]
+	path = yuuno-js
+	url = https://github.com/Irrational-Encoding-Wizardry/yuuno-js.git
