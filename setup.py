@@ -34,15 +34,12 @@ class NPMBuild(build_py):
 
     def get_js_package_manager(self):
         import shutil
-        npm = shutil.which("npm")
-        if npm is None:
-            raise RuntimeError("Couldn't find NPM.")
         
         cmd = shutil.which("yarn")
         if shutil.which("yarn") is not None:
             return cmd
         else:
-            return npm
+            raise RuntimeError("Yuuno needs yarn to work. Please install yarn.")
 
     def popen(self, cmd, *args, **kwargs):
         self.announce(f"running command: {cmd}", level=INFO)
@@ -51,17 +48,22 @@ class NPMBuild(build_py):
         return subprocess.check_call(shlex.split(cmd), *args, **kwargs)
 
     def run(self):
+        import shutil
         cwd = DIRNAME
 
-        if os.path.exists(os.path.join(cwd, "yuuno_ipython", "build", "extension.js")):
-            self.announce(f"cleaning build target.", level=INFO)
-            import shutil
-            shutil.rmtree(os.path.join(cwd, "yuuno_ipython", "build"))
+        dirpath = os.path.join(cwd, "yuuno_ipython", "build")
 
-        jspath = os.path.join(cwd, 'yuuno-jupyter')
+        if os.path.exists(os.path.join(dirpath, "extension.js")):
+            self.announce(f"cleaning build target.", level=INFO)
+            shutil.rmtree(dirpath)
+
+        jspath = os.path.join(cwd, 'yuuno-js')
         pm = self.get_js_package_manager()
-        self.popen(f'"{pm}" install', cwd=jspath)
-        self.popen(f'"{pm}" run build', cwd=jspath)
+        self.popen(f'"{pm}" run bootstrap', cwd=jspath)
+        self.popen(f'"{pm}" run build-jupyter', cwd=jspath)
+
+        self.announce("Copying build artefacts", level=INFO)
+        shutil.copytree(os.path.join(jspath, "packages", "jupyter", "dist"), dirpath)
 
 
 class SDistNPM(sdist):
@@ -75,8 +77,8 @@ class Install(install):
     def run(self):
         cwd = DIRNAME
         if not os.path.exists(os.path.join(cwd, "yuuno_ipython", "build", "extension.js")):
-            print("NOT FOUND")
-            if not os.path.exists(os.path.join(cwd, 'yuuno-jupyter')):
+            self.announce("There are no compiled JavaScript-sourced available. Compiling...")
+            if not os.path.exists(os.path.join(cwd, 'yuuno-js')):
                 raise RuntimeError("Couldn't find uncompiled javascript source. Did you package it incorrectly?")
             self.run_command('build_npm')
         super().run()
@@ -85,7 +87,7 @@ class Install(install):
 class Build(build):
 
     def run(self):
-        if not os.path.exists(os.path.join(DIRNAME, 'yuuno-jupyter')):
+        if not os.path.exists(os.path.join(DIRNAME, 'yuuno-js')):
             self.announce("Skipping NPM build as the sources are not provided.", level=INFO)
         else:
             self.run_command('build_npm')
