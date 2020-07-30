@@ -24,6 +24,7 @@ import shlex
 import queue
 import codecs
 import signal
+import functools
 import subprocess
 from threading import Thread, Lock, Event
 
@@ -34,6 +35,7 @@ from IPython.core.magic import Magics, magics_class
 from IPython.core.magic import line_cell_magic, line_magic
 
 from yuuno import Yuuno
+from yuuno.vs.utils import get_proxy_or_core, get_environment
 from yuuno.multi_scripts.os import popen, interrupt_process
 
 from yuuno_ipython.ipython.utils import execute_code
@@ -168,11 +170,15 @@ class EncodeMagic(Magics):
             time.sleep(0.5)
         encode.current, encode.length = state
 
-    def _clip_output(self, clip, dead, encode, stdin, state, y4m):
+    def _clip_output(self, env, clip, dead, encode, stdin, state, y4m):
         def _progress(current, length):
             state[0], state[1] = current, length
         try:
-            clip.output(stdin, y4m=y4m, progress_update=_progress)
+            from yuuno_ipython.ipy_vs.outputter import encode as raw_encode
+            with env():
+                # clip.output(stdin, y4m=y4m, progress_update=_progress)
+                raw_encode(clip, stdin, y4m=y4m, progress=_progress)
+
         except Exception as e:
             if dead.is_set():
                 return
@@ -206,7 +212,7 @@ class EncodeMagic(Magics):
         Thread(target=self._reader, args=(kill, process, process.stdout, q, encode, after_exit), daemon=True).start()
         Thread(target=self._terminal_writer, args=(q, encode), daemon=True).start()
         if clip is not None:
-            Thread(target=self._clip_output, args=(clip, kill, encode, process.stdin, state, kwargs.get("y4m", False))).start()
+            Thread(target=self._clip_output, args=(get_environment(), clip, kill, encode, process.stdin, state, kwargs.get("y4m", False))).start()
         Thread(target=self._state_updater, args=(kill, encode, state), daemon=True).start()
 
         return encode

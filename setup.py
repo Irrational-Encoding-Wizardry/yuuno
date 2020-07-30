@@ -113,7 +113,7 @@ test_requirements = [
 
 setup(
     name='yuuno',
-    version='1.2',
+    version='1.3',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="stuxcrystal",
@@ -161,7 +161,6 @@ setup(
         ],
         'yuuno.extensions': [
             'ipy_vs = yuuno_ipython.ipy_vs.extension:IPythonVapoursynthExtension',
-            'ipy_comm = yuuno_ipython.comm.extension:YuunoKernelCommExtension'
         ],
         'yuuno.commands': [
             'jupyter = yuuno_ipython.commands:jupyter'

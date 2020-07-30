@@ -25,6 +25,7 @@ from yuuno import Yuuno
 from yuuno_ipython.ipython.magic import MagicFeature, Magics
 from yuuno_ipython.ipython.utils import execute_code
 from yuuno_ipython.ipy_vs.vs_feature import VSFeature
+from yuuno.vs.flags import Features
 
 if TYPE_CHECKING:
     from vapoursynth import Environment
@@ -37,17 +38,21 @@ def get_current_env() -> 'Environment':
     global _cur_env
     if _cur_env is None:
         import vapoursynth
-        _cur_env = vapoursynth.vpy_current_environment
+        if Features.ENVIRONMENT_POLICIES:
+            def __new_cur_env():
+                return vapoursynth.get_current_environment().use()
+            _cur_env = __new_cur_env
+        else:
+            _cur_env = vapoursynth.vpy_current_environment
+    
     try:
-        _cur_env()
+        return _cur_env()
     except RuntimeError:
         return None
 
 
-
 def env_from_script(script: 'VSScript') -> 'Environment':
-    import vapoursynth
-    return script.perform(lambda: vapoursynth.vpy_current_environment()).result()
+    return script.perform(get_current_env).result()
 
 
 @magics_class
@@ -120,9 +125,10 @@ class VSScriptWrapper(object):
         """
         cur_env = get_current_env()
         if get_current_env() != self._env:
-            if cur_env is not None:
+            if not Features.ENVIRONMENT_POLICIES:
                 # Hack to forcibly remove the environment from the stack.
-                cur_env.__exit__()
+                if cur_env is not None:
+                    cur_env.__exit__()
             self._env.__enter__()
 
     def dispose(self):

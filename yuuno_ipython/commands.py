@@ -34,7 +34,10 @@ def jupyter():
         except Exception as e:
             vs_ver = f"Failed to import: {e!r}"
         else:
-            vs_ver = vs.core.version()
+            if hasattr(vs, "__version__"):
+                vs_ver = f"{vs.__version__[0]}.{vs.__version__[1]}"
+            else:
+                vs_ver = vs.core.version()
                 
         from yuuno_ipython import __version__ as y4ipy_ver
         if "--for-debug" in sys.argv:
