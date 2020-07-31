@@ -1,8 +1,6 @@
-import math
 import typing as t
-from threading import BoundedSemaphore, Event, RLock
+from threading import RLock
 from concurrent.futures import Future
-from queue import Queue, Empty as QueueEmpty, Full as QueueFull
 
 import vapoursynth as vs
 
