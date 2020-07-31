@@ -176,7 +176,6 @@ class EncodeMagic(Magics):
         try:
             from yuuno_ipython.ipy_vs.outputter import encode as raw_encode
             with env():
-                # clip.output(stdin, y4m=y4m, progress_update=_progress)
                 raw_encode(clip, stdin, y4m=y4m, progress=_progress)
 
         except Exception as e:

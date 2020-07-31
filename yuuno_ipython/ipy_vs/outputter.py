@@ -62,24 +62,20 @@ def as_completed(futures: t.Iterable[Future], prefetch: int, backlog: t.Optional
             #            2. Don't exceed unused-frames-backlog
             while (not finished) and (running < prefetch) and len(reorder)<backlog:
                 _request_next()
+    _refill()
 
     sidx = 0
     fut: Future
     try:
         while (not finished) or (len(reorder)>0) or running>0:
             if sidx not in reorder:
-                _refill()
                 # Spin. Reorder being empty should never happen.
                 continue
 
             # Get next requested frame
             fut = reorder[sidx]
 
-            try:
-                result = fut.result(timeout=.5)
-            except TimeoutError:
-                continue
-
+            result = fut.result()
             del reorder[sidx]
             _refill()
 
