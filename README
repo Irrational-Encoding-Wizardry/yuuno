@@ -1,10 +1,3 @@
-=====
-Yuuno
-=====
-
-
-.. code::
-
     __   __
     \ \ / /
      \ V /   _ _   _ _ __   ___
@@ -13,25 +6,17 @@ Yuuno
       \_/\__,_|\__,_|_| |_|\___/
 
 
-
-
-
-.. image:: https://img.shields.io/pypi/v/yuuno.svg
-        :target: https://pypi.python.org/pypi/yuuno
-
-.. image:: https://circleci.com/gh/Irrational-Encoding-Wizardry/yuuno.svg?style=svg
-    :target: https://circleci.com/gh/Irrational-Encoding-Wizardry/yuuno
-
-
 Yuuno = Jupyter + VapourSynth
 
 * Free software: MIT license
 * Documentation: https://yuuno.encode.moe/
+* Main Project Repository: https://sr.ht/~cid-chan/yuuno/
+* This Project has a GitHub mirror at: https://github.com/Irrational-Encoding-Wizardry/yuuno
 
 Start your journey here:
 ------------------------
-* `Installation <https://yuuno.encode.moe/ipython/installation.html>`_
-* `Usage <https://yuuno.encode.moe/ipython/getting-started.html>`_
+* Installation <https://yuuno.encode.moe/ipython/installation.html>
+* Usage <https://yuuno.encode.moe/ipython/getting-started.html>
 
 Features
 --------
@@ -40,12 +25,4 @@ Features
 * Inline-rendering of the first frame of a clip.
 * Encoding of VapourSynth-Clips from the Notebook/IPython-shell
 * Interactive Clip Introspection using IPython-magics (%preview, %diff)
-
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 
