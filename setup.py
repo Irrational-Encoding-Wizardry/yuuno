@@ -105,7 +105,7 @@ class Build(build):
             self.run_command('build_npm')
         super().run()
 
-with open('README.rst', encoding="utf8") as readme_file:
+with open('README', encoding="utf8") as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst', encoding="utf8") as history_file:
