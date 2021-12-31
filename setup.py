@@ -52,11 +52,25 @@ class NPMBuild(build_py):
 
     def run(self):
         cwd = DIRNAME
+        target_dir = os.path.join(cwd, "yuuno_ipython", "build")
+        target_file = os.path.join(target_dir, "extension.js")
 
-        if os.path.exists(os.path.join(cwd, "yuuno_ipython", "build", "extension.js")):
+        if os.path.exists(target_file):
             self.announce(f"cleaning build target.", level=INFO)
             import shutil
-            shutil.rmtree(os.path.join(cwd, "yuuno_ipython", "build"))
+            shutil.rmtree(target_dir)
+
+        if os.environ.get("COMPILED_YUUNO_JS", ""):
+            compiled_path = os.environ["COMPILED_YUUNO_JS"]
+            if not os.path.exists(os.path.join(compiled_path, "extension.js")):
+                raise EnvironmentError("Could not find built extension.")
+
+            import shutil
+            shutil.copytree(compiled_path, target_dir)
+
+            self.announce("Used build from environment.")
+
+            return
 
         jspath = os.path.join(cwd, 'yuuno-jupyter')
         pm = self.get_js_package_manager()
@@ -153,8 +167,6 @@ setup(
         'Topic :: Multimedia :: Video :: Display',
         'Topic :: Multimedia :: Video :: Non-Linear Editor',
     ],
-    test_suite='tests',
-    tests_require=test_requirements,
     entry_points={
         'console_scripts': ['yuuno=yuuno.console_scripts:main'],
 

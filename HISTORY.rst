@@ -6,6 +6,8 @@ History
 ---------------
 
 * Reintegrated Yuuno Core into Yuuno proper.
+* I am using a nix-flakes now.
+
 1.2.0 (New York)
 ----------------
 

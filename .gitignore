@@ -158,3 +158,8 @@ typings/
 ## Visual Studio Code
 
 .vscode/
+
+
+## Nix and direnv.
+.envrc
+result
