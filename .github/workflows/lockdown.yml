@@ -1,0 +1,33 @@
+name: 'Repo Lockdown'
+
+on:
+  issues:
+    types: opened
+  pull_request_target:
+    types: opened
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: dessant/repo-lockdown@v2
+        with:
+          issue-labels: 'off-topic'
+          issue-comment: >
+            This repository does not accept bug reports.
+            Please Submit your Bug-Report to https://todo.sr.ht/~cid-chan/yuuno
+            or send an email to ~cid-chan/yuuno@todo.sr.ht
+            
+          pr-comment: >
+            This repository does not accept bug reports.
+            Please request a pull or patch-set by sending an email to
+            ~cid-chan/yuuno-devel@lists.sr.ht
+
+            The full mailing list is accessible at https://lists.sr.ht/~cid-chan/yuuno-devel
