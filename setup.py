@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -116,9 +116,9 @@ setup(
     version='1.3',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
-    author="stuxcrystal",
-    author_email='stuxcrystal@encode.moe',
-    url='https://github.com/stuxcrystal/yuuno',
+    author="cid-chan",
+    author_email='cid+yuuno@cid-chan.moe',
+    url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
     package_dir={'yuuno_ipython': 'yuuno_ipython'},
     package_data={'yuuno_ipython': ['static/*', 'build/*']},

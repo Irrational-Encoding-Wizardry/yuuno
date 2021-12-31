@@ -2,7 +2,7 @@
   "name": "yuuno-jupyter",
   "version": "1.0.0",
   "description": "Jupyter Bindings for Yuuno4IPython",
-  "author": "Roland Netzsch <stuxcrystal@encode.moe>",
+  "author": "Sarah <cid+yuuno@cid-chan.moe>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

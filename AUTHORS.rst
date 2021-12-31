@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* stuxcrystal <stuxcrystal@encode.moe>
+* cid-chan <cid+yuuno@cid-chan.moe>
 
 Contributors
 ------------

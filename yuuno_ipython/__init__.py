@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017,2018 StuxCrystal (Roland Netzsch <stuxcrystal@encode.moe>)
+# Copyright (C) 2017,2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +19,8 @@
 
 import sys
 
-__author__ = """stuxcrystal"""
-__email__ = 'stuxcrystal@encode.moe'
+__author__ = """cid-chan"""
+__email__ = 'cid+yuuno@cid-chan.moe'
 __version__ = '1.2'
 
 def _jupyter_nbextension_paths():
