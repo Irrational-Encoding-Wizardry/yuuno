@@ -1,0 +1,21 @@
+name: Mirror Repo
+on:
+  schedule:
+    # Backup nightly
+    - cron:  '0 0 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mirror
+      run: |
+        git clone --mirror 'https://git.sr.ht/~cid-chan/yuuno' repo
+        cd repo/
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git push --mirror github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
