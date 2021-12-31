@@ -13,6 +13,9 @@ Yuuno = Jupyter + VapourSynth
 * Main Project Repository: https://sr.ht/~cid-chan/yuuno/
 * This Project has a GitHub mirror at: https://github.com/Irrational-Encoding-Wizardry/yuuno
 
+Submit your bug-reports to https://todo.sr.ht/~cid-chan/yuuno
+Provide feedback and submit contributions on the mailing list https://lists.sr.ht/~cid-chan/yuuno-devel
+
 Start your journey here:
 ------------------------
 * Installation <https://yuuno.encode.moe/ipython/installation.html>
@@ -25,4 +28,3 @@ Features
 * Inline-rendering of the first frame of a clip.
 * Encoding of VapourSynth-Clips from the Notebook/IPython-shell
 * Interactive Clip Introspection using IPython-magics (%preview, %diff)
-
