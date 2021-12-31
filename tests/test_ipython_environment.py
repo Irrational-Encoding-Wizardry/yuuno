@@ -22,7 +22,7 @@ from yuuno_ipython.ipython.environment import YuunoIPythonEnvironment
 from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipython_extension
 
 from tests.helpers import AdditionalAsserts
-from tests._test_yuuno import SupportedTestExtension
+from tests.test_yuuno import SupportedTestExtension
 
 
 class TestFeature(Feature):
@@ -45,8 +45,8 @@ class TestIPythonEnvironment(AdditionalAsserts, unittest.TestCase):
 
     def setUp(self):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
-        Settings.DEFAULT_EXTENSION_TYPES.append("tests._test_yuuno.SupportedTestExtension")
-        YuunoIPythonEnvironment.feature_classes = ["test_ipython_environment.TestFeature"]
+        Settings.DEFAULT_EXTENSION_TYPES.append("tests.test_yuuno.SupportedTestExtension")
+        YuunoIPythonEnvironment.feature_classes = ["tests.test_ipython_environment.TestFeature"]
 
         self.shell = globalipapp.get_ipython()
 

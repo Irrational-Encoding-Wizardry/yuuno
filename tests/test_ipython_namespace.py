@@ -39,7 +39,7 @@ class TestIPythonNamespace(unittest.TestCase):
 
     def setUp(self):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
-        Settings.DEFAULT_EXTENSION_TYPES.append('test_ipython_namespace.TestExtension')
+        Settings.DEFAULT_EXTENSION_TYPES.append('tests.test_ipython_namespace.TestExtension')
         YuunoIPythonEnvironment.feature_classes = [
             "yuuno_ipython.ipython.namespace.Namespace"
         ]

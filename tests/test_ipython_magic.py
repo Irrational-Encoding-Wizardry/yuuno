@@ -49,9 +49,9 @@ class TestIPythonMagic(unittest.TestCase):
 
     def setUp(self):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
-        Settings.DEFAULT_EXTENSION_TYPES.append("test_ipython_formatter.TestClipExtension")
+        Settings.DEFAULT_EXTENSION_TYPES.append("tests.test_ipython_formatter.TestClipExtension")
         YuunoIPythonEnvironment.feature_classes = [
-            "test_ipython_magic.TestMagicFeature"
+            "tests.test_ipython_magic.TestMagicFeature"
         ]
 
         self.shell = globalipapp.get_ipython()

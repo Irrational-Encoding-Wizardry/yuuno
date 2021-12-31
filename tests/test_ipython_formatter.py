@@ -23,7 +23,7 @@ from yuuno_ipython.ipython.environment import load_ipython_extension, unload_ipy
 
 from yuuno_ipython.ipython.formatter import Formatter, InlineFormat
 
-from tests._test_png_output import SinglePixelFrame, TestPNGOutput
+from tests.test_png_output import SinglePixelFrame, TestPNGOutput
 
 
 class StaticObject(object):
@@ -54,7 +54,7 @@ class TestFormatter(unittest.TestCase):
 
     def setUp(self):
         Settings.DEFAULT_EXTENSION_TYPES.clear()
-        Settings.DEFAULT_EXTENSION_TYPES.append("test_ipython_formatter.TestClipExtension")
+        Settings.DEFAULT_EXTENSION_TYPES.append("tests.test_ipython_formatter.TestClipExtension")
         YuunoIPythonEnvironment.feature_classes = [
             "yuuno_ipython.ipython.formatter.Formatter"
         ]

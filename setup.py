@@ -103,13 +103,14 @@ requirements = [
     "jinja2",
     "ipywidgets",
     "pillow",
-
-    "yuuno-core"
+    "psutil"
 ]
 
-test_requirements = [
-    # TODO: put package test requirements here
-]
+test_requirements = []
+
+extras_requires = {
+    'vapoursynth': ['vapoursynth', 'vsutil']
+}
 
 setup(
     name='yuuno',
@@ -155,6 +156,8 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     entry_points={
+        'console_scripts': ['yuuno=yuuno.console_scripts:main'],
+
         'yuuno.environments': [
             'load_ipython_extension = yuuno_ipython.ipython.environment:load_ipython_extension',
             'unload_ipython_extension = yuuno_ipython.ipython.environment:unload_ipython_extension'

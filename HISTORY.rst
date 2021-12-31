@@ -2,6 +2,10 @@
 History
 =======
 
+1.3.0 (Jakarta)
+---------------
+
+* Reintegrated Yuuno Core into Yuuno proper.
 1.2.0 (New York)
 ----------------
 
