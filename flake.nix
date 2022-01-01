@@ -34,11 +34,13 @@
       ################################
       # Constructing the packages
 
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+      };
 
       allSupportedPythons = f: builtins.listToAttrs (map (py: {
         name = py;
-        value = f pkgs.${py};
+        value = f py pkgs.${py};
       }) supportedPythonVersions);
 
       vapoursynthModule = py: py.pkgs.buildPythonPackage {
@@ -56,14 +58,24 @@
         buildPhase = (if old ? buildPhase then old.buildPhase else "") + "\nyarn run build";
       });
 
+      mkDirectoryWith = yuuno: python: pkgs.runCommandNoCC "" {} ''
+        export PATH=${python.withPackages (ps: with ps; [jupyter yuuno])}/bin:$PATH
+        export JUPYTER_DATA_DIR=$out/data
+        export JUPYTER_CONFIG_DIR=$out/config
+        mkdir -p $out/{data,config}
+
+        python -m notebook.nbextensions install --py --user yuuno_ipython
+        python -m notebook.nbextensions enable --py --user yuuno_ipython
+      '';
+
     in
       rec {
         packages =
-          (allSupportedPythons (py: py.pkgs.buildPythonPackage {
+          (allSupportedPythons (_: py: py.pkgs.buildPythonPackage {
             pname = "yuuno";
             version = "1.3";
             src = ./.;
-            buildInputs = requirements py;
+            propagatedBuildInputs = requirements py;
 
             COMPILED_YUUNO_JS = "${nodePackage}/libexec/yuuno-jupyter/deps/yuuno_ipython/build";
 
@@ -81,7 +93,29 @@
 
         defaultPackage = packages.${defaultPython};
 
-        devShells = allSupportedPythons (py: pkgs.mkShell {
+        apps = allSupportedPythons (name: py: {
+          type = "app";
+          program =
+            let
+              pyWithPackages = (pkgs.jupyter.override{
+                python3 = py;
+              });
+
+              cfg = mkDirectoryWith packages.${name} py;
+            in
+            toString (pkgs.writeShellScript "yuuno-jupyter" ''
+              TDIR=$(mktemp -d)
+              cp --no-preserve=mode,ownership -r ${cfg}/* $TDIR
+              export JUPYTER_CONFIG_DIR=$TDIR/config
+              export JUPYTER_DATA_DIR=$TDIR/data
+              echo $TDIR
+              exec -a "$0" ${pyWithPackages}/bin/jupyter-notebook "$@"
+            '');
+        });
+        defaultApp = apps.${defaultPython};
+
+
+        devShells = allSupportedPythons (_: py: pkgs.mkShell {
           buildInputs = [
             (py.withPackages (_: requirements py))
 
