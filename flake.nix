@@ -59,13 +59,16 @@
       });
 
       mkDirectoryWith = yuuno: python: pkgs.runCommandNoCC "" {} ''
-        export PATH=${python.withPackages (ps: with ps; [jupyter yuuno])}/bin:$PATH
+        export PATH=${python.withPackages (ps: with ps; [jupyter yuuno ipywidgets])}/bin:$PATH
         export JUPYTER_DATA_DIR=$out/data
         export JUPYTER_CONFIG_DIR=$out/config
         mkdir -p $out/{data,config}
 
         python -m notebook.nbextensions install --py --user yuuno_ipython
         python -m notebook.nbextensions enable --py --user yuuno_ipython
+
+        python -m notebook.nbextensions install --py --user widgetsnbextension
+        python -m notebook.nbextensions enable --py --user widgetsnbextension
       '';
 
     in
@@ -98,7 +101,22 @@
           program =
             let
               pyWithPackages = (pkgs.jupyter.override{
-                python3 = py;
+                python3 = py.withPackages (_: requirements py);
+                definitions = {
+                  python3 = {
+                    displayName = "Python 3 with Yuuno";
+                    argv = [
+                      "${py.withPackages (_: requirements py)}/bin/python"
+                      "-m"
+                      "ipykernel_launcher"
+                      "-f"
+                      "{connection_file}"
+                    ];
+                    language = "python";
+                    logo32 = "lol";
+                    logo64 = "lol";
+                  };
+                };
               });
 
               cfg = mkDirectoryWith packages.${name} py;

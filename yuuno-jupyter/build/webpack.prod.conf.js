@@ -27,7 +27,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     libraryTarget: "amd",
     library: "@yuuno/jupyter"
   },
-  externals: ["@jupyter-widgets/base"],
+  externals: [
+      "@jupyter-widgets/base"
+  ],
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({

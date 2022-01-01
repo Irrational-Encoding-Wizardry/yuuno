@@ -27,8 +27,8 @@ def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
         'src': 'build',
-        'dest': 'yuuno-ipython',
-        'require': 'yuuno-ipython/extension'
+        'dest': '@yuuno',
+        'require': '@yuuno/jupyter'
     }]
 
 if sys.version_info < (3, 7):
@@ -36,3 +36,4 @@ if sys.version_info < (3, 7):
         "Yuuno now requires Python 3.7."
         "Please make sure you are using this version."
     )
+

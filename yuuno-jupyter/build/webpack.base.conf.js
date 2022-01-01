@@ -12,7 +12,7 @@ function resolve (dir) {
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    extension: './src/extension.js'
+    jupyter: './src/extension.js'
   },
   output: {
     path: config.build.assetsRoot,

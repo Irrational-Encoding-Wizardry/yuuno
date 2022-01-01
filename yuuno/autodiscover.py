@@ -23,6 +23,15 @@ def discover_environments(module_dict):
     for ep in pkg_resources.iter_entry_points('yuuno.environments'):
         module_dict[ep.name] = ep.load()
         all_exts.append(ep.name)
+
+    # This makes yuuno_ipython work easier in development environments.
+    if "load_ipython_extension" not in module_dict:
+        import yuuno_ipython.ipython.environment as ipy_env
+        module_dict["load_ipython_extension"] = ipy_env.load_ipython_extension
+        module_dict["unload_ipython_extension"] = ipy_env.unload_ipython_extension
+        all_exts.append("load_ipython_extension")
+        all_exts.append("unload_ipython_extension")
+
     return all_exts
 
 
