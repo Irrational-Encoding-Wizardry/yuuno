@@ -141,6 +141,8 @@
           ];
         });
         devShell = devShells.${defaultPython};
+
+        checks = packages;
       }
     );
 }
