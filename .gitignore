@@ -163,3 +163,7 @@ typings/
 ## Nix and direnv.
 .envrc
 result
+
+
+## Dev Stuff
+*.ipynb
