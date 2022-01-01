@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017,2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017,2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -98,13 +98,18 @@ Settings to a value less than one makes it default to the number of hardware thr
     def _default_log_handlers(self):
         return []
 
-    def _update_core_values(name=None):
+    def _update_core_values(name: Optional[str]=None):
         def _func(self, change=None):
             core = get_proxy_or_core()
+            if core is None:
+                return
 
             if name is None:
                 core.num_threads = self.core_num_threads
-                core.add_cache = self.core_add_cache
+
+                # Not supported in
+                if hasattr(core, "add_cache"):
+                    core.add_cache = self.core_add_cache
 
                 if hasattr(core, 'accept_lowercase'):
                     core.accept_lowercase = self.core_accept_lowercase
@@ -123,6 +128,11 @@ Settings to a value less than one makes it default to the number of hardware thr
     _observe_add_cache        = observe("core_add_cache")(_update_core_values("add_cache"))
     _observe_accept_lowercase = observe("core_accept_lowercase")(_update_core_values("accept_lowercase"))
     _observe_max_cache_size   = observe("core_max_cache_size")(_update_core_values("max_cache_size"))
+
+    @staticmethod
+    def instance() -> 'VapourSynth':
+        from yuuno import Yuuno
+        return Yuuno.instance().get_extension(VapourSynth)
 
     @classmethod
     def is_supported(cls):
@@ -160,11 +170,20 @@ Settings to a value less than one makes it default to the number of hardware thr
 
     @property
     def can_hook_log(self):
-        return self.hook_messages and is_single()
+        if not self.hook_messages:
+            return False
+
+        if Features.ENVIRONMENT_POLICIES:
+            from yuuno.vs.policy.environment import YuunoPolicy
+            if YuunoPolicy.IS_OWNED_BY_US:
+                return True
+
+        return is_single()
 
     def initialize_hook(self, vapoursynth):
         if self.can_hook_log:
-            vapoursynth.set_message_handler(self._on_vs_log)
+            if not Features.API4:
+                vapoursynth.set_message_handler(self._on_vs_log)
         elif self.hook_messages:
             self.parent.log.debug("vsscript-Environment detected. Skipping hook on message-handler.")
 
@@ -192,6 +211,10 @@ Settings to a value less than one makes it default to the number of hardware thr
             # Required so that IPython automatically supports alpha outputs
             from vapoursynth import AlphaOutputTuple
             self.registry.register(wrapperfunc(VapourSynthAlphaClip), AlphaOutputTuple)
+        if Features.API4:
+            from vapoursynth import VideoOutputTuple
+            self.registry.register(wrapperfunc(VapourSynthAlphaClip), VideoOutputTuple)
+
 
         self.parent.registry.add_subregistry(self.registry)
 
@@ -213,9 +236,12 @@ Settings to a value less than one makes it default to the number of hardware thr
             return
 
         self.parent.log.debug("Enabling VSScript.")
-        from yuuno.vs.vsscript.script import VSScriptManager
-        from yuuno.vs.vsscript.vs_capi import enable_vsscript
-        enable_vsscript()
+        if Features.API4:
+            from yuuno.vs.policy.environment import VSScriptManager
+        else:
+            from yuuno.vs.vsscript.script import VSScriptManager
+            from yuuno.vs.vsscript.vs_capi import enable_vsscript
+            enable_vsscript()
 
         self.script_manager = VSScriptManager()
         managers.register_manager('VSScript', self.script_manager)

@@ -2,7 +2,7 @@
 
 {#
 Yuuno - IPython + VapourSynth
-Copyright (C) 2018 cid-chan
+Copyright (C) 2018, 2022 cid-chan
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -19,24 +19,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
 <style>
-    .vs-log-{{ random_id }}.warning {
-        color: yellow;
+    .vs-log-{{ random_id }} {
+        padding: 5px 10px;
+        border-radius: 3px;
     }
 
-    .vs-log-{{ random_id }}.debug {
-        color: greenyellow;
+    .vs-log-{{ random_id }}.vs-log-warning {
+        background-color: yellow;
     }
 
-    .vs-log-{{ random_id }}.critical {
-        color: orange;
+    .vs-log-{{ random_id }}.vs-log-info {
+        background-color: lightblue;
     }
 
-    .vs-log-{{ random_id }}.fatal {
-        color: red;
+    .vs-log-{{ random_id }}.vs-log-debug {
+        background-color: greenyellow;
+    }
+
+    .vs-log-{{ random_id }}.vs-log-critical {
+        background-color: orange;
+    }
+
+    .vs-log-{{ random_id }}.vs-log-fatal {
+        background-color: red;
     }
 </style>
 
-<div id="vs-log-{{ random_id }} {{ level_class }}">
+<div class="vs-log-{{ random_id }} vs-log-{{ level_class }}">
     <span class="level">{{ level }}</span>
     <span class="message">{{ message }}</span>
 </div>

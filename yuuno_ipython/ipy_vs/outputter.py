@@ -1,8 +1,27 @@
+# -*- encoding: utf-8 -*-
+
+# Yuuno - IPython + VapourSynth
+# Copyright (C) 2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import typing as t
 from threading import RLock
 from concurrent.futures import Future
 
 import vapoursynth as vs
+from yuuno.vs.utils import get_proxy_or_core
+from yuuno.vs.flags import Features
 
 
 T = t.TypeVar("T")
@@ -93,7 +112,10 @@ def encode(
         progress: t.Optional[t.Callable[[int, int], None]]=None
 ) -> None:
     if prefetch is None:
-        prefetch = vs.get_core().num_threads
+        prefetch = get_proxy_or_core().num_threads
+
+    if not isinstance(clip, vs.VideoNode):
+        clip = clip[0]
 
     if y4m:
         if clip.format.color_family == vs.GRAY:
@@ -129,15 +151,23 @@ def encode(
         if y4m:
             stream.write(b"FRAME\n")
 
-        for planeno, plane in enumerate(frame.planes()):
+        if Features.API4:
+            iterator = frame
+        else:
+            iterator = frame.planes()
+
+        for planeno, plane in enumerate(iterator):
             # This is a quick fix.
             # Calling bytes(VideoPlane) should make the buffer continuous by
             # copying the frame to a continous buffer
             # if the stride does not match the width*bytes_per_sample.
-            if frame.get_stride(planeno) != plane.width*clip.format.bytes_per_sample:
-                stream.write(bytes(plane))
-            else:
-                stream.write(plane)
+            try:
+                if frame.get_stride(planeno) != frame.width*clip.format.bytes_per_sample:
+                    stream.write(bytes(plane))
+                else:
+                    stream.write(plane)
+            except BrokenPipeError:
+                return
 
         if progress is not None:
             progress(idx+1, len(clip))

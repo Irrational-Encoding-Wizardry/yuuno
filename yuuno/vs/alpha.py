@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -33,8 +33,11 @@ class AlphaOutputClipMeta(abc.ABCMeta):
             self.vs = vs
 
         if Features.SUPPORT_ALPHA_OUTPUT_TUPLE:
-
-            return issubclass(self.vs.AlphaOutputTuple, subclass)
+            if issubclass(self.vs.AlphaOutputTuple, subclass):
+                return True
+        if Features.API4:
+            if issubclass(self.vs.VideoOutputTuple, subclass):
+                return True
 
         return False
 

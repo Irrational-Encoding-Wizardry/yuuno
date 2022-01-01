@@ -133,7 +133,8 @@ class VapourSynthFrameWrapper(HasTraits, Frame):
         return Yuuno.instance().get_extension(VapourSynth)
 
     def _extract(self):
-        if self.extension.merge_bands:
+        # APIv4 requires manually plane based extraction.
+        if self.extension.merge_bands or Features.API4:
             r = extract_plane(self.rgb_frame, 0, compat=False, direction=1)
             g = extract_plane(self.rgb_frame, 1, compat=False, direction=1)
             b = extract_plane(self.rgb_frame, 2, compat=False, direction=1)
@@ -231,6 +232,9 @@ class VapourSynthClipMixin(HasTraits, Clip):
         return self._to_rgb32(frame)
 
     def to_compat_rgb32(self, frame: VideoNode) -> VideoNode:
+        # Skip resizing on APIv4 as COMPATBGR32 does not exist anymore.
+        if Features.API4:
+            return frame
         return self.extension.resize_filter(frame, format=vs.COMPATBGR32)
 
     def __len__(self):
@@ -246,8 +250,8 @@ class VapourSynthClipMixin(HasTraits, Clip):
 
         frame = yield self.clip.get_frame_async(item)
         wrapped = self._wrap_frame(frame)
-        _rgb24: Future = self.to_rgb32(wrapped)
-        rgb24 = _rgb24.get_frame_async(0)
+        _rgb24: VideoNode = self.to_rgb32(wrapped)
+        rgb24: Future = _rgb24.get_frame_async(0)
         compat: Future = self.to_compat_rgb32(_rgb24).get_frame_async(0)
 
         (yield gather([rgb24, compat]))

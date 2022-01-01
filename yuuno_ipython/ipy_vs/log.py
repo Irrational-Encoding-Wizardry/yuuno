@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -58,8 +58,12 @@ class LogMessage(object):
 class LogWriterFeature(VSFeature):
 
     def _push_log_msg(self, level: MessageLevel, msg: str) -> None:
+        level = level.value
+
         if level == MessageLevel.mtDebug:
             level = "Debug"
+        elif level == MessageLevel.mtInfo:
+            level = "Info"
         elif level == MessageLevel.mtWarning:
             level = "Warning"
         elif level == MessageLevel.mtCritical:

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017,2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017,2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -73,11 +73,20 @@ def is_single():
         return vapoursynth._using_vsscript
 
 
-class MessageLevel(enum.IntEnum):
-    mtDebug = 0
-    mtWarning = 1
-    mtCritical = 2
-    mtFatal = 3
+if not Features.API4:
+    class MessageLevel(enum.IntEnum):
+        mtDebug = 0
+        mtWarning = 1
+        mtCritical = 2
+        mtFatal = 3
+        mtInfo = 1000000000000000
+else:
+    class MessageLevel(enum.IntEnum):
+        mtDebug = 0
+        mtInfo = 1
+        mtWarning = 2
+        mtCritical = 3
+        mtFatal = 4
 
 
 class VapourSynthEnvironment(object):

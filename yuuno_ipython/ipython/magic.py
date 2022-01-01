@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +64,7 @@ class MagicFeature(Feature):
 
         for kind in magic_kinds:
             for key in actual_magics[kind]:
-                del self.magic_manager.magics[kind][key]
+                self.magic_manager.magics[kind].pop(key, None)
 
         del self.magics[magic]
         self.environment.parent.log.debug(f"Unregistered magics class: {magic}")

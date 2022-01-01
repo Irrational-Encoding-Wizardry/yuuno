@@ -1,7 +1,7 @@
 ﻿# -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017,2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017,2018,2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -68,6 +68,7 @@ class YuunoIPythonEnvironment(Environment):
 
     def additional_extensions(self):
         result = []
+        result.append("yuuno_ipython.ipy_vs.extension.IPythonVapoursynthExtension")
         if self.use_vsscript:
             result.append("yuuno.multi_scripts.extension.MultiScriptExtension")
         return result
