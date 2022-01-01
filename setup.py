@@ -62,7 +62,7 @@ class NPMBuild(build_py):
 
         if os.environ.get("COMPILED_YUUNO_JS", ""):
             compiled_path = os.environ["COMPILED_YUUNO_JS"]
-            if not os.path.exists(os.path.join(compiled_path, "extension.js")):
+            if not os.path.exists(os.path.join(compiled_path, "jupyter.js")):
                 raise EnvironmentError("Could not find built extension.")
 
             import shutil
@@ -135,6 +135,18 @@ setup(
     author_email='cid+yuuno@cid-chan.moe',
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
+    data_files=[
+        ("share/jupyter/nbextensions/@yuuno", [
+            "yuuno_ipython/build/jupyter.js",
+            "yuuno_ipython/build/jupyter.js.map",
+            "yuuno_ipython/build/worker.js",
+            "yuuno_ipython/build/worker.js.map",
+        ]),
+
+        ("etc/jupyter/nbconfig/notebook.d", [
+            "yuuno_ipython/config/nbconfig/notebook.d/yuuno-jupyter.json"
+        ])
+    ],
     package_dir={'yuuno_ipython': 'yuuno_ipython'},
     package_data={'yuuno_ipython': ['static/*', 'build/*']},
     include_package_data=True,

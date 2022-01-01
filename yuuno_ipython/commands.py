@@ -19,13 +19,14 @@ def jupyter():
     
     executable = sys.executable
     if sys.argv[1] == "run":
-        subprocess.check_call([executable, "-m", "notebook"] + sys.argv[2:])
-        return
+        print("Yuuno is now automatically integrating into Jupyter.")
+        print("Run 'jupyter notebook' (without quotes) instead.")
+        sys.exit(1)
     elif sys.argv[1] == "install":
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "widgetsnbextension"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "install", "--py", "--sys-prefix", "yuuno_ipython"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.check_call([executable, "-m", "notebook.nbextensions", "enable", "--py", "--sys-prefix", "yuuno_ipython"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("Yuuno is now automatically integrating into Jupyter.")
+        print("Nothing to do.")
         return
+
     elif sys.argv[1] == "version":
         try:
             import vapoursynth as vs
