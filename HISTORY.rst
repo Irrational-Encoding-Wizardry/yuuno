@@ -7,6 +7,8 @@ History
 
 * Reintegrated Yuuno Core into Yuuno proper.
 * I am using a nix-flakes now.
+* You don't need to manually install the extension anymore.
+* It works with APIv4 now.
 
 1.2.0 (New York)
 ----------------
