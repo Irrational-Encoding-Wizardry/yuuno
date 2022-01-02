@@ -170,9 +170,8 @@ setup(
 
         'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
 
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.9',
 
-        'Framework :: IPython',
         'Framework :: Jupyter',
 
         'Topic :: Multimedia :: Video',
@@ -180,17 +179,6 @@ setup(
         'Topic :: Multimedia :: Video :: Non-Linear Editor',
     ],
     entry_points={
-        'console_scripts': ['yuuno=yuuno.console_scripts:main'],
-
-        'yuuno.environments': [
-            'load_ipython_extension = yuuno_ipython.ipython.environment:load_ipython_extension',
-            'unload_ipython_extension = yuuno_ipython.ipython.environment:unload_ipython_extension'
-        ],
-        'yuuno.extensions': [
-            'ipy_vs = yuuno_ipython.ipy_vs.extension:IPythonVapoursynthExtension',
-        ],
-        'yuuno.commands': [
-            'jupyter = yuuno_ipython.commands:jupyter'
-        ]
+        'console_scripts': ['yuuno=yuuno.console_scripts:main']
     }
 )
