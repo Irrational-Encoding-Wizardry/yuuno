@@ -128,7 +128,7 @@ extras_requires = {
 
 setup(
     name='yuuno',
-    version='1.3',
+    version='1.4',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="cid-chan",

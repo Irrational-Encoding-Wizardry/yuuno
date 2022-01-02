@@ -1,6 +1,6 @@
 {
   "name": "yuuno-jupyter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Jupyter Bindings for Yuuno4IPython",
   "author": "Sarah <cid+yuuno@cid-chan.moe>",
   "private": true,
