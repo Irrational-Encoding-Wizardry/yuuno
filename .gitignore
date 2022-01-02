@@ -167,3 +167,5 @@ result
 
 ## Dev Stuff
 *.ipynb
+.jupyterlab/
+*.mkv

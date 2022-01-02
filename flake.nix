@@ -7,9 +7,12 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
+    jupyterWith = {
+      url = "github:tweag/jupyterWith";
+    };
   };
 
-  outputs = { nixpkgs, flake-utils, ... }: flake-utils.lib.eachDefaultSystem (system:
+  outputs = { nixpkgs, flake-utils, jupyterWith, ... }: flake-utils.lib.eachDefaultSystem (system:
     let
       ################################
       # Change this
@@ -17,7 +20,6 @@
       supportedPythonVersions = [
         "python39"
         "python38"
-        "python37"
       ];
 
       requirements = py: with py.pkgs; [
@@ -36,6 +38,7 @@
 
       pkgs = import nixpkgs {
         inherit system;
+        overlays = [] ++ (builtins.attrValues jupyterWith.overlays);
       };
 
       allSupportedPythons = f: builtins.listToAttrs (map (py: {
@@ -51,7 +54,7 @@
         buildInputs = [ pkgs.vapoursynth ];
       };
 
-      nodePackage = (pkgs.yarn2nix-moretea.mkYarnPackage {
+      yuuno4jupyter = (pkgs.yarn2nix-moretea.mkYarnPackage {
         src = ./yuuno-jupyter;
         yarnLock = ./yuuno-jupyter/yarn.lock;
       }).overrideAttrs (old: {
@@ -80,7 +83,7 @@
             src = ./.;
             propagatedBuildInputs = requirements py;
 
-            COMPILED_YUUNO_JS = "${nodePackage}/libexec/yuuno-jupyter/deps/yuuno_ipython/build";
+            COMPILED_YUUNO_JS = "${yuuno4jupyter}/libexec/yuuno-jupyter/deps/yuuno_ipython/build";
 
             installCheckPhase = ''
               for path in tests/*; do
@@ -91,7 +94,7 @@
               done
             '';
           })) // {
-            javascript = nodePackage;
+            jupyter-frontend = yuuno4jupyter;
           };
 
         defaultPackage = packages.${defaultPython};
@@ -129,7 +132,26 @@
               echo $TDIR
               exec -a "$0" ${pyWithPackages}/bin/jupyter-notebook "$@"
             '');
-        });
+          }) // (pkgs.lib.mapAttrs' (k: v: { name = "${k}-lab"; value = v; }) (allSupportedPythons (name: py: {
+            type = "app";
+            program =
+              let
+                ipython = pkgs.jupyterWith.kernels.iPythonWith {
+                  name = "python";
+                  python3 = py;
+                  packages = ps: (requirements py) ++ (with ps; [debugpy]);
+                };
+
+                jupyterlab = pkgs.jupyterWith.jupyterlabWith {
+                  kernels = [ ipython ];
+                  extraPackages = ps: with ps; [ipywidgets];
+                };
+              in
+                toString (pkgs.writeShellScript "yuuno-jupyterlab" ''
+                  export PATH=${pkgs.lib.makeBinPath (with pkgs;[yarn nodejs])}:$PATH
+                  exec -a "$0" ${jupyterlab}/bin/jupyter-lab "$@"
+                '');
+          })));
         defaultApp = apps.${defaultPython};
 
 
