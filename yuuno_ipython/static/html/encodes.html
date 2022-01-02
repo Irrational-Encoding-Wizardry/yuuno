@@ -1,0 +1,38 @@
+<style>
+.yuuno-encodes-{{ random_id }} {
+  width: 100%;
+}
+</style>
+<div class="yuuno-encodes-{{ random_id }}">
+
+{% if encodes|length == 0 %}
+  There is currently no encode running.
+{% else %}
+  <p>
+    You have currently {{ encodes|length }} encodes running.<br>
+    Run <code>%reattach [ID]</code> to view the output of a specific encode.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Command</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for encode in encodes %}
+        <tr>
+          <td>{{ encode.id }}</td>
+          <td width="99%"><pre>{{ encode.command|e }}</pre></td>
+          {% set value = (encode.current|float) / encode.length * 100 %}
+          <td style="background: linear-gradient(90deg, lightgreen 0%, lightgreen {{ value }}%, transparent {{ value }}%, transparent 100%);">
+            {{ encode.current }} of {{ encode.length }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+</div>

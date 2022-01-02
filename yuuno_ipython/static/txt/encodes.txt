@@ -1,0 +1,6 @@
+{% if encodes|length == 0 %}There is currently no encode running.{% else %}You have currently {{ encodes|length }} encodes running.<br>
+Use "%reattach [ID]" (without quotes) to view the output of a specific encode.
+
+ID      - Stats{% for encode in encodes %}
+{{ encode.id.format("{:9d}") }} - {{ encode.current }} // {{ encode.length }} - {{ encode.command|truncate(10) }}{% endfor %}
+{% endif %}

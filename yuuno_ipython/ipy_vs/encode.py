@@ -15,19 +15,18 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from typing import NamedTuple
 
-
-import io
 import sys
 import time
 import shlex
 import queue
 import codecs
-import signal
-import functools
+import random
 import subprocess
 from threading import Thread, Lock, Event
 
+import jinja2
 from traitlets import Instance, default
 
 from IPython.display import display
@@ -37,6 +36,8 @@ from IPython.core.magic import line_cell_magic, line_magic
 from yuuno import Yuuno
 from yuuno.vs.utils import get_proxy_or_core, get_environment
 from yuuno.multi_scripts.os import popen, interrupt_process
+
+from yuuno_ipython.utils import get_data_file
 
 from yuuno_ipython.ipython.utils import execute_code
 from yuuno_ipython.ipython.magic import MagicFeature
@@ -101,6 +102,59 @@ class EncodeWidget(DOMWidget):
 
         elif content['type'] == "interrupt":
             interrupt_process(self._process)
+
+
+class _EData(NamedTuple):
+    id: str
+    command: str
+    current: int
+    length: int
+
+
+class EncodeData(object):
+    _template_txt = None
+    _template_html = None
+
+    @classmethod
+    def template_txt(cls):
+        if cls._template_txt is None:
+            path = get_data_file("txt") / "encodes.txt"
+            with open(path, "r") as f:
+                cls._template_txt = jinja2.Template(f.read())
+        return cls._template_txt
+
+    @classmethod
+    def template_html(cls):
+        if cls._template_html is None:
+            path = get_data_file("html") / "encodes.html"
+            with open(path, "r") as f:
+                cls._template_html = jinja2.Template(f.read())
+        return cls._template_html
+        
+
+    @staticmethod
+    def _map_value(eid, encoder):
+        return _EData(
+            str(eid),
+            encoder._commandline,
+            encoder.current,
+            encoder.length
+        )
+
+    def __init__(self, current_encodes):
+        self.current_encodes = current_encodes.copy()
+
+    def _repr_pretty_(self, p, cycle):
+        p.text(self.template_txt().render({
+            "encodes": [self._map_value(*i) for i in self.current_encodes.items()]
+        }))
+
+    def _repr_html_(self):
+        return self.template_html().render({
+            "random_id": hex(random.randint(0, 2**32))[2:],
+            "encodes": [self._map_value(*i) for i in self.current_encodes.items()]
+        })
+        
 
 
 @magics_class
@@ -247,24 +301,15 @@ class EncodeMagic(Magics):
 
     @line_magic
     def reattach(self, line):
-        if not line and not len(_running):
-            print("There is no encode running.")
-            return
-        if not line and len(_running) > 1:
-            print("You are running more than one encode. Use the following id to attach to a specific one.")
-            print(r"Usage: %reattach [ID]")
-            print()
-            print("Running Encodes:")
-            print("ID\t- Stats")
-            for eid, edata in _running.items():
-                print(f"{eid} \t- {edata.current}/{edata.length}\t- {edata._commandline[:40]}")
-            return
-        if not line and len(_running) == 1:
-            return next(iter(_running.values()))
-        if line not in _running:
+        if not line:
+            if len(_running) != 1:
+                display(EncodeData(_running))
+            else:
+                return next(iter(_running.values()))
+        elif line not in _running:
             print("Encode was not found.")
-            return
-        return _running[line]
+        else:
+            return _running[line]
 
     @line_cell_magic
     def encode(self, line, cell=None):
