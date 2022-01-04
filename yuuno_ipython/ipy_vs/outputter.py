@@ -102,6 +102,13 @@ def as_completed(futures: t.Iterable[Future], prefetch: int, backlog: t.Optional
     finally:
         finished = True
 
+
+def frames(clip, prefetch, backlog):
+    if Features.CLOSE_FRAMES:
+        return clip.frames(prefetch=prefetch, backlog=backlog, close=True)
+    else:
+        return as_completed((clip.get_frame_async(frameno) for frameno in range(len(clip))), prefetch, backlog)
+
 def encode(
         clip: vs.VideoNode,
         stream: t.IO[t.ByteString],
@@ -135,8 +142,11 @@ def encode(
                 y4mformat = '411'
             elif clip.format.subsampling_w == 0 and clip.format.subsampling_h == 1:
                 y4mformat = '440'
+            else:
+                raise ValueError("This is a very strange subsampling config.")
+
             if clip.format.bits_per_sample > 8:
-                y4mformat = y4mformat + 'p' + str(self.format.bits_per_sample)
+                y4mformat = y4mformat + 'p' + str(clip.format.bits_per_sample)
         else:
             raise ValueError("Can only use vs.GRAY and vs.YUV for V4M-Streams")
 
@@ -147,7 +157,7 @@ def encode(
         stream.write(data.encode("ascii"))
 
     frame: vs.VideoFrame
-    for idx, frame in enumerate(as_completed((clip.get_frame_async(frameno) for frameno in range(len(clip))), prefetch, backlog)):
+    for idx, frame in enumerate(frames(clip, prefetch, backlog)):
         if y4m:
             stream.write(b"FRAME\n")
 

@@ -134,6 +134,11 @@ class Features(enum.Flag):
         # AT R55
         return hasattr(vs, 'AudioNode')
 
+    @flag(10)
+    @staticmethod
+    def CLOSE_FRAMES(vs):
+        return hasattr(vs.VideoFrame, "close")
+
     def __bool__(self):
         return bool(self.value and self in self.current)
 
