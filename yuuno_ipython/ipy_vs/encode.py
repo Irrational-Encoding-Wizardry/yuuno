@@ -57,11 +57,12 @@ _running = {}
 class EncodeWidget(DOMWidget):
     _view_name = Unicode('EncodeWindowWidget').tag(sync=True)
     _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
-    _view_module_version = Unicode('1.1').tag(sync=True)
+    _view_module_version = Unicode('1.2').tag(sync=True)
 
     current = Integer(0).tag(sync=True)
     length = Integer(1).tag(sync=True)
     terminated = Bool(False).tag(sync=True)
+    commandline = Unicode("").tag(sync=True)
 
     start_time = Integer(0).tag(sync=True)
     end_time = Integer(0).tag(sync=True)
@@ -74,6 +75,7 @@ class EncodeWidget(DOMWidget):
         self._kill = kill
         self._process = process
         self._commandline = commandline
+        self.commandline = self._commandline
         self._latest_writes = deque(maxlen=10000)
         self.start_time = int(time.time())
         self.on_msg(self._rcv_message)
@@ -91,17 +93,29 @@ class EncodeWidget(DOMWidget):
         self._kill.wait(timeout=timeout)
 
     def _rcv_message(self, _, content, buffer):
+        cid = content.get("id", None)
         if content['type'] == "refresh":
+            data = content
+            if "payload" in data:
+                data = data["payload"]
+
             with self._lock:
-                self.send({'type': 'write', 'data': ''.join(self._latest_writes), 'target': content['source']})
-                self.send({'type': 'refresh_finish', 'data': None, 'target': content['source']})
+                writes = ''.join(self._latest_writes)
+                if cid is not None:
+                    self.send({'type': 'response', 'id': cid, 'payload': {"data": writes}})
+                self.send({'type': 'write', 'data': writes, 'target': data['source']})
+                self.send({'type': 'refresh_finish', 'data': None, 'target': data['source']})
 
         elif content['type'] == 'kill':
             self._process.terminate()
             self._kill.set()
+            with self._lock:
+                self.send({'type': 'response', 'id': cid, 'payload': {}})
 
         elif content['type'] == "interrupt":
             interrupt_process(self._process)
+            with self._lock:
+                self.send({'type': 'response', 'id': cid, 'payload': {}})
 
 
 class _EData(NamedTuple):
