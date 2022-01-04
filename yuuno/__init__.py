@@ -21,12 +21,12 @@ import sys
 
 __author__ = """cid-chan"""
 __email__ = 'cid+yuuno@cid-chan.moe'
-__version__ = '1.4'
+__version__ = '1.4a1'
 
 
-if sys.version_info < (3, 6):
+if sys.version_info < (3, 8):
     raise ImportError(
-        "Yuuno requires Python 3.6. "
+        "Yuuno requires Python 3.8 or newer"
         "Please make sure you are using this version."
     )
 

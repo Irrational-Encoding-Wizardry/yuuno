@@ -1,6 +1,6 @@
 {
   "name": "@yuuno/jupyterlab",
-  "version": "1.4.0",
+  "version": "1.4.0a1",
   "description": "Yuuno for JupyterLab",
   "keywords": [
     "jupyter",

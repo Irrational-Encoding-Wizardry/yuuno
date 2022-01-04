@@ -143,7 +143,7 @@ def recursive(path, prefix, extras=None):
 
 setup(
     name='yuuno',
-    version='1.4',
+    version='1.4a1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="cid-chan",

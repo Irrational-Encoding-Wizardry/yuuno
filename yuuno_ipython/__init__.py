@@ -21,7 +21,7 @@ import sys
 
 __author__ = """cid-chan"""
 __email__ = 'cid+yuuno@cid-chan.moe'
-__version__ = '1.4'
+__version__ = '1.4a1'
 
 def _jupyter_nbextension_paths():
     return [{
@@ -31,9 +31,9 @@ def _jupyter_nbextension_paths():
         'require': '@yuuno/jupyter'
     }]
 
-if sys.version_info < (3, 7):
+if sys.version_info < (3, 8):
     raise ImportError(
-        "Yuuno now requires Python 3.7."
+        "Yuuno now requires Python 3.8."
         "Please make sure you are using this version."
     )
 
