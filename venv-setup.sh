@@ -12,8 +12,8 @@ venv/bin/pip install jupyterlab vapoursynth
 
 if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
-  venv/bin/python -m notebook.nbextension install yuuno --sys-prefix
-  venv/bin/python -m notebook.nbextension enable yuuno --sys-prefix --link
+  venv/bin/jupyter-nbextension install yuuno_ipython --py --sys-prefix --symlink
+  venv/bin/jupyter-nbextension enable yuuno_ipython --py --sys-prefix
 else
   venv/bin/python setup.py egg_info
   venv/bin/pip install -r *.egg-info/requires.txt
