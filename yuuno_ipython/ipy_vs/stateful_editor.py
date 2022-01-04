@@ -173,16 +173,18 @@ class EditorMagics(Magics):
     def vspreview(self, line, cell):
         line = self.parse_parameters(line)
         if "help" in line:
-            print("%%vspreview [--main <OUTPUT-ID>] [--diff [<OUTPUT-ID>]] [OPTIONS]")
+            print("%%vspreview [--main <OUTPUT-ID>] [--diff <OUTPUT-ID>] [OPTIONS]")
             print()
             print("%%vspreview shows a preview of the given script. It can diff two outputs with --diff.")
             print("It does not modify the outputs of the vapoursynth environment.")
             print("You can use --isolate-variables to sandbox changes of the environment to the cell. Any changes to variables")
             print("will not be visible outside the cell.")
             print()
+            print("--main and --diff are ignored if there are less than 3 output-clips.")
+            print()
             print("Options special to %%vspreview")
             print("--main <OUTPUT-ID>    - Select the output number to show as the main (defaults to 0 if not given.)")
-            print("--diff [<OUTPUT-IDS>] - When a ID is given, the output with the given ID is taken as the comparison clip; defaults to 1")
+            print("--diff <OUTPUT-IDS>   - Set the id to compare to")
             print()
             print("General options")
             print("--reset-core          - Reset the core.")
@@ -197,7 +199,7 @@ class EditorMagics(Magics):
         if "diff" in line:
             diff = 1 if len(line["diff"]) == 0 else int(line["diff"][0])
         
-        main = 0
+        main = 1
         if "main" in line:
             if len(line["main"]) == 0:
                 raise ValueError("You need to provide an output-id")
@@ -216,6 +218,14 @@ class EditorMagics(Magics):
             execute_code(cell, "<vspreview>", True, ns=ns)
             
         outputs = env.outputs
+        if len(outputs) == 1:
+            main = next(iter(outputs))
+
+        elif len(outputs) == 2:
+            oiter = iter(sorted(iter(outputs)))
+            main = next(oiter)
+            diff = next(oiter)
+
         self.preview.clip = outputs.get(main, None)
         self.preview.diff = None if diff is None else outputs.get(diff, None)
 
