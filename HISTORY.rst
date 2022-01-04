@@ -9,12 +9,13 @@ History
 * I am using a nix-flakes now.
 * You don't need to manually install the extension anymore.
 * It works with APIv4 now.
+* In %%vspreview if there are only two outputs, automatically start diff-view.
+* Yuuno now works with JupyterLab
 
 1.3.0 (Jakarta)
 ----------------
 
-* We use our own Output Code now. This should allow us more flexibility
-  and uses.
+* We use our own Output Code now. This should allow us more flexibility.
 
 1.2.0 (New York)
 ----------------
