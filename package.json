@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "@babel/preset-env": "^7.2.3"
-  },
-  "devDependencies": {
-    "cache-loader": "^2.0.0"
-  }
-}
