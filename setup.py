@@ -31,6 +31,14 @@ DIRNAME = os.path.dirname(__file__) if __file__ else os.getcwd()
 
 
 class NPMBuild(build_py):
+    ENV_NAME = ""
+    JS_PROJECT_PATH = ""
+    SUCCESS_FILE = ""
+    TARGET_PATH = ""
+
+    @classmethod
+    def for_build(cls, **args):
+        return type("NPMBuild", (cls,), args)
 
     def get_js_package_manager(self):
         import shutil
@@ -52,27 +60,26 @@ class NPMBuild(build_py):
 
     def run(self):
         cwd = DIRNAME
-        target_dir = os.path.join(cwd, "yuuno_ipython", "build")
-        target_file = os.path.join(target_dir, "extension.js")
+        target_dir = os.path.join(cwd, self.TARGET_PATH)# "yuuno_ipython", "build")
+        target_file = os.path.join(target_dir, self.SUCCESS_FILE)# "extension.js")
 
         if os.path.exists(target_file):
             self.announce(f"cleaning build target.", level=INFO)
             import shutil
             shutil.rmtree(target_dir)
 
-        if os.environ.get("COMPILED_YUUNO_JS", ""):
-            compiled_path = os.environ["COMPILED_YUUNO_JS"]
-            if not os.path.exists(os.path.join(compiled_path, "jupyter.js")):
+        if os.environ.get(self.ENV_NAME, ""):
+            compiled_path = os.environ[self.ENV_NAME]
+            if not os.path.exists(os.path.join(compiled_path, self.SUCCESS_FILE)):
                 raise EnvironmentError("Could not find built extension.")
 
             import shutil
             shutil.copytree(compiled_path, target_dir)
 
             self.announce("Used build from environment.")
-
             return
 
-        jspath = os.path.join(cwd, 'yuuno-jupyter')
+        jspath = os.path.join(cwd, self.JS_PROJECT_PATH)
         pm = self.get_js_package_manager()
         self.popen(f'"{pm}" install', cwd=jspath)
         self.popen(f'"{pm}" run build', cwd=jspath)
@@ -80,29 +87,24 @@ class NPMBuild(build_py):
 
 class SDistNPM(sdist):
     def run(self):
-        if not os.path.exists(os.path.join(DIRNAME, "yuuno_ipython", "build", "extension.js")):
-            self.run_command('build_npm')
+        if not os.path.exists(os.path.join(DIRNAME, "yuuno_ipython", "build", "jupyter.js")):
+            self.run_command('build')
         super().run()
 
 
 class Install(install):
     def run(self):
         cwd = DIRNAME
-        if not os.path.exists(os.path.join(cwd, "yuuno_ipython", "build", "extension.js")):
-            print("NOT FOUND")
-            if not os.path.exists(os.path.join(cwd, 'yuuno-jupyter')):
-                raise RuntimeError("Couldn't find uncompiled javascript source. Did you package it incorrectly?")
-            self.run_command('build_npm')
+        if not os.path.exists(os.path.join(cwd, "yuuno_ipython", "build", "jupyter.js")):
+            self.run_command('build')
         super().run()
 
 
 class Build(build):
 
     def run(self):
-        if not os.path.exists(os.path.join(DIRNAME, 'yuuno-jupyter')):
-            self.announce("Skipping NPM build as the sources are not provided.", level=INFO)
-        else:
-            self.run_command('build_npm')
+        self.run_command('build_npm_ipython')
+        self.run_command('build_npm_lab')
         super().run()
 
 with open('README', encoding="utf8") as readme_file:
@@ -113,6 +115,7 @@ with open('HISTORY.rst', encoding="utf8") as history_file:
 
 requirements = [
     "jupyter",
+    "jupyterlab",
     "traitlets",
     "jinja2",
     "ipywidgets",
@@ -125,6 +128,18 @@ test_requirements = []
 extras_requires = {
     'vapoursynth': ['vapoursynth', 'vsutil']
 }
+
+
+def recursive(path, prefix, extras=None):
+    if extras is None:
+        extras = {}
+    for dirpath, _, files in os.walk(path):
+        kdpath = dirpath[len(path):]
+        if not files and not extras.get(kdpath, ()): continue
+        npath = f"{path}{kdpath}" if kdpath else path
+        npfx = f"{prefix}{kdpath}" if kdpath else prefix
+        yield (npfx, [f"{npath}/{file}" for file in files] + extras.get(npfx, []))
+
 
 setup(
     name='yuuno',
@@ -145,7 +160,13 @@ setup(
 
         ("etc/jupyter/nbconfig/notebook.d", [
             "yuuno_ipython/config/nbconfig/notebook.d/yuuno-jupyter.json"
-        ])
+        ]),
+
+        *recursive("yuuno_jupyterlab/static", "share/jupyter/labextensions/@yuuno/jupyterlab", {
+            "share/jupyter/labextensions/@yuuno/jupyterlab": [
+                "yuuno_jupyterlab/config/labextensions/install.json"
+            ]
+        }),
     ],
     package_dir={'yuuno_ipython': 'yuuno_ipython'},
     package_data={'yuuno_ipython': ['static/*', 'build/*']},
@@ -157,7 +178,18 @@ setup(
     cmdclass={
         'sdist': SDistNPM,
         'build': Build,
-        'build_npm': NPMBuild,
+        'build_npm_ipython': NPMBuild.for_build(
+            ENV_NAME = "COMPILED_YUUNO_JS",
+            JS_PROJECT_PATH = "yuuno-jupyter",
+            SUCCESS_FILE = "jupyter.js",
+            TARGET_PATH = "yuuno_ipython/build"
+        ),
+        'build_npm_lab': NPMBuild.for_build(
+            ENV_NAME = "COMPILED_YUUNO_LAB_JS",
+            JS_PROJECT_PATH = "yuuno-jupyterlab-js",
+            SUCCESS_FILE = "jupyterlab.js",
+            TARGET_PATH = "yuuno_jupyterlab/build"
+        ),
         'install': Install
     },
     classifiers=[
@@ -173,10 +205,15 @@ setup(
         'Programming Language :: Python :: 3.9',
 
         'Framework :: Jupyter',
+        'Framework :: Jupyter :: JupyterLab',
+        'Framework :: Jupyter :: JupyterLab :: 3',
+        'Framework :: Jupyter :: JupyterLab :: Extensions',
+        'Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt',
 
         'Topic :: Multimedia :: Video',
         'Topic :: Multimedia :: Video :: Display',
         'Topic :: Multimedia :: Video :: Non-Linear Editor',
+
     ],
     entry_points={
         'console_scripts': ['yuuno=yuuno.console_scripts:main']

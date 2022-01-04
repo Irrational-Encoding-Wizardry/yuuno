@@ -8,16 +8,19 @@ if [ -e ./venv ]; then
     rm -rf ./venv
 fi
 python3 -m venv venv
-venv/bin/pip install jupyterlab vapoursynth
+venv/bin/pip install jupyter jupyterlab jupyter_packaging vapoursynth
 
 if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
   venv/bin/jupyter-nbextension install yuuno_ipython --py --sys-prefix --symlink
   venv/bin/jupyter-nbextension enable yuuno_ipython --py --sys-prefix
 else
-  venv/bin/python setup.py egg_info
-  venv/bin/pip install -r *.egg-info/requires.txt
+  OLD_PATH=$PATH
+  . venv/bin/activate
+  python setup.py egg_info
+  pip install -r *.egg-info/requires.txt
   rm -rf *.egg-info
-  venv/bin/python setup.py install
+  python setup.py install
+  deactivate
 fi
 
