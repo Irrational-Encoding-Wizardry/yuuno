@@ -169,3 +169,5 @@ result
 *.ipynb
 .jupyterlab/
 *.mkv
+
+yuuno_jupyterlab/static/

@@ -1,0 +1,8 @@
+{
+  "jupyter.lab.shortcuts": [],
+  "title": "@yuuno/jupyterlab",
+  "description": "@yuuno/jupyterlab settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
