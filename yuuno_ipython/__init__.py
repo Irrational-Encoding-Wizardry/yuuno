@@ -21,7 +21,7 @@ import sys
 
 __author__ = """cid-chan"""
 __email__ = 'cid+yuuno@cid-chan.moe'
-__version__ = '1.4a2'
+__version__ = '1.4b1'
 
 def _jupyter_nbextension_paths():
     return [{
