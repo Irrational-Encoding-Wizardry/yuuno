@@ -40,3 +40,9 @@ class Apps(MagicFeature):
 
     def initialize(self):
         self.register_magics(AppDrawer)
+
+        from yuuno_ipython.ipython.apps.preview import Preview
+        self.environment.parent.namespace["Preview"] = Preview
+
+    def deinitialize(self):
+        del self.environment.parent.namespace["Preview"]
