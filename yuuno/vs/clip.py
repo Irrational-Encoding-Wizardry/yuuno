@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import math
 import ctypes
 from typing import Tuple, overload
 from concurrent.futures import Future
@@ -27,7 +28,10 @@ from vapoursynth import VideoNode, VideoFrame
 
 from yuuno import Yuuno
 from yuuno.utils import future_yield_coro, gather
+
 from yuuno.clip import Clip, Frame, Size, RawFormat
+from yuuno.audio import Audio, Format as AudioFormat
+
 from yuuno.vs.extension import VapourSynth
 from yuuno.vs.utils import get_proxy_or_core, is_single
 from yuuno.vs.flags import Features
@@ -347,3 +351,62 @@ class VapourSynthAlphaClip(Clip):
         f1 = yield self.clip[item]
         f2 = yield self.alpha[item]
         return VapourSynthAlphaFrameWrapper(clip=f1, alpha=f2)
+
+
+if Features.API4:
+    from yuuno.audio import Audio
+    from yuuno.vs.audioop import byteswap, to_float32_le
+
+
+    COMBINE_FRAME_COUNT = 24
+
+
+    class VapourSynthAudio(Audio):
+
+        def __init__(self, clip: vs.AudioNode):
+            self.clip = clip
+
+        def format(self) -> AudioFormat:
+            return AudioFormat(
+                channel_count = self.clip.num_channels,
+                samples_per_second = self.clip.sample_rate,
+                frames = math.ceil(self.clip.num_frames / COMBINE_FRAME_COUNT),
+                sample_count = self.clip.num_samples
+            )
+
+        def __len__(self):
+            return len(self.clip.num_frames)
+
+        @future_yield_coro
+        def _single_frame(self, frame: int) -> Future:
+            if frame >= self.clip.num_frames:
+                return (b"",) * self.clip.num_channels
+
+            rendered = yield self.clip.get_frame_async(frame)
+            if rendered.sample_type == vs.FLOAT:
+                result = []
+                floats = len(rendered[0])
+
+                data = bytearray(floats * 4)
+                for channel in rendered:
+                    memoryview(data).cast("f")[:] = channel
+                    result.append(byteswap(data))
+
+                return tuple(result)
+
+            else:
+                return tuple(
+                    to_float32_le(bytes(channel), bits_per_sample=self.clip.bits_per_sample)
+                    for channel in rendered
+                )
+
+        @future_yield_coro
+        def __getitem__(self, frame: int) -> Future:
+            if frame * COMBINE_FRAME_COUNT > self.clip.num_frames:
+                raise IndexError("Frame index out of range.")
+
+            many_frames = yield gather([self._single_frame(frame*COMBINE_FRAME_COUNT + i) for i in range(COMBINE_FRAME_COUNT)])
+            return tuple(
+                b"".join(channel)
+                for channel in zip(*many_frames)
+            )

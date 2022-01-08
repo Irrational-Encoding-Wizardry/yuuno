@@ -21,6 +21,7 @@ from vapoursynth import Environment
 
 from yuuno.utils import future_yield_coro, auto_join
 from yuuno.clip import Clip, Frame
+from yuuno.audio import Audio
 
 
 T = TypeVar("T", Clip, Frame)
@@ -78,3 +79,10 @@ class WrappedClip(WrappedMixin[Clip], Clip):
     @property
     def clip(self):
         return self.parent.clip
+
+
+class WrappedAudio(WrappedMixin[Audio], Audio):
+    format = WrappedMixin.wrap('format')
+    __len__ = WrappedMixin.wrap('__len__')
+    __getattr__ = WrappedMixin.wrap_future('__getattr__')
+

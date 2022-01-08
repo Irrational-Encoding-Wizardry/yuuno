@@ -30,7 +30,8 @@ from yuuno.utils import inline_resolved
 from yuuno.multi_scripts.script import Script, ScriptManager
 
 from yuuno.vs.extension import VapourSynth
-from yuuno.vs.policy.clip import WrappedClip
+from yuuno.vs.policy.clip import WrappedClip, WrappedAudio
+from yuuno.vs.flags import Features
 
 
 class YuunoPolicy(vs.EnvironmentPolicy):
@@ -181,9 +182,9 @@ class VSScriptManager(ScriptManager):
         self.policy = YuunoPolicy()
         self.environments = {}
 
-    def env_wrapper_for(self, cls):
+    def env_wrapper_for(self, cls, *, wrapper=WrappedClip):
         def _wrapper(*args, **kwargs):
-            return WrappedClip(vs.get_current_environment(), cls(*args, **kwargs))
+            return wrapper(vs.get_current_environment(), cls(*args, **kwargs))
         return _wrapper
 
     def create(self, name: str, *, initialize=False) -> Script:

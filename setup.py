@@ -26,6 +26,12 @@ from setuptools.command.sdist import sdist
 from setuptools.command.install import install
 from setuptools.command.build_py import build_py
 
+try:
+    from Cython.Build import cythonize
+    extensions = cythonize("yuuno/vs/_audioop.pyx")
+except ImportError:
+    extensions = []
+
 
 DIRNAME = os.path.dirname(__file__) if __file__ else os.getcwd()
 
@@ -170,6 +176,7 @@ setup(
     ],
     package_dir={'yuuno_ipython': 'yuuno_ipython'},
     package_data={'yuuno_ipython': ['static/*', 'build/*']},
+    ext_modules=extensions,
     include_package_data=True,
     install_requires=requirements,
     license="GNU Lesser General Public License v3 (LGPLv3)",

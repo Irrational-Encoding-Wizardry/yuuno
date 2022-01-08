@@ -24,18 +24,88 @@ from traitlets import HasTraits, Instance, Any
 from IPython.display import Image as IPyImage
 
 from yuuno.clip import Clip, Frame
+from yuuno.audio import Audio
 from yuuno_ipython.ipython.feature import Feature
 from yuuno_ipython.ipython.environment import Environment
 from yuuno_ipython.ipython.apps.preview import Preview
+from yuuno_ipython.ipython.apps.audio import AudioWidget
 
 
-class InlineFormat(HasTraits):
+
+class AbstractInlineFormat(HasTraits):
+    clip: Clip = Any()
+    environment: Environment = Instance(Environment)
+
+    REPR_TYPES = {
+    }
+
+
+    def _repr_mimebundle_(self, include=None, exclude=None):
+        data_dict = {}
+        md_dict = {}
+
+        mimes = set(include) if include is not None else set(self.REPR_TYPES.keys())
+        mimes &= set(self.REPR_TYPES.keys())
+        if exclude is not None:
+            mimes ^= set(exclude)
+
+        for mime in mimes:
+            funcname = self.REPR_TYPES[mime]
+
+            if not hasattr(self, funcname):
+                continue
+
+            raw = getattr(self, funcname)()
+            if isinstance(raw, tuple) and len(raw) == 2:
+                data, md = raw
+            else:
+                data = raw
+                md = None
+
+            if data is None:
+                continue
+
+            data_dict[mime] = data
+            if md is not None:
+                md_dict[mime] = md
+
+        return data_dict, md_dict
+
+
+
+class InlineFormatAudio(AbstractInlineFormat):
+
+    preview: AudioWidget = Instance(AudioWidget, allow_none=True)
+
+    REPR_TYPES = {
+        "text/plain": "_repr_pretty",
+        'application/vnd.jupyter.widget-view+json': '_repr_player'
+    }
+
+    @observe("clip")
+    def _update_initial_frame(self, value):
+        value = value['new']
+        self.preview.clip = value
+
+    @default("preview")
+    def _default_preview(self):
+        return AudioWidget(self.clip)
+
+    def _repr_pretty(self):
+        return f"<Audio {self.clip.format()!r} (backed: {self.clip.clip!r})>"
+
+    def _repr_player(self):
+        if self.preview._view_name is None:
+            return
+
+        return self.preview.get_view_spec()
+
+
+class InlineFormatVideo(AbstractInlineFormat):
     """
     Represents an inline formatted object.
     """
 
-    clip: Clip = Any()
-    environment: Environment = Instance(Environment)
     preview: Preview = Instance(Preview, allow_none=True)
 
     first_frame: Frame = Any(allow_none=True)
@@ -91,36 +161,13 @@ class InlineFormat(HasTraits):
 
         return self.preview.get_view_spec()
 
-    def _repr_mimebundle_(self, include=None, exclude=None):
-        data_dict = {}
-        md_dict = {}
 
-        mimes = set(include) if include is not None else set(self.REPR_TYPES.keys())
-        mimes &= set(self.REPR_TYPES.keys())
-        if exclude is not None:
-            mimes ^= set(exclude)
+def InlineFormat(environment, clip):
+    if isinstance(clip, Audio):
+        return InlineFormatAudio(environment=environment, clip=clip)
+    else:
+        return InlineFormatVideo(environment=environment, clip=clip)
 
-        for mime in mimes:
-            funcname = self.REPR_TYPES[mime]
-
-            if not hasattr(self, funcname):
-                continue
-
-            raw = getattr(self, funcname)()
-            if isinstance(raw, tuple) and len(raw) == 2:
-                data, md = raw
-            else:
-                data = raw
-                md = None
-
-            if data is None:
-                continue
-
-            data_dict[mime] = data
-            if md is not None:
-                md_dict[mime] = md
-
-        return data_dict, md_dict
 
 class Formatter(Feature):
     cache: WeakKeyDictionary = Instance(WeakKeyDictionary)
@@ -133,7 +180,7 @@ class Formatter(Feature):
     def display_formatters(self):
         return self.environment.ipython.display_formatter
 
-    def wrap_cached(self, obj) -> InlineFormat:
+    def wrap_cached(self, obj) -> Any:
         if obj in self.cache:
             return self.cache[obj]
 

@@ -196,10 +196,10 @@ Settings to a value less than one makes it default to the number of hardware thr
         self.parent.log.debug("Registering wrappers.")
         from vapoursynth import VideoNode, VideoFrame
         from yuuno.vs.clip import VapourSynthClip, VapourSynthFrame
-        from yuuno.vs.clip import VapourSynthAlphaClip
+        from yuuno.vs.clip import VapourSynthAlphaClip, VapourSynthAudio
 
         # Detected VSScript.
-        wrapperfunc = lambda cls: cls
+        wrapperfunc = lambda cls, wrapper=None: cls
         if self.script_manager is not None and self.vsscript_environment_wrap:
             wrapperfunc = self.script_manager.env_wrapper_for
 
@@ -211,10 +211,12 @@ Settings to a value less than one makes it default to the number of hardware thr
             # Required so that IPython automatically supports alpha outputs
             from vapoursynth import AlphaOutputTuple
             self.registry.register(wrapperfunc(VapourSynthAlphaClip), AlphaOutputTuple)
-        if Features.API4:
-            from vapoursynth import VideoOutputTuple
-            self.registry.register(wrapperfunc(VapourSynthAlphaClip), VideoOutputTuple)
 
+        if Features.API4:
+            from vapoursynth import VideoOutputTuple, AudioNode
+            from yuuno.vs.policy.clip import WrappedAudio
+            self.registry.register(wrapperfunc(VapourSynthAlphaClip), VideoOutputTuple)
+            self.registry.register(wrapperfunc(VapourSynthAudio, wrapper=WrappedAudio), AudioNode)
 
         self.parent.registry.add_subregistry(self.registry)
 

@@ -9,6 +9,7 @@ import { IJupyterWidgetRegistry } from "@jupyter-widgets/base";
 
 import { PreviewWindowWidget } from "./widgets/preview/index";
 import { EncodeWindowWidget } from "./widgets/encode/index";
+import { AudioPlaybackWidget } from "./widgets/audio/index";
 
 /**
  * Initialization data for the @yuuno/jupyterlab extension.
@@ -26,7 +27,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
         version: "1.2.0",
         exports: {
             PreviewWindowWidget,
-            EncodeWindowWidget
+            EncodeWindowWidget,
+            AudioPlaybackWidget
         }
     });
     console.log('@yuuno/jupyterlab: Widgets registered.');

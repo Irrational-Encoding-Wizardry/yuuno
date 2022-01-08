@@ -4,7 +4,7 @@ export type Unsubscriber = () => void;
 
 
 
-type ResponseAwaiter<T> = (value: T) => void;
+type ResponseAwaiter<T> = (value: T|null) => void;
 
 
 export type FinishedNormally = () => void;
@@ -152,7 +152,7 @@ export class RPCServer<T> {
 
 
 export class RPCClient {
-    private _requests: Map<string, ResponseAwaiter<ResponsePacket>>;
+    private _requests: Map<string, ResponseAwaiter<ResponsePacket|null>>;
     private _instance_number: number;
     private _current_packet_counter: number;
 
@@ -214,7 +214,12 @@ export class RPCClient {
         const id = `${this._instance_number}--${this._current_packet_counter++}`;
         return new Promise((rs, rj) => {
             let finished = () => {}
-            const awaiter = (packet: ResponsePacket) => {
+            const awaiter = (packet: ResponsePacket|null) => {
+                if (packet === null) {
+                    rj(new Error("Client closed."));
+                    return;
+                }
+
                 finished();
                 if (!!packet.buffers) {
                     packet.payload.buffers = packet.buffers;
@@ -230,7 +235,7 @@ export class RPCClient {
             if (cancel !== undefined) {
                 finished = cancel(() => {
                     this._requests.delete(id);
-                    rj();
+                    rj(new Error("Request timed out."));
                 });
             }
 
@@ -246,6 +251,11 @@ export class RPCClient {
 
     close() {
         this._closeSubscription();
+
+        const awaiters = [...this._requests.values()];
+        this._requests.clear();
+        for (let awaiter of awaiters)
+            awaiter(null);
     }
 }
 

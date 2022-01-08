@@ -131,10 +131,10 @@ class VSScriptManager(ScriptManager):
         del self.envs[id]
         del self.scripts[name]
 
-    def env_wrapper_for(self, cls):
+    def env_wrapper_for(self, cls, wrapper=WrappedClip):
         def _wrapper(*args, **kwargs):
             current_env = self._current_script()
-            return WrappedClip(current_env, cls(*args, **kwargs))
+            return wrapper(current_env, cls(*args, **kwargs))
         return _wrapper
 
     def create(self, name: str, *, initialize=False) -> Script:
