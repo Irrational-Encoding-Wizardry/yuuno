@@ -104,10 +104,7 @@ def as_completed(futures: t.Iterable[Future], prefetch: int, backlog: t.Optional
 
 
 def frames(clip, prefetch, backlog):
-    if Features.CLOSE_FRAMES:
-        return clip.frames(prefetch=prefetch, backlog=backlog, close=True)
-    else:
-        return as_completed((clip.get_frame_async(frameno) for frameno in range(len(clip))), prefetch, backlog)
+    return as_completed((clip.get_frame_async(frameno) for frameno in range(len(clip))), prefetch, backlog)
 
 def encode(
         clip: vs.VideoNode,
@@ -151,10 +148,12 @@ def encode(
             raise ValueError("Can only use vs.GRAY and vs.YUV for V4M-Streams")
 
         if len(y4mformat) > 0:
-            y4mformat = 'C' + y4mformat + ' '
+            y4mformat = 'C' + y4mformat
 
-        data = f'YUV4MPEG2 {y4mformat} W{clip.width} H{clip.height} F{clip.fps_num}:{clip.fps_den}Ip A0:0\n'
+        data = f'YUV4MPEG2 {y4mformat} W{clip.width} H{clip.height} F{clip.fps_num}:{clip.fps_den} Ip A0:0 XLENGTH={len(clip)}\n'
         stream.write(data.encode("ascii"))
+        if hasattr(stream, "flush"):
+            stream.flush()
 
     frame: vs.VideoFrame
     for idx, frame in enumerate(frames(clip, prefetch, backlog)):
@@ -176,8 +175,12 @@ def encode(
                     stream.write(bytes(plane))
                 else:
                     stream.write(plane)
+
             except BrokenPipeError:
                 return
+
+            if hasattr(stream, "flush"):
+                stream.flush()
 
         if progress is not None:
             progress(idx+1, len(clip))

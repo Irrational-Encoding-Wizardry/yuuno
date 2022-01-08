@@ -35,9 +35,10 @@ from IPython.core.magic import line_cell_magic, line_magic
 
 from yuuno import Yuuno
 from yuuno.vs.utils import get_proxy_or_core, get_environment
-from yuuno.multi_scripts.os import popen, interrupt_process
 
-from yuuno_ipython.utils import get_data_file
+from yuuno.multi_scripts.os import popen, interrupt_process, kill_process
+
+from yuuno_ipython.utils import get_data_file, log_errors
 
 from yuuno_ipython.ipython.utils import execute_code
 from yuuno_ipython.ipython.magic import MagicFeature
@@ -107,7 +108,7 @@ class EncodeWidget(DOMWidget):
                 self.send({'type': 'refresh_finish', 'data': None, 'target': data['source']})
 
         elif content['type'] == 'kill':
-            self._process.terminate()
+            kill_process(self._process)
             self._kill.set()
             with self._lock:
                 self.send({'type': 'response', 'id': cid, 'payload': {}})
@@ -183,6 +184,7 @@ class EncodeMagic(Magics):
     def _default_environment(self):
         return Yuuno.instance().environment
 
+    @log_errors
     def _reader(self, dead: Event, process: subprocess.Popen, pipe_r, term_q, encode, after_exit):
         while process.poll() is None and not dead.is_set():
             d = pipe_r.read(1)
@@ -214,6 +216,7 @@ class EncodeMagic(Magics):
         term_q.put(b"\n\n[Process Terminated]")
         term_q.put(None)
 
+    @log_errors
     def _terminal_writer(self, term_q, encode: EncodeWidget):
         decoder = codecs.getincrementaldecoder(sys.getdefaultencoding())('replace')
 
@@ -232,12 +235,14 @@ class EncodeMagic(Magics):
             time.sleep(0.1)
         encode.write(decoder.decode(b'', final=True))
 
+    @log_errors
     def _state_updater(self, dead, encode, state):
         while not dead.is_set():
             encode.current, encode.length = state
             time.sleep(0.5)
         encode.current, encode.length = state
 
+    @log_errors
     def _clip_output(self, env, clip, dead, encode, stdin, state, y4m):
         def _progress(current, length):
             state[0], state[1] = current, length
@@ -271,8 +276,17 @@ class EncodeMagic(Magics):
 
         kill = Event()
         state = [0, len(clip)]
-        process = popen(raw if shell else commandline, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell)
+        process = popen(
+            raw if shell else commandline,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+
+            shell=shell,
+            bufsize=0
+        )
         encode = EncodeWidget(kill=kill, process=process, commandline=raw)
+        encode.length = len(clip)
         _running[str(process.pid)] = encode
 
         q = queue.Queue()

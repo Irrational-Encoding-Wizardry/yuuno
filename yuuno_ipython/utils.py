@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017, 2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,7 @@
 
 
 import os
+import functools
 from pathlib import Path
 
 try:
@@ -37,3 +38,15 @@ def get_data_file(name) -> Path:
     """
     filename = resource_filename('yuuno_ipython', 'static' + os.path.sep + name)
     return Path(filename)
+
+
+def log_errors(func, logger="yuuno_ipython"):
+    @functools.wraps(func)
+    def _wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            import logging
+            logging.getLogger(logger).exception("Somehing went wrong", e)
+            raise
+    return _wrapper

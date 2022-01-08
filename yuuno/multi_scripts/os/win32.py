@@ -31,3 +31,6 @@ def popen(*args, **kwargs):
 def interrupt_process(process):
     print("Due to limitations of the operating system, we can only kill the process.", file=sys.stderr)
     process.send_signal(signal.CTRL_BREAK_EVENT)
+
+def kill_process(process):
+    process.terminate()

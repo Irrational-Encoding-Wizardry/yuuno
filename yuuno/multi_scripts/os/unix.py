@@ -26,3 +26,6 @@ popen = subprocess.Popen
 
 def interrupt_process(process):
     process.send_signal(signal.SIGINT)
+
+def kill_process(process):
+    process.kill()

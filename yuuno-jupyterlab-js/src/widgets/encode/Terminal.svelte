@@ -50,8 +50,14 @@
     });
 
     onMount(async () => {
+        // Let's do our best to enforce style calculations.
         await new Promise(rs => requestAnimationFrame(rs));
         await new Promise(rs => requestAnimationFrame(rs));
+
+        // This is a trick.
+        window.getComputedStyle(target).width;
+
+        // Now fit the terminal size.
         fit.fit();
     });
 
