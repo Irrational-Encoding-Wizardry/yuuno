@@ -14,6 +14,8 @@ if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
   venv/bin/jupyter-nbextension install yuuno_ipython --py --sys-prefix --symlink
   venv/bin/jupyter-nbextension enable yuuno_ipython --py --sys-prefix
+  venv/bin/jupyter-labextension install yuuno_jupyterlab --sys-prefix --symlink
+  venv/bin/jupyter-labextension enable yuuno_jupyterlab --sys-prefix
 else
   OLD_PATH=$PATH
   . venv/bin/activate
