@@ -17,19 +17,21 @@ It applies to any program that includes or references this Additional Permission
    within a Notebook.
 
    "Widgets" are interactive cell outputs. The "Widget State" refers to the
-   configuration of a widget that is stored within a widget. The Widget State can be
-   influenced by you interacting with a widget.
-
+   configuration of a widget that is stored within the notebook. The Widget State
+   can be influenced by you interacting with a widget.
 
 2. Grant of Additional Permission
 
    Any code using the Program within a Notebook, is not based on this Program,
    even when it links (imports) it. This includes the Cell Output and Widget State
-   it generates. It also does not propagate or convey the program.
+   it generates. It also does not propagate or convey the program. This means
+   your notebooks' code, even if it includes widgets and imports to this Program,
+   is not bound by the rules defined by the GNU Affero General Public License.
 
-   A Widget rendered by the Program is not affected by this Additional Permission
-   as long as the Program (or the part governing the Widget) is not stored within
-   the Notebook itself.
+   The part of the Program responsible for implementing an interactible
+   User Interface to the Widget State is kept separate from the Notebook and is
+   not exempted by this Additional Permission. The AGPLv3 still applies to this
+   part of the Program.
 
 3. No weakening of Copyleft
 
@@ -62,11 +64,5 @@ It applies to any program that includes or references this Additional Permission
    permissions.  However, no additional obligations are imposed on any author or
    copyright holder as a result of your choosing to follow a later version.
 
-
 5. Meta-License and attributions
    The actual text of this Additional Permission is made available under CC0.
-
-   I have used the Web Template Output Additional Permission by the
-   Software Freedom Conservancy, Inc. as a template. This attribution does
-   not convey any relationship nor that the provisions of that additional permission
-   are included in this license.
