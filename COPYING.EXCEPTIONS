@@ -1,7 +1,9 @@
     Notebook Linking Additional Permission, version 1
 
 This Notebook Linking Additional Permission ("Additional Permission") is an
-additional permission under section 7 of the GNU Affero General Public License, version 3 ("AGPLv3").
+additional permission under section 7 of the GNU Affero General Public License,
+version 3 ("AGPLv3").
+
 It applies to any program that includes or references this Additional Permission.
 
 
@@ -23,7 +25,7 @@ It applies to any program that includes or references this Additional Permission
 
    Any code using the Program within a Notebook, is not based on this Program,
    even when it links (imports) it. This includes the Cell Output and Widget State
-   it generates.
+   it generates. It also does not propagate or convey the program.
 
    A Widget rendered by the Program is not affected by this Additional Permission
    as long as the Program (or the part governing the Widget) is not stored within
@@ -49,7 +51,7 @@ It applies to any program that includes or references this Additional Permission
    and conditions either of that numbered version or of any later version
    published by Conservancy.  If the Program does not specify a version number
    of this Additional Permission, you may choose any version ever published by
-   Conservancy.
+   the Yuuno Maintainers.
    
    If the Program specifies that a proxy can decide which future versions of
    this Additional Permission can be used, that proxy's public statement of
