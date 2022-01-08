@@ -69,10 +69,11 @@ class NPMBuild(build_py):
         target_dir = os.path.join(cwd, self.TARGET_PATH)# "yuuno_ipython", "build")
         target_file = os.path.join(target_dir, self.SUCCESS_FILE)# "extension.js")
 
-        if os.path.exists(target_file):
-            self.announce(f"cleaning build target.", level=INFO)
-            import shutil
-            shutil.rmtree(target_dir)
+        if os.path.exists(self.JS_PROJECT_PATH):
+            if os.path.exists(target_file):
+                self.announce(f"cleaning build target.", level=INFO)
+                import shutil
+                shutil.rmtree(target_dir)
 
         if os.environ.get(self.ENV_NAME, ""):
             compiled_path = os.environ[self.ENV_NAME]
@@ -85,10 +86,15 @@ class NPMBuild(build_py):
             self.announce("Used build from environment.")
             return
 
-        jspath = os.path.join(cwd, self.JS_PROJECT_PATH)
-        pm = self.get_js_package_manager()
-        self.popen(f'"{pm}" install', cwd=jspath)
-        self.popen(f'"{pm}" run build', cwd=jspath)
+        if os.path.exists(self.JS_PROJECT_PATH):
+            jspath = os.path.join(cwd, self.JS_PROJECT_PATH)
+            pm = self.get_js_package_manager()
+            self.popen(f'"{pm}" install', cwd=jspath)
+            self.popen(f'"{pm}" run build', cwd=jspath)
+        elif os.path.exists(target_file):
+            self.announce("source distribution with prebuilt binaries detected. Skipping build.")
+        else:
+            raise EnvironmentError("sdist without prebuild javascript.")
 
 
 class SDistNPM(sdist):
@@ -152,6 +158,7 @@ setup(
     version='1.4b1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
+    long_description_content_type = "text/plain",
     author="cid-chan",
     author_email='cid+yuuno@cid-chan.moe',
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
@@ -207,7 +214,7 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Other Audience',
 
-        'License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
 
         'Programming Language :: Python :: 3.9',
 
