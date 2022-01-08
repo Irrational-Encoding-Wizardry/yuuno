@@ -1,3 +1,7 @@
+const WPPlugin = require('@jupyterlab/builder').WPPlugin;
+const fs = require("fs");
+const path = require("path");
+
 module.exports = {
     experiments: {
         asyncWebAssembly: true
@@ -23,5 +27,19 @@ module.exports = {
                 }
             },
         ]
-    }
+    },
+    plugins: [
+        new WPPlugin.JSONLicenseWebpackPlugin({
+            outputFilename: "../third-party-licenses.json",
+            additionalModules: [
+                {
+                    name: "@yuuno/jupyterlab",
+                    directory: __dirname
+                }
+            ],
+            licenseTextOverrides: {
+                "@yuuno/jupyterlab": fs.readFileSync(path.resolve(".", "..", "COPYING")) + "\n--------------------------------\n" + fs.readFileSync(path.resolve(".", "..", "COPYING.EXCEPTIONS"))
+            }
+        })
+    ]
 };
