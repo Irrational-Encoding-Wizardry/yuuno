@@ -383,22 +383,23 @@ if Features.API4:
                 return (b"",) * self.clip.num_channels
 
             rendered = yield self.clip.get_frame_async(frame)
-            if rendered.sample_type == vs.FLOAT:
-                result = []
-                floats = len(rendered[0])
+            with rendered:
+                if rendered.sample_type == vs.FLOAT:
+                    result = []
+                    floats = len(rendered[0])
 
-                data = bytearray(floats * 4)
-                for channel in rendered:
-                    memoryview(data).cast("f")[:] = channel
-                    result.append(byteswap(data))
+                    data = bytearray(floats * 4)
+                    for channel in rendered:
+                        memoryview(data).cast("f")[:] = channel
+                        result.append(byteswap(data))
 
-                return tuple(result)
+                    return tuple(result)
 
-            else:
-                return tuple(
-                    to_float32_le(bytes(channel), bits_per_sample=self.clip.bits_per_sample)
-                    for channel in rendered
-                )
+                else:
+                    return tuple(
+                        to_float32_le(bytes(channel), bits_per_sample=self.clip.bits_per_sample)
+                        for channel in rendered
+                    )
 
         @future_yield_coro
         def __getitem__(self, frame: int) -> Future:
