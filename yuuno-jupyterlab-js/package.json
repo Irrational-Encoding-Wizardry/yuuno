@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/github_username/@yuuno/jupyterlab/issues"
   },
-  "license": "BSD-3-Clause",
+  "license": "AGPL-3.0-or-later",
   "author": {
     "name": "cid-chan",
     "email": "cid+yuuno@cid-chan.moe"

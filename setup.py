@@ -176,10 +176,10 @@ setup(
     ],
     package_dir={'yuuno_ipython': 'yuuno_ipython'},
     package_data={'yuuno_ipython': ['static/*', 'build/*']},
-    ext_modules=extensions,
+    # ext_modules=extensions,
     include_package_data=True,
     install_requires=requirements,
-    license="GNU Lesser General Public License v3 (LGPLv3)",
+    license="GNU Affero General Public License v3 (AGPLv3)",
     zip_safe=False,
     keywords='yuuno',
     cmdclass={
@@ -207,7 +207,7 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Other Audience',
 
-        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+        'License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)',
 
         'Programming Language :: Python :: 3.9',
 

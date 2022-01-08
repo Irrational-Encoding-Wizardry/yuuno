@@ -1,0 +1,70 @@
+    Notebook Linking Additional Permission, version 1
+
+This Notebook Linking Additional Permission ("Additional Permission") is an
+additional permission under section 7 of the GNU Affero General Public License, version 3 ("AGPLv3").
+It applies to any program that includes or references this Additional Permission.
+
+
+1. DEFINITIONS
+
+   "Notebooks" are files written by users that use the Jupyter Notebook frontend,
+   or one of its reimplementations. These notebooks usually use the file extension
+   ".ipynb" to store its data.
+
+   "Cell outputs" are the automated outputs generated and displayed near the code
+   within a Notebook.
+
+   "Widgets" are interactive cell outputs. The "Widget State" refers to the
+   configuration of a widget that is stored within a widget. The Widget State can be
+   influenced by you interacting with a widget.
+
+
+2. Grant of Additional Permission
+
+   Any code using the Program within a Notebook, is not based on this Program,
+   even when it links (imports) it. This includes the Cell Output and Widget State
+   it generates.
+
+   A Widget rendered by the Program is not affected by this Additional Permission
+   as long as the Program (or the part governing the Widget) is not stored within
+   the Notebook itself.
+
+3. No weakening of Copyleft
+
+   The availability of this Additional Permission does not imply any general
+   presumption that software is unaffected by the copyleft requirements of the
+   AGPLv3 license of this Program or another Program separately licensed under
+   AGPLv3.
+
+4. Reversed Versions of this Additional Permission
+
+   The Yuuno Maintainers may publish revised
+   and/or new versions of this Additional Permission from time to time.  Such
+   new versions will be similar in spirit to the present version, but may differ
+   in detail to address new problems or concerns.
+   
+   Each version is given a distinguishing version number.  If the Program
+   specifies that a certain numbered version of this Additional Permission "or
+   any later version" applies to it, you have the option of following the terms
+   and conditions either of that numbered version or of any later version
+   published by Conservancy.  If the Program does not specify a version number
+   of this Additional Permission, you may choose any version ever published by
+   Conservancy.
+   
+   If the Program specifies that a proxy can decide which future versions of
+   this Additional Permission can be used, that proxy's public statement of
+   acceptance of a version permanently authorizes you to choose that version for
+   the Program.
+   
+   Later Additional Permission versions may give you additional or different
+   permissions.  However, no additional obligations are imposed on any author or
+   copyright holder as a result of your choosing to follow a later version.
+
+
+5. Meta-License and attributions
+   The actual text of this Additional Permission is made available under CC0.
+
+   I have used the Web Template Output Additional Permission by the
+   Software Freedom Conservancy, Inc. as a template. This attribution does
+   not convey any relationship nor that the provisions of that additional permission
+   are included in this license.

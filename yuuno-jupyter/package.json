@@ -4,6 +4,7 @@
   "description": "Jupyter Bindings for Yuuno4IPython",
   "author": "Sarah <cid+yuuno@cid-chan.moe>",
   "private": true,
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
