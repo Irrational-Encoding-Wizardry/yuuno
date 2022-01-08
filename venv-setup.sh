@@ -8,7 +8,7 @@ if [ -e ./venv ]; then
     rm -rf ./venv
 fi
 python3 -m venv venv
-venv/bin/pip install jupyter jupyterlab jupyter_packaging vapoursynth
+venv/bin/pip install jupyter jupyterlab jupyter_packaging git+https://github.com/vapoursynth/vapoursynth
 
 if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .

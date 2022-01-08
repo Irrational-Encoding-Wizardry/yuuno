@@ -149,7 +149,7 @@ def recursive(path, prefix, extras=None):
 
 setup(
     name='yuuno',
-    version='1.4a1',
+    version='1.4a2',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     author="cid-chan",
@@ -194,8 +194,8 @@ setup(
         'build_npm_lab': NPMBuild.for_build(
             ENV_NAME = "COMPILED_YUUNO_LAB_JS",
             JS_PROJECT_PATH = "yuuno-jupyterlab-js",
-            SUCCESS_FILE = "jupyterlab.js",
-            TARGET_PATH = "yuuno_jupyterlab/build"
+            SUCCESS_FILE = "package.json",
+            TARGET_PATH = "yuuno_jupyterlab/static"
         ),
         'install': Install
     },
