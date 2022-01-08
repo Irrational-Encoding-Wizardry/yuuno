@@ -35,13 +35,6 @@ class AppDrawer(Magics):
         from yuuno_ipython.ipython.apps.preview import Preview
         return self.app_magic(Preview, line)
 
-    @line_magic
-    def diff(self, line):
-        from yuuno_ipython.ipython.apps.preview import Preview
-        def Diff(a, b, **kwargs):
-            return Preview(a, diff=b, **kwargs)
-        return self.app_magic(Diff, line)
-
 
 class Apps(MagicFeature):
 
