@@ -11,6 +11,8 @@ History
 * It works with APIv4 now.
 * In %%vspreview if there are only two outputs, automatically start diff-view.
 * Yuuno now works with JupyterLab
+* Added rudimentary audio support. You cannot encode audio right now but if it's the output of a cell
+  it will show a simple audio player. It however requires VapourSynth R58 to work.
 
 1.3.0 (Jakarta)
 ----------------
