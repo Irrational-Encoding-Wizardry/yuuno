@@ -223,7 +223,7 @@ class VapourSynthClipMixin(HasTraits, Clip):
                 prefer_props=self.extension.prefer_props
             )
 
-        if clip.format.color_family == vs.RGB or clip.format.bits_per_sample != 8:
+        if clip.format.color_family != vs.RGB or clip.format.bits_per_sample != 8:
             clip = self.extension.resize_filter(clip, format=vs.RGB24)
 
         processor = self.extension.processor
