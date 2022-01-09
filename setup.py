@@ -115,7 +115,6 @@ class Install(install):
 class Build(build):
 
     def run(self):
-        self.run_command('build_npm_ipython')
         self.run_command('build_npm_lab')
         super().run()
 
@@ -164,17 +163,6 @@ setup(
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
     data_files=[
-        ("share/jupyter/nbextensions/@yuuno", [
-            "yuuno_ipython/build/jupyter.js",
-            "yuuno_ipython/build/jupyter.js.map",
-            "yuuno_ipython/build/worker.js",
-            "yuuno_ipython/build/worker.js.map",
-        ]),
-
-        ("etc/jupyter/nbconfig/notebook.d", [
-            "yuuno_ipython/config/nbconfig/notebook.d/yuuno-jupyter.json"
-        ]),
-
         *recursive("yuuno_jupyterlab/static", "share/jupyter/labextensions/@yuuno/jupyterlab", {
             "share/jupyter/labextensions/@yuuno/jupyterlab": [
                 "yuuno_jupyterlab/config/labextensions/install.json"
@@ -192,12 +180,6 @@ setup(
     cmdclass={
         'sdist': SDistNPM,
         'build': Build,
-        'build_npm_ipython': NPMBuild.for_build(
-            ENV_NAME = "COMPILED_YUUNO_JS",
-            JS_PROJECT_PATH = "yuuno-jupyter",
-            SUCCESS_FILE = "jupyter.js",
-            TARGET_PATH = "yuuno_ipython/build"
-        ),
         'build_npm_lab': NPMBuild.for_build(
             ENV_NAME = "COMPILED_YUUNO_LAB_JS",
             JS_PROJECT_PATH = "yuuno-jupyterlab-js",
