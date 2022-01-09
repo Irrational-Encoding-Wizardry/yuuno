@@ -58,6 +58,8 @@ class AbstractInlineFormat(HasTraits):
             raw = getattr(self, funcname)()
             if isinstance(raw, tuple) and len(raw) == 2:
                 data, md = raw
+            elif raw is None:
+                continue
             else:
                 data = raw
                 md = None
@@ -156,6 +158,9 @@ class InlineFormatVideo(AbstractInlineFormat):
         return self.ipy_image._repr_png_(*args, **kwargs)
 
     def _repr_preview(self):
+        if len(self.clip) == 1:
+            return None
+
         if self.preview._view_name is None:
             return
 
