@@ -110,7 +110,7 @@ def extract_plane_new(frame, planeno, *, compat=False, direction=-1, raw=False):
     stride = frame.format.bytes_per_sample * width
 
     if raw:
-        return bytes(arr)
+        return arr
     else:
         if not compat:
             return Image.frombuffer('L', (width, height), bytes(arr), "raw", "L", stride, direction)
@@ -119,9 +119,9 @@ def extract_plane_new(frame, planeno, *, compat=False, direction=-1, raw=False):
 
 
 def extract_image(frame: VideoFrame) -> Image.Image:
-    r = bytes(extract_plane(frame, 0, direction=1, raw=True))
-    g = bytes(extract_plane(frame, 1, direction=1, raw=True))
-    b = bytes(extract_plane(frame, 2, direction=1, raw=True))
+    r = extract_plane(frame, 0, raw=True)
+    g = extract_plane(frame, 1, raw=True)
+    b = extract_plane(frame, 2, raw=True)
 
     data = bytearray(len(r)*4)
     data[0::4] = b
@@ -266,6 +266,7 @@ class VapourSynthClipMixin(HasTraits, Clip):
         wrapped = self._wrap_frame(frame)
         _rgb24: VideoNode = self.to_rgb32(wrapped)
         rgb24: Future = _rgb24.get_frame_async(0)
+
         compat: Future = self.to_compat_rgb32(_rgb24).get_frame_async(0)
 
         (yield gather([rgb24, compat]))
