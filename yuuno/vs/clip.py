@@ -118,6 +118,19 @@ def extract_plane_new(frame, planeno, *, compat=False, direction=-1, raw=False):
             return Image.frombuffer('RGB', (width, height), bytes(arr), "raw", COMPAT_PIXEL_FORMAT, stride, direction)
 
 
+def extract_image(frame: VideoFrame) -> Image.Image:
+    r = bytes(extract_plane(frame, 0, direction=1, raw=True))
+    g = bytes(extract_plane(frame, 1, direction=1, raw=True))
+    b = bytes(extract_plane(frame, 2, direction=1, raw=True))
+
+    data = bytearray(len(r)*4)
+    data[0::4] = b
+    data[1::4] = g
+    data[2::4] = r
+
+    return Image.frombuffer("RGB", (frame.width, frame.height), bytes(data), "raw", "BGRX", len(data)//frame.height, 1)
+
+
 if Features.EXTRACT_VIA_ARRAY:
     extract_plane = extract_plane_new
 else:
@@ -139,10 +152,7 @@ class VapourSynthFrameWrapper(HasTraits, Frame):
     def _extract(self):
         # APIv4 requires manually plane based extraction.
         if self.extension.merge_bands or Features.API4:
-            r = extract_plane(self.rgb_frame, 0, compat=False, direction=1)
-            g = extract_plane(self.rgb_frame, 1, compat=False, direction=1)
-            b = extract_plane(self.rgb_frame, 2, compat=False, direction=1)
-            self.pil_cache = Image.merge('RGB', (r, g, b))
+            self.pil_cache = extract_image(self.rgb_frame)
         else:
             self.pil_cache = extract_plane(self.compat_frame, 0, compat=True)
 
