@@ -2,8 +2,12 @@
 History
 =======
 
+1.5.0 (Johannesburg)
+--------------------
+* Removed support for Jupyter Notebook. We only support JupyterLab now.
+
 1.4.0 (Moscow)
----------------
+--------------
 
 * Reintegrated Yuuno Core into Yuuno proper.
 * I am using a nix-flakes now.

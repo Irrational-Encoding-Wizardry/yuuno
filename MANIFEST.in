@@ -5,9 +5,7 @@ include LICENSE
 include README.rst
 
 recursive-include tests *
-recursive-include yuuno_ipython/config *
 recursive-include yuuno_ipython/static *
-recursive-include yuuno_ipython/build *
 
 recursive-include yuuno_jupyterlab/config *
 recursive-include yuuno_jupyterlab/static *
