@@ -53,12 +53,14 @@
     "@jupyterlab/coreutils": "^5.1.0",
     "@jupyterlab/services": "^6.1.0",
     "@jupyterlab/settingregistry": "^3.1.0",
+    "codemirror": "^5.65.0",
     "xterm": "^4.16.0",
     "xterm-addon-fit": "^0.5.0"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^3.1.0",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/codemirror": "^5.60.5",
     "@types/node": "^17.0.7",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
@@ -101,6 +103,10 @@
     "schemaDir": "schema",
     "sharedPackages": {
       "@jupyter-widgets/base": {
+        "bundled": false,
+        "singleton": true
+      },
+      "codemirror": {
         "bundled": false,
         "singleton": true
       }

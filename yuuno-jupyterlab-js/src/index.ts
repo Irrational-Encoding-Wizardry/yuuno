@@ -3,6 +3,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
+import { ICodeMirror } from "@jupyterlab/codemirror";
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IJupyterWidgetRegistry } from "@jupyter-widgets/base";
@@ -11,17 +12,17 @@ import { PreviewWindowWidget } from "./widgets/preview/index";
 import { EncodeWindowWidget } from "./widgets/encode/index";
 import { AudioPlaybackWidget } from "./widgets/audio/index";
 
+import { addPythonModeForExtension } from "./codemirror";
+
 /**
  * Initialization data for the @yuuno/jupyterlab extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   id: '@yuuno/jupyterlab:plugin',
   autoStart: true,
-  requires: [IJupyterWidgetRegistry],
+  requires: [IJupyterWidgetRegistry, ICodeMirror],
   optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd, widgets: IJupyterWidgetRegistry, settingRegistry: ISettingRegistry | null) => {
-    console.log('JupyterLab extension @yuuno/jupyterlab is activated!');
-
+  activate: (app: JupyterFrontEnd, widgets: IJupyterWidgetRegistry, codeMirror: ICodeMirror, settingRegistry: ISettingRegistry | null) => {
     widgets.registerWidget({
         name: "@yuuno/jupyter",
         version: "1.2.0",
@@ -32,6 +33,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
         }
     });
     console.log('@yuuno/jupyterlab: Widgets registered.');
+
+    addPythonModeForExtension(codeMirror.CodeMirror, "vpy");
+    console.log('@yuuno/jupyterlab: Registered vpy as Python extension.');
 
     if (settingRegistry) {
       settingRegistry
@@ -44,15 +48,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         });
     }
 
-    // requestAPI<any>('get_example')
-    //   .then(data => {
-    //     console.log(data);
-    //   })
-    //   .catch(reason => {
-    //     console.error(
-    //       `The yuuno_jupyterlab server extension appears to be missing.\n${reason}`
-    //     );
-    //   });
+    console.log('JupyterLab extension @yuuno/jupyterlab is activated with app', app);
   }
 };
 
