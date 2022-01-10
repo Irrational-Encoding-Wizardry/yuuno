@@ -1,7 +1,7 @@
 <div class="top">
-    {#if clip_id == null}
+    {#if clipCount === 0}
         <div>No image</div>
-    {:else if diff_id == null}
+    {:else if clipCount == 1}
         <div>
             {#await lengthPromise}
                 ... frames
@@ -26,7 +26,15 @@
     {:else}
         <!-- MAIN -->
         <div>
-            A
+            {#if clipCount > 2}
+                <JupyterSelect bind:value={ clip_id }>
+                    {#each clipIds as id (id)}
+                        <option value={ id }>{ id }</option>
+                    {/each}
+                </JupyterSelect>
+            {:else}
+                <span>{ clip_id }</span>
+            {/if}
         </div>
 
         {#await frameDataPromiseLeft}
@@ -53,19 +61,30 @@
         <div class="spacer" />
 
         <!-- COMPARISON -->
-        <div>
-            <button class="toolbar" on:click={((ty) => () => download(ty))('diff')} bind:this={diffDLIcon} />
-        </div>
-        {#await frameDataPromiseRight}
-            <div>Updating ...</div>
-        {:then frameData}
-            <div>{ frameData.size[0] }px &times; { frameData.size[1] }px</div>
-        {:catch}
-            <div>Error</div>
-        {/await}
+        {#if diff_id !== null}
+            <div>
+                <button class="toolbar" on:click={((ty) => () => download(ty))('diff')} bind:this={diffDLIcon} />
+            </div>
+            {#await frameDataPromiseRight}
+                <div>Updating ...</div>
+            {:then frameData}
+                <div>{ frameData.size[0] }px &times; { frameData.size[1] }px</div>
+            {:catch}
+                <div>Error</div>
+            {/await}
+        {/if}
 
         <div>
-            B
+            {#if clipCount > 2}
+                <JupyterSelect bind:value={ diff_id }>
+                    <option value={null}>- None -</option>
+                    {#each clipIds as id (id)}
+                        <option value={ id }>{ id }</option>
+                    {/each}
+                </JupyterSelect>
+            {:else}
+                <span>{ diff_id }</span>
+            {/if}
         </div>
 
     {/if}
@@ -111,12 +130,19 @@
     export let clip_id;
     export let diff_id;  // Should always be null.
 
+    export let clips;
+
+    import JupyterSelect from "./JupyterSelect.svelte";
+
     import { downloadIcon } from "@jupyterlab/ui-components";
     import { tick } from "svelte";
 
     let diffDLIcon, clipDLIcon;
 
     $: lengthPromise = [diff_id, clip_id, rpc.length()][2];
+
+    $: clipIds = Object.keys(clips);
+    $: clipCount = clipIds.length;
 
     $: frameDataPromiseLeft = [diff_id, clip_id, rpc.frame({ frame })][2];
     $: frameDataPromiseRight = [diff_id, clip_id, rpc.frame({ frame, image: "diff" })][2];

@@ -1,5 +1,6 @@
 import type { Writable, Updater, Subscriber, Unsubscriber } from 'svelte/store';
 import type Backbone from 'backbone';
+import { DOMWidgetModel } from "@jupyter-widgets/base";
 
 
 /**
@@ -13,7 +14,8 @@ export function model_attribute<T>(model: Backbone.Model, name: string): Writabl
         // Just set the value
         set(value: T) {
             model.set(name, value);
-            model.save();
+            if (model instanceof DOMWidgetModel)
+                model.save_changes();
         },
 
         // Change the value.

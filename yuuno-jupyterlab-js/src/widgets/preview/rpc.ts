@@ -50,7 +50,8 @@ class CachedPreviewRPC implements PreviewRPC {
             { frame, image }: { frame: number, image?: 'clip'|'diff' }
     ): Promise<{ size: [number, number], buffers?: ArrayBuffer[] }> {
         if (!image) image = "clip";
-        const _lru_id = `${this.model.get(image + "Id")}--${image}--${frame}`;
+        const realId = this.model.get("clips")[this.model.get(image)];
+        const _lru_id = `${realId}--${image}--${frame}`;
         if (!this._cache.has(_lru_id)) {
             this._evict();
             this._cache.set(_lru_id, this.parent.frame({ frame, image }));

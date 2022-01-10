@@ -4,10 +4,10 @@
 {:then length}
     <div class="preview">
         <div class="header">
-            <Header clip_id={ $clip_id } diff_id={ $diff_id } rpc={ preview } frame={ $frame } />
+            <Header clips={clips} bind:clip_id={ $clip_id } bind:diff_id={ $diff_id } rpc={ preview } frame={ $frame } />
         </div>
         <div class="viewport">
-            <Viewport clip_id={ $clip_id } diff_id={ $diff_id } rpc={ preview } frame={ $frame } zoom={ $zoom } />
+            <Viewport clips={clips} clip_id={ $clip_id } diff_id={ $diff_id } rpc={ preview } frame={ $frame } zoom={ $zoom } />
         </div>
         <div class="footer">
             <Footer bind:frame={ $frame } bind:zoom={ $zoom } length={ length.length } />
@@ -54,6 +54,8 @@
     const frame = model_attribute(component, "frame");
     const zoom = model_attribute(component, "zoom");
 
+    const raw_clips = model_attribute(component, "clips");
+
     const clip_id = model_attribute(component, "clip");
     const diff_id = model_attribute(component, "diff");
 
@@ -63,6 +65,29 @@
     preview.open();
     onDestroy(() => preview.close());
 
-    $: currentPreview = [$clip_id, $diff_id, preview.length()][2];
-    $: console.log(component);
+    $: clips = $raw_clips !== null ? $raw_clips : {};
+
+    function redistribute(_, __, ___) {
+        const keys = Object.keys(clips);
+        keys.sort();
+
+        if (keys.length == 1) {
+            $clip_id = keys[0];
+            $diff_id = null;
+        } else if (keys.length == 2) {
+            $clip_id = keys[0];
+            $diff_id = keys[1];
+        } else {
+            if (keys.indexOf($clip_id) === -1)
+                $clip_id = keys[0];
+
+            if ($diff_id !== null && keys.indexOf($diff_id) === -1)
+                $diff_id = null;
+
+            if ($clip_id === $diff_id)
+                $diff_id = null;
+        }
+    }
+    $: redistribute(clips, $clip_id, $diff_id);
+    $: currentPreview = [clips, $clip_id, $diff_id, preview.length()][3];
 </script>

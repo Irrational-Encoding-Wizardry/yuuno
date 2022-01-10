@@ -1,15 +1,19 @@
 <div class="viewport" on:mouseenter={enter} on:mouseleave={leave} on:mousedown|capture|stopPropagation|preventDefault={down} on:mouseup|capture|stopPropagation|preventDefault={up} on:mousemove={move} bind:this={myself} >
     <div class="zero-sizer {mode}">
         {#if clip_id !== null}
-            <div class="item main">
-                <Image rpc={ rpc } frame={ frame } zoom={ zoom } type="clip" />
-            </div>
+            {#key [clips, clip_id]}
+                <div class="item main">
+                    <Image rpc={ rpc } frame={ frame } zoom={ zoom } type="clip" />
+                </div>
+            {/key}
         {/if}
 
         {#if diff_id !== null}
-            <div class="item diff">
-                <Image rpc={ rpc } frame={ frame } zoom={ zoom } type="diff" />
-            </div>
+            {#key [clips, diff_id]}
+                <div class="item diff">
+                    <Image rpc={ rpc } frame={ frame } zoom={ zoom } type="diff" />
+                </div>
+            {/key}
         {/if}
     </div>
 </div>
@@ -63,7 +67,7 @@
     export let frame;
     export let zoom = 1;
 
-    export let clip_id, diff_id;
+    export let clips, clip_id, diff_id;
 
     let myself;
 

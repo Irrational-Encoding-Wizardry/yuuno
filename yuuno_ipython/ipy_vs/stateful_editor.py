@@ -180,12 +180,6 @@ class EditorMagics(Magics):
             print("You can use --isolate-variables to sandbox changes of the environment to the cell. Any changes to variables")
             print("will not be visible outside the cell.")
             print()
-            print("--main and --diff are ignored if there are less than 3 output-clips.")
-            print()
-            print("Options special to %%vspreview")
-            print("--main <OUTPUT-ID>    - Select the output number to show as the main (defaults to 0 if not given.)")
-            print("--diff <OUTPUT-IDS>   - Set the id to compare to")
-            print()
             print("General options")
             print("--reset-core          - Reset the core.")
             print("--isolate-variables   - Make sure that variables set inside this cell do not affect the global environment.")
@@ -195,16 +189,6 @@ class EditorMagics(Magics):
         if self.vsscript_feature is not None and not VapourSynthEnvironment.single() and "reset-core" in line:
             reset_core = True
         
-        diff = None
-        if "diff" in line:
-            diff = 1 if len(line["diff"]) == 0 else int(line["diff"][0])
-        
-        main = 1
-        if "main" in line:
-            if len(line["main"]) == 0:
-                raise ValueError("You need to provide an output-id")
-            main = int(line["main"][0])
-
         ns = self.yuuno.environment.ipython.user_ns
         if "isolate-variables" in line:
             ns = ChainMap({}, ns)
@@ -218,16 +202,7 @@ class EditorMagics(Magics):
             execute_code(cell, "<vspreview>", True, ns=ns)
             
         outputs = env.outputs
-        if len(outputs) == 1:
-            main = next(iter(outputs))
-
-        elif len(outputs) == 2:
-            oiter = iter(sorted(iter(outputs)))
-            main = next(oiter)
-            diff = next(oiter)
-
-        self.preview.clip = outputs.get(main, None)
-        self.preview.diff = None if diff is None else outputs.get(diff, None)
+        self.preview.clips = {str(k): v for k, v in outputs.items()}
 
         display(self.preview)
 

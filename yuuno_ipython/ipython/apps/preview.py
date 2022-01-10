@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017, 2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import base64
+import typing as t
 from typing import Any as TAny
 
 from ipywidgets import DOMWidget
 
 from traitlets import default, directional_link, observe
 from traitlets import Any
-from traitlets import Integer, Unicode, Float
+from traitlets import Integer, Unicode, Float, Dict
 
 from yuuno.clip import Clip
 from yuuno.utils import future_yield_coro
@@ -34,25 +35,25 @@ EMPTY_IMAGE = base64.b64decode(
 )
 
 
-class _Cache(object):
-
-    def __init__(self, source, updater):
-        self._cache_obj_id = None
-        self._cache_inst = None
-
-        self._cache_source = source
-        self._cache_updater = updater
-
-    def _update(self, obj):
-        self._cache_obj_id = id(obj)
-        self._cache_inst = self._cache_updater(obj)
-        return self._cache_inst
-
-    def get(self):
-        obj = self._cache_source()
-        if self._cache_obj_id != id(obj):
-            return self._update(obj)
-        return self._cache_inst
+# class _Cache(object):
+# 
+#     def __init__(self, source, updater):
+#         self._cache_obj_id = None
+#         self._cache_inst = None
+# 
+#         self._cache_source = source
+#         self._cache_updater = updater
+# 
+#     def _update(self, obj):
+#         self._cache_obj_id = id(obj)
+#         self._cache_inst = self._cache_updater(obj)
+#         return self._cache_inst
+# 
+#     def get(self):
+#         obj = self._cache_source()
+#         if self._cache_obj_id != id(obj):
+#             return self._update(obj)
+#         return self._cache_inst
 
 
 class Preview(DOMWidget):
@@ -66,17 +67,20 @@ class Preview(DOMWidget):
     _view_module_version = Unicode('1.2').tag(sync=True)
 
     # Ignore the changes
-    clip: Clip = Any().tag(sync=True, to_json=(lambda v,w: id(v) if v is not None else None), from_json=(lambda v, w: w.clip))
-    diff: Clip = Any().tag(sync=True, to_json=(lambda v,w: id(v) if v is not None else None), from_json=(lambda v, w: w.diff))
+    clips: t.Dict[str, Clip] = Dict(Any()).tag(
+        sync=True,
+        to_json=lambda d, _: {k: id(v) for k, v in d.items()},
+        from_json=lambda _, w: w.clips
+    )
+
+    clip: str = Unicode("0", allow_none=True).tag(sync=True)
+    diff: str = Unicode(None, allow_none=True).tag(sync=True)
 
     frame = Integer(0).tag(sync=True)
     zoom = Float(1.0).tag(sync=True)
 
     def __init__(self, clip, **kwargs):
         super(Preview, self).__init__(**kwargs, clip=clip)
-
-        self._clip_cache  = _Cache(lambda: self.clip, self._wrap_for)
-        self._diff_cache = _Cache(lambda: self.diff, self._wrap_for)
 
         self.on_msg(self._handle_request_length)
         self.on_msg(self._handle_request_frame)
@@ -107,10 +111,13 @@ class Preview(DOMWidget):
 
     def _target_for(self, content):
         if content.get('payload', {}).get('image', 'clip') == "diff":
-            target = self._diff_cache
+            target = self.clips.get(self.diff, None)
         else:
-            target = self._clip_cache
-        return target.get()
+            target = self.clips.get(self.clip, None)
+
+        print(f"WTF {self.clips!r} ({self.clip!r} / {self.diff!r})")
+
+        return self._wrap_for(target)
 
     def _wrap_for(self, target):
         if target is None:
