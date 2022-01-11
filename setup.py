@@ -46,17 +46,17 @@ class NPMBuild(build_py):
     def for_build(cls, **args):
         return type("NPMBuild", (cls,), args)
 
-    def get_js_package_manager(self):
+    def ensure_package_managers(self):
         import shutil
-        npm = shutil.which("npm")
-        if npm is None:
-            raise RuntimeError("Couldn't find NPM.")
+        yarn = shutil.which("yarn")
+        if yarn is None:
+            raise RuntimeError("Couldn't find Yarn.")
         
-        cmd = shutil.which("yarn")
-        if shutil.which("yarn") is not None:
-            return cmd
-        else:
-            return npm
+        lerna = shutil.which("lerna")
+        if lerna is None:
+            raise RuntimeError("Couldn't find Lerna.")
+
+        return lerna
 
     def popen(self, cmd, *args, **kwargs):
         self.announce(f"running command: {cmd}", level=INFO)
@@ -87,10 +87,9 @@ class NPMBuild(build_py):
             return
 
         if os.path.exists(self.JS_PROJECT_PATH):
-            jspath = os.path.join(cwd, self.JS_PROJECT_PATH)
             pm = self.get_js_package_manager()
-            self.popen(f'"{pm}" install', cwd=jspath)
-            self.popen(f'"{pm}" run build', cwd=jspath)
+            self.popen(f'"{pm}" boostrap"')
+            self.popen(f'"{pm}" run build')
         elif os.path.exists(target_file):
             self.announce("source distribution with prebuilt binaries detected. Skipping build.")
         else:
@@ -182,7 +181,7 @@ setup(
         'build': Build,
         'build_npm_lab': NPMBuild.for_build(
             ENV_NAME = "COMPILED_YUUNO_LAB_JS",
-            JS_PROJECT_PATH = "yuuno-jupyterlab-js",
+            JS_PROJECT_PATH = "packages",
             SUCCESS_FILE = "package.json",
             TARGET_PATH = "yuuno_jupyterlab/static"
         ),

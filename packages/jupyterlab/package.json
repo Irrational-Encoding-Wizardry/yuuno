@@ -99,7 +99,7 @@
     },
     "webpackConfig": "./webpack.config.js",
     "extension": true,
-    "outputDir": "../yuuno_jupyterlab/static",
+    "outputDir": "../../yuuno_jupyterlab/static",
     "schemaDir": "schema",
     "sharedPackages": {
       "@jupyter-widgets/base": {

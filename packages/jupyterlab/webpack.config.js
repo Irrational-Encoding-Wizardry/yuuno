@@ -38,7 +38,7 @@ module.exports = {
                 }
             ],
             licenseTextOverrides: {
-                "@yuuno/jupyterlab": fs.readFileSync(path.resolve(".", "..", "COPYING")) + "\n--------------------------------\n" + fs.readFileSync(path.resolve(".", "..", "COPYING.EXCEPTIONS"))
+                "@yuuno/jupyterlab": fs.readFileSync(path.resolve(".", "..", "..", "COPYING")) + "\n--------------------------------\n" + fs.readFileSync(path.resolve(".", "..", "..", "COPYING.EXCEPTIONS"))
             }
         })
     ]
