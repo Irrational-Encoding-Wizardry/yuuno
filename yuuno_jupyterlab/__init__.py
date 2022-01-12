@@ -6,7 +6,7 @@ from ._version import __version__
 
 HERE = Path(__file__).parent.resolve()
 
-with (HERE / ".." / "yuuno-jupyterlab-js" / "package.json").open() as fid:
+with (HERE / ".." / "packages" / "jupyterlab" / "package.json").open() as fid:
     data = json.load(fid)
 
 def _jupyter_labextension_paths():

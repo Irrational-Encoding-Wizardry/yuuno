@@ -8,9 +8,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IJupyterWidgetRegistry } from "@jupyter-widgets/base";
 
-import { PreviewWindowWidget } from "./widgets/preview/index";
-import { EncodeWindowWidget } from "./widgets/encode/index";
-import { AudioPlaybackWidget } from "./widgets/audio/index";
+import * as Widgets from "@yuuno/widgets";
 
 import { addPythonModeForExtension } from "./codemirror";
 
@@ -21,11 +19,7 @@ function registerIPythonWidgets(registry: IJupyterWidgetRegistry|null) {
     registry.registerWidget({
         name: "@yuuno/jupyter",
         version: "1.2.0",
-        exports: {
-            PreviewWindowWidget,
-            EncodeWindowWidget,
-            AudioPlaybackWidget
-        }
+        exports: Widgets
     });
     console.log('@yuuno/jupyterlab: Widgets registered.');
 }

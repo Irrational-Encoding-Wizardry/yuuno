@@ -14,10 +14,8 @@ if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
   . venv/bin/activate
 
-  pushd ./yuuno-jupyterlab-js
-  yarn install
-  yarn run build
-  popd
+  lerna bootstrap
+  lerna run build
 
   jupyter labextension develop --overwrite .
   deactivate

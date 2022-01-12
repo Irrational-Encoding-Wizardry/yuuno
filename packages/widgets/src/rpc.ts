@@ -128,7 +128,7 @@ export class RPCServer<T> {
             await this._send({
                 id: packet.id,
                 type: "failure",
-                payload: e.toString()
+                payload: "" + e
             })
             return;
         }

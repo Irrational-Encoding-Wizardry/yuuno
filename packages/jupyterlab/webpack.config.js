@@ -2,6 +2,9 @@ const WPPlugin = require('@jupyterlab/builder').WPPlugin;
 const fs = require("fs");
 const path = require("path");
 
+const licenseText = fs.readFileSync(path.resolve(".", "..", "..", "COPYING")) + "\n--------------------------------\n" + fs.readFileSync(path.resolve(".", "..", "..", "COPYING.EXCEPTIONS"));
+
+
 module.exports = {
     experiments: {
         asyncWebAssembly: true
@@ -38,7 +41,8 @@ module.exports = {
                 }
             ],
             licenseTextOverrides: {
-                "@yuuno/jupyterlab": fs.readFileSync(path.resolve(".", "..", "..", "COPYING")) + "\n--------------------------------\n" + fs.readFileSync(path.resolve(".", "..", "..", "COPYING.EXCEPTIONS"))
+                "@yuuno/jupyterlab": licenseText,
+                "@yuuno/widgets": licenseText,
             }
         })
     ]
