@@ -1,5 +1,9 @@
-import { DOMWidgetView, WidgetModel } from '@jupyter-widgets/base';
+import type Backbone from 'backbone';
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 import type { SvelteComponentTyped } from 'svelte/types/runtime';
+import type { Channel, Packet } from './rpc';
+import { WidgetChannel } from "./model-rpc";
 
 
 /**
@@ -7,6 +11,8 @@ import type { SvelteComponentTyped } from 'svelte/types/runtime';
  */
 export abstract class SvelteWidgetView<T extends SvelteComponentTyped> extends DOMWidgetView {
     private component: T|null = null;
+
+    protected channel: Channel<Packet, Packet> = new WidgetChannel(this.model);
 
     /**
      * Override this function to build a new svelte widget.
@@ -44,7 +50,10 @@ export abstract class SvelteWidgetView<T extends SvelteComponentTyped> extends D
 }
 
 
-export type SimpleSvelteConstructor<T extends SvelteComponentTyped> = new (options: {target: HTMLElement, props: { component: WidgetModel }}) => T;
+export type SimpleSvelteConstructor<T extends SvelteComponentTyped> = new (options: {target: HTMLElement, props: {
+    component: Backbone.Model,
+    channel: Channel<Packet, Packet>
+}}) => T;
 
 /**
  * Creates a new class for a specific widget.
@@ -54,7 +63,7 @@ export function widgetFor<T extends SvelteComponentTyped>(c: SimpleSvelteConstru
         protected buildComponent(): T {
             return new c({
                 target: this.el,
-                props: { component: this.model }
+                props: { component: this.model, channel: this.channel }
             });
         }
     }

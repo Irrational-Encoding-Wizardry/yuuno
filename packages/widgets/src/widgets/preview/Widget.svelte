@@ -42,6 +42,7 @@
 
 <script>
     export let component;
+    export let channel;
 
     import Header from "./Header.svelte";
     import Viewport from "./Viewport.svelte";
@@ -61,7 +62,7 @@
 
     const debouncedFrame = debounce(100, frame);
 
-    const preview = getRPCForModel(component);
+    const preview = getRPCForModel(component, channel);
     preview.open();
     onDestroy(() => preview.close());
 

@@ -1,6 +1,4 @@
-import type { DOMWidgetModel } from "@jupyter-widgets/base";
-import { Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
-import { WidgetChannel } from "../../model-rpc";
+import { Channel, Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
 
 
 
@@ -33,8 +31,8 @@ export class AudioSource implements Closable {
 
     ondata: () => void = () => {};
 
-    constructor(model: DOMWidgetModel) {
-        this.rpc = new RPCClient(new WidgetChannel<ResponsePacket, RequestPacket>(model)).makeProxy<AudioRPC>(timeout(10000));
+    constructor(channel: Channel<ResponsePacket, RequestPacket>) {
+        this.rpc = new RPCClient(channel).makeProxy<AudioRPC>(timeout(10000));
     }
 
     open() {

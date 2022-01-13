@@ -66,6 +66,7 @@
 
 <script>
     export let component;
+    export let channel;
 
     let interruptBtn, stopBtn;
 
@@ -88,7 +89,7 @@
 
     import { getRPCForModel } from "./rpc";
 
-    $: rpc = getRPCForModel(component);
+    $: rpc = getRPCForModel(channel);
 
     $: [interruptBtn].forEach(e => {
             if (!!e) closeIcon.element({ container: e, width: '16px', height: '16px', marginLeft: '2px' });

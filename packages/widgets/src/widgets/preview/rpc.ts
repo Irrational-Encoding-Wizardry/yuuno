@@ -1,6 +1,5 @@
-import type { DOMWidgetModel } from "@jupyter-widgets/base";
-import { Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
-import { WidgetChannel } from "../../model-rpc";
+import type Backbone from "backbone";
+import { Channel, Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
 
 
 export interface PreviewRPC extends Closable {
@@ -23,9 +22,9 @@ class CachedPreviewRPC implements PreviewRPC {
     private _lru: string[] = [];
 
     private parent: PreviewRPC;
-    private model: DOMWidgetModel;
+    private model: Backbone.Model;
 
-    constructor(parent: PreviewRPC, model: DOMWidgetModel) {
+    constructor(parent: PreviewRPC, model: Backbone.Model) {
         this.parent = parent;
         this.model = model;
     }
@@ -75,7 +74,6 @@ class CachedPreviewRPC implements PreviewRPC {
 }
 
 
-export function getRPCForModel(model: DOMWidgetModel): PreviewRPC {
-    const channel = new WidgetChannel<ResponsePacket, RequestPacket>(model);
+export function getRPCForModel(model: Backbone.Model, channel: Channel<ResponsePacket, RequestPacket>): PreviewRPC {
     return new CachedPreviewRPC(new RPCClient(channel).makeProxy(timeout(10000)), model);
 }

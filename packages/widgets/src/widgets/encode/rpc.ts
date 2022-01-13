@@ -1,6 +1,4 @@
-import type { DOMWidgetModel } from "@jupyter-widgets/base";
-import { Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
-import { WidgetChannel } from "../../model-rpc";
+import { Channel, Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
 
 
 export interface EncodeRPC extends Closable {
@@ -13,7 +11,6 @@ export interface EncodeRPC extends Closable {
 
 }
 
-export function getRPCForModel(model: DOMWidgetModel): EncodeRPC {
-    const channel = new WidgetChannel<ResponsePacket, RequestPacket>(model);
+export function getRPCForModel(channel: Channel<ResponsePacket, RequestPacket>): EncodeRPC {
     return new RPCClient(channel).makeProxy(timeout(10000));
 }

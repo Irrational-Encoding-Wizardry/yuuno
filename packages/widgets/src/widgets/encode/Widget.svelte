@@ -1,10 +1,10 @@
 <div class="encode">
     <div>
-        <Header component={ component } />
+        <Header component={ component } channel={ channel } />
     </div>
 
     <div>
-        <Terminal component={ component } />
+        <Terminal component={ component } channel={ channel } />
     </div>
 </div>
 
@@ -25,6 +25,7 @@
 
 <script>
     export let component;
+    export let channel;
 
     import Header from './Header.svelte';
     import Terminal from "./Terminal.svelte";

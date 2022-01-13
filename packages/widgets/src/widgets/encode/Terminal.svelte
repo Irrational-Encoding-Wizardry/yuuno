@@ -13,6 +13,7 @@
 
 <script>
     export let component;
+    export let channel;
 
     const myOwnId = `terminal-${self_id}`;
 
@@ -30,7 +31,7 @@
     const fit = new FitAddon();
     terminal.loadAddon(fit);
 
-    const rpc = getRPCForModel(component);
+    const rpc = getRPCForModel(channel);
 
     const cb = (msg) => {
         if (msg.type !== "write") return;

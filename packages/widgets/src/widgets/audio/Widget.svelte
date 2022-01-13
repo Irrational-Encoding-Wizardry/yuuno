@@ -58,6 +58,7 @@
 
 <script>
     export let component;
+    export let channel;
 
     import BufferSlider from "./BufferSlider.svelte";
 
@@ -67,7 +68,7 @@
 
     let myself;
 
-    const audioSource = new AudioSource(component);
+    const audioSource = new AudioSource(channel);
     const player = new AudioPlayer(audioSource);
 
     let playhead = 0;
