@@ -110,12 +110,25 @@ def extract_plane_new(frame, planeno, *, compat=False, direction=-1, raw=False):
     stride = frame.format.bytes_per_sample * width
 
     if raw:
-        return bytes(arr)
+        return arr
     else:
         if not compat:
             return Image.frombuffer('L', (width, height), bytes(arr), "raw", "L", stride, direction)
         else:
             return Image.frombuffer('RGB', (width, height), bytes(arr), "raw", COMPAT_PIXEL_FORMAT, stride, direction)
+
+
+def extract_image(frame: VideoFrame) -> Image.Image:
+    r = extract_plane(frame, 0, raw=True)
+    g = extract_plane(frame, 1, raw=True)
+    b = extract_plane(frame, 2, raw=True)
+
+    data = bytearray(len(r)*4)
+    data[0::4] = b
+    data[1::4] = g
+    data[2::4] = r
+
+    return Image.frombuffer("RGB", (frame.width, frame.height), bytes(data), "raw", "BGRX", len(data)//frame.height, 1)
 
 
 if Features.EXTRACT_VIA_ARRAY:
@@ -139,10 +152,7 @@ class VapourSynthFrameWrapper(HasTraits, Frame):
     def _extract(self):
         # APIv4 requires manually plane based extraction.
         if self.extension.merge_bands or Features.API4:
-            r = extract_plane(self.rgb_frame, 0, compat=False, direction=1)
-            g = extract_plane(self.rgb_frame, 1, compat=False, direction=1)
-            b = extract_plane(self.rgb_frame, 2, compat=False, direction=1)
-            self.pil_cache = Image.merge('RGB', (r, g, b))
+            self.pil_cache = extract_image(self.rgb_frame)
         else:
             self.pil_cache = extract_plane(self.compat_frame, 0, compat=True)
 
@@ -256,6 +266,7 @@ class VapourSynthClipMixin(HasTraits, Clip):
         wrapped = self._wrap_frame(frame)
         _rgb24: VideoNode = self.to_rgb32(wrapped)
         rgb24: Future = _rgb24.get_frame_async(0)
+
         compat: Future = self.to_compat_rgb32(_rgb24).get_frame_async(0)
 
         (yield gather([rgb24, compat]))

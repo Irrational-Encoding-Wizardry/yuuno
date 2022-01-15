@@ -12,10 +12,13 @@ venv/bin/pip install jupyter jupyterlab jupyter_packaging git+https://github.com
 
 if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
-  venv/bin/jupyter-nbextension install yuuno_ipython --py --sys-prefix --symlink
-  venv/bin/jupyter-nbextension enable yuuno_ipython --py --sys-prefix
-  venv/bin/jupyter-labextension install yuuno_jupyterlab --sys-prefix --symlink
-  venv/bin/jupyter-labextension enable yuuno_jupyterlab --sys-prefix
+  . venv/bin/activate
+
+  lerna bootstrap
+  lerna run build
+
+  jupyter labextension develop --overwrite .
+  deactivate
 else
   OLD_PATH=$PATH
   . venv/bin/activate

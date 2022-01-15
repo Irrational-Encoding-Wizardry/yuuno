@@ -160,6 +160,7 @@
             (py.withPackages (_: requirements py))
 
             pkgs.yarn
+            pkgs.nodePackages.lerna
           ];
         });
         devShell = devShells.${defaultPython};

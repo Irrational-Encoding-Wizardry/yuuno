@@ -46,17 +46,17 @@ class NPMBuild(build_py):
     def for_build(cls, **args):
         return type("NPMBuild", (cls,), args)
 
-    def get_js_package_manager(self):
+    def ensure_package_managers(self):
         import shutil
-        npm = shutil.which("npm")
-        if npm is None:
-            raise RuntimeError("Couldn't find NPM.")
+        yarn = shutil.which("yarn")
+        if yarn is None:
+            raise RuntimeError("Couldn't find Yarn.")
         
-        cmd = shutil.which("yarn")
-        if shutil.which("yarn") is not None:
-            return cmd
-        else:
-            return npm
+        lerna = shutil.which("lerna")
+        if lerna is None:
+            raise RuntimeError("Couldn't find Lerna.")
+
+        return lerna
 
     def popen(self, cmd, *args, **kwargs):
         self.announce(f"running command: {cmd}", level=INFO)
@@ -87,10 +87,9 @@ class NPMBuild(build_py):
             return
 
         if os.path.exists(self.JS_PROJECT_PATH):
-            jspath = os.path.join(cwd, self.JS_PROJECT_PATH)
             pm = self.get_js_package_manager()
-            self.popen(f'"{pm}" install', cwd=jspath)
-            self.popen(f'"{pm}" run build', cwd=jspath)
+            self.popen(f'"{pm}" boostrap"')
+            self.popen(f'"{pm}" run build')
         elif os.path.exists(target_file):
             self.announce("source distribution with prebuilt binaries detected. Skipping build.")
         else:
@@ -115,7 +114,6 @@ class Install(install):
 class Build(build):
 
     def run(self):
-        self.run_command('build_npm_ipython')
         self.run_command('build_npm_lab')
         super().run()
 
@@ -155,7 +153,7 @@ def recursive(path, prefix, extras=None):
 
 setup(
     name='yuuno',
-    version='1.4',
+    version='1.5dev1',
     description="Yuuno = Jupyter + VapourSynth",
     long_description=readme + '\n\n' + history,
     long_description_content_type = "text/plain",
@@ -164,17 +162,6 @@ setup(
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
     data_files=[
-        ("share/jupyter/nbextensions/@yuuno", [
-            "yuuno_ipython/build/jupyter.js",
-            "yuuno_ipython/build/jupyter.js.map",
-            "yuuno_ipython/build/worker.js",
-            "yuuno_ipython/build/worker.js.map",
-        ]),
-
-        ("etc/jupyter/nbconfig/notebook.d", [
-            "yuuno_ipython/config/nbconfig/notebook.d/yuuno-jupyter.json"
-        ]),
-
         *recursive("yuuno_jupyterlab/static", "share/jupyter/labextensions/@yuuno/jupyterlab", {
             "share/jupyter/labextensions/@yuuno/jupyterlab": [
                 "yuuno_jupyterlab/config/labextensions/install.json"
@@ -192,15 +179,9 @@ setup(
     cmdclass={
         'sdist': SDistNPM,
         'build': Build,
-        'build_npm_ipython': NPMBuild.for_build(
-            ENV_NAME = "COMPILED_YUUNO_JS",
-            JS_PROJECT_PATH = "yuuno-jupyter",
-            SUCCESS_FILE = "jupyter.js",
-            TARGET_PATH = "yuuno_ipython/build"
-        ),
         'build_npm_lab': NPMBuild.for_build(
             ENV_NAME = "COMPILED_YUUNO_LAB_JS",
-            JS_PROJECT_PATH = "yuuno-jupyterlab-js",
+            JS_PROJECT_PATH = "packages",
             SUCCESS_FILE = "package.json",
             TARGET_PATH = "yuuno_jupyterlab/static"
         ),

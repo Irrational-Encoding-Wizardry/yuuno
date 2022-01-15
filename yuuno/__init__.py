@@ -21,7 +21,7 @@ import sys
 
 __author__ = """cid-chan"""
 __email__ = 'cid+yuuno@cid-chan.moe'
-__version__ = '1.4'
+__version__ = '1.5dev1'
 
 
 if sys.version_info < (3, 8):
