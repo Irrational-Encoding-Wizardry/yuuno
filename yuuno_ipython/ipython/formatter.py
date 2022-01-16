@@ -118,11 +118,11 @@ class InlineFormatVideo(AbstractInlineFormat):
         value = value['new']
         self.first_frame = value[0].result()
         self._ipy_image_cache = None
-        self.preview.clip = value
+        self.preview.clips = {"output": value}
 
     @default("preview")
     def _default_preview(self):
-        return Preview(self.clip)
+        return Preview(clip="output", clips={"output": self.clip})
 
     @property
     def ipy_image(self) -> IPyImage:
