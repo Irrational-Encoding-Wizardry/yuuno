@@ -171,5 +171,6 @@ result
 *.mkv
 
 yuuno_jupyterlab/static/
+yuuno_ipython/static/extension/
 *.c
 *.so
