@@ -63,7 +63,7 @@ class Preview(DOMWidget):
     .. automethod:: __init__
     """
     _view_name = Unicode('PreviewWindowWidget').tag(sync=True)
-    _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
+    _view_module = Unicode('yuuno-platform').tag(sync=True)
     _view_module_version = Unicode('1.2').tag(sync=True)
 
     # Ignore the changes

@@ -73,6 +73,8 @@
     import Progress from "./Progress.svelte";
     import Clock from "./Clock.svelte";
     
+    import { onMount, onDestroy } from "svelte";
+
     import { closeIcon, stopIcon } from "@jupyterlab/ui-components";
 
     import { model_attribute } from "../../utils"; 
@@ -89,7 +91,8 @@
 
     import { getRPCForModel } from "./rpc";
 
-    $: rpc = getRPCForModel(channel);
+    const rpc = getRPCForModel(channel);
+    onMount(() => rpc.open());
 
     $: [interruptBtn].forEach(e => {
             if (!!e) closeIcon.element({ container: e, width: '16px', height: '16px', marginLeft: '2px' });

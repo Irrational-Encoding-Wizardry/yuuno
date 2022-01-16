@@ -1,0 +1,13 @@
+.encode .header, .audio, .preview .header, .preview .footer {
+    /* Blame VS-Code */
+    color: black;
+}
+
+.preview .viewport img {
+    max-width: unset;
+}
+
+.encode .progress {
+    height: 0px;
+    margin: 0;
+}

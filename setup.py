@@ -162,6 +162,15 @@ setup(
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
     data_files=[
+        ("share/jupyter/nbextensions/yuuno-platform", [
+            "yuuno_ipython/static/extension/index.js",
+            "yuuno_ipython/static/extension/index.js.map",
+        ]),
+
+        ("etc/jupyter/nbconfig/notebook.d", [
+            "yuuno_ipython/static/config/yuuno-jupyter.json"
+        ]),
+
         *recursive("yuuno_jupyterlab/static", "share/jupyter/labextensions/@yuuno/jupyterlab", {
             "share/jupyter/labextensions/@yuuno/jupyterlab": [
                 "yuuno_jupyterlab/config/labextensions/install.json"

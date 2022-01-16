@@ -17,7 +17,7 @@ function registerIPythonWidgets(registry: IJupyterWidgetRegistry|null) {
     if (registry === null) return;
 
     registry.registerWidget({
-        name: "@yuuno/jupyter",
+        name: "yuuno-platform",
         version: "1.2.0",
         exports: Widgets
     });
