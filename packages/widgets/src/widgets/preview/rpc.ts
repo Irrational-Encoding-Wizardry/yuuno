@@ -2,6 +2,13 @@ import type Backbone from "backbone";
 import { Channel, Closable, RPCClient, RequestPacket, ResponsePacket, timeout } from "../../rpc";
 
 
+export interface FrameResult {
+    size: [number, number],
+    props: Record<string, string[]>,
+    buffers?: ArrayBuffer[]
+}
+
+
 export interface PreviewRPC extends Closable {
     /**
      * Returns the length of the clip
@@ -13,12 +20,12 @@ export interface PreviewRPC extends Closable {
      *
      * @param frame  The frame number.
      */
-    frame(payload: {frame: number, image?: 'clip'|'diff'}): Promise<{ size: [number, number], buffers?: ArrayBuffer[] }>;
+    frame(payload: {frame: number, image?: 'clip'|'diff'}): Promise<FrameResult>;
 }
 
 
 class CachedPreviewRPC implements PreviewRPC {
-    private _cache: Map<string, Promise<{ size: [number, number], buffers?: ArrayBuffer[] }>> = new Map();
+    private _cache: Map<string, Promise<FrameResult>> = new Map();
     private _lru: string[] = [];
 
     private parent: PreviewRPC;
@@ -47,7 +54,7 @@ class CachedPreviewRPC implements PreviewRPC {
 
     frame(
             { frame, image }: { frame: number, image?: 'clip'|'diff' }
-    ): Promise<{ size: [number, number], buffers?: ArrayBuffer[] }> {
+    ): Promise<FrameResult> {
         if (!image) image = "clip";
         const realId = this.model.get("clips")[this.model.get(image)];
         const _lru_id = `${realId}--${image}--${frame}`;

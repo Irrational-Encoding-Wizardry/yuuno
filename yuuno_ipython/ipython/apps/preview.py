@@ -140,7 +140,8 @@ class Preview(DOMWidget):
                 'type': 'response',
                 'id': rqid,
                 'payload': {
-                    'size': [0, 0]
+                    'size': [0, 0],
+                    'props': {}
                 }
             }, [EMPTY_IMAGE])
             return
@@ -166,6 +167,8 @@ class Preview(DOMWidget):
             'type': 'response',
             'id': rqid,
             'payload': {
-                'size': frame.size()
+                'size': frame.size(),
+                'props': frame.properties()
             }
         }, [data])
+

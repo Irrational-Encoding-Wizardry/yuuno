@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import math
 from enum import IntEnum
-from typing import TypeVar, NamedTuple, Tuple
+from typing import TypeVar, NamedTuple, Tuple, Dict, Tuple
 
 from PIL.Image import Image
 
@@ -89,6 +89,12 @@ class Frame(object):
     def size(self) -> Size:
         p = self.to_pil()
         return Size(p.width, p.height)
+
+    def properties(self) -> Dict[str, Tuple[str]]:
+        """
+        Returns properties of a frame.
+        """
+        return {}
 
     def plane_size(self, plane) -> int:
         """

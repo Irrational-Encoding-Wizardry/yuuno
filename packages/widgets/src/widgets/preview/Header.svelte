@@ -6,6 +6,10 @@
             <div>Updating ...</div>
         {:then frameData}
             <div>{ frameData.size[0] }px &times; { frameData.size[1] }px</div>
+            <div>
+                <Props props={ frameData.props }/>
+            </div>
+
         {:catch}
             <div>Error</div>
         {/await}
@@ -36,9 +40,13 @@
             <div>Updating ...</div>
         {:then frameData}
             <div>{ frameData.size[0] }px &times; { frameData.size[1] }px</div>
+            <div>
+                <Props props={ frameData.props }/>
+            </div>
         {:catch}
             <div>Error</div>
         {/await}
+
         <div>
             <button class="toolbar" on:click={((ty) => () => download(ty))('clip')}>
                 <JupyterIcon icon="download" />
@@ -56,9 +64,13 @@
                     <JupyterIcon icon="download" />
                 </button>
             </div>
+
             {#await frameDataPromiseRight}
                 <div>Updating ...</div>
             {:then frameData}
+                <div>
+                    <Props props={ frameData.props }/>
+                </div>
                 <div>{ frameData.size[0] }px &times; { frameData.size[1] }px</div>
             {:catch}
                 <div>Error</div>
@@ -125,6 +137,7 @@
 
     import JupyterSelect from "./JupyterSelect.svelte";
     import JupyterIcon from "../../components/JupyterIcon.svelte";
+    import Props from "./Props.svelte";
 
     import { tick } from "svelte";
     $: lengthPromise = [diff_id, clip_id, rpc.length()][2];

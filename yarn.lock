@@ -1492,6 +1492,11 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
+"@popperjs/core@^2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.2.tgz#830beaec4b4091a9e9398ac50f865ddea52186b9"
+  integrity sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -7928,6 +7933,11 @@ svelte-loader@^3.1.2:
     loader-utils "^2.0.0"
     svelte-dev-helper "^1.1.9"
     svelte-hmr "^0.14.2"
+
+svelte-popperjs@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/svelte-popperjs/-/svelte-popperjs-1.2.8.tgz#b6231164c5f4f91bffcfa486a09b05bc0d8e8700"
+  integrity sha512-tbZmJWpNxAuv+kLNopcF9f0MXQeCHLmafl4IyVnPI1IJWjgkHUFTTL2HhVMDrRm6jsy7O/RR6AAVTeYe4p7lTQ==
 
 svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.1:
   version "4.10.1"
