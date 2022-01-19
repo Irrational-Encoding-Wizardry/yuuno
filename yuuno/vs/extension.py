@@ -196,7 +196,7 @@ Settings to a value less than one makes it default to the number of hardware thr
         self.parent.log.debug("Registering wrappers.")
         from vapoursynth import VideoNode, VideoFrame
         from yuuno.vs.clip import VapourSynthClip, VapourSynthFrame
-        from yuuno.vs.clip import VapourSynthAlphaClip, VapourSynthAudio
+        from yuuno.vs.clip import VapourSynthAlphaClip
 
         # Detected VSScript.
         wrapperfunc = lambda cls, wrapper=None: cls
@@ -214,6 +214,7 @@ Settings to a value less than one makes it default to the number of hardware thr
 
         if Features.API4:
             from vapoursynth import VideoOutputTuple, AudioNode
+            from yuuno.vs.clip import VapourSynthAudio
             from yuuno.vs.policy.clip import WrappedAudio
             self.registry.register(wrapperfunc(VapourSynthAlphaClip), VideoOutputTuple)
             self.registry.register(wrapperfunc(VapourSynthAudio, wrapper=WrappedAudio), AudioNode)
