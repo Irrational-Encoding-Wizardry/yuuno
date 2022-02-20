@@ -87,8 +87,8 @@ class NPMBuild(build_py):
             return
 
         if os.path.exists(self.JS_PROJECT_PATH):
-            pm = self.get_js_package_manager()
-            self.popen(f'"{pm}" boostrap"')
+            pm = self.ensure_package_managers()
+            self.popen(f'"{pm}" bootstrap')
             self.popen(f'"{pm}" run build')
         elif os.path.exists(target_file):
             self.announce("source distribution with prebuilt binaries detected. Skipping build.")

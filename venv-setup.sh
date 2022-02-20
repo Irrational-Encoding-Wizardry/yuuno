@@ -15,7 +15,12 @@ if [ "$1" == "dev" ]; then
   . venv/bin/activate
 
   lerna bootstrap
-  lerna run build
+  pushd packages/widgets
+  yarn run build
+  popd
+  pushd packages/jupyterlab
+  yarn run build
+  popd
 
   jupyter labextension develop --overwrite .
   deactivate
