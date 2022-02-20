@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
+import json
 
 from distutils.log import INFO
 from distutils.command.build import build
@@ -56,7 +57,7 @@ class NPMBuild(build_py):
         if lerna is None:
             raise RuntimeError("Couldn't find Lerna.")
 
-        return lerna
+        return yarn, lerna
 
     def popen(self, cmd, *args, **kwargs):
         self.announce(f"running command: {cmd}", level=INFO)
@@ -87,11 +88,15 @@ class NPMBuild(build_py):
             return
 
         if os.path.exists(self.JS_PROJECT_PATH):
-            pm = self.ensure_package_managers()
-            self.popen(f'"{pm}" bootstrap')
-            self.popen(f'"{pm}" run build')
+            yarn, lerna = self.ensure_package_managers()
+            self.popen(f'"{lerna}" bootstrap')
+            self.popen(f'"{yarn}" run build', cwd=f"{DIRNAME}/packages/widgets")
+            self.popen(f'"{yarn}" run build', cwd=f"{DIRNAME}/packages/jupyterlab")
+            self.popen(f'"{yarn}" run build', cwd=f"{DIRNAME}/packages/notebook")
+            
         elif os.path.exists(target_file):
             self.announce("source distribution with prebuilt binaries detected. Skipping build.")
+
         else:
             raise EnvironmentError("sdist without prebuild javascript.")
 
@@ -162,9 +167,12 @@ setup(
     url='https://github.com/Irrational-Encoding-Wizardry/yuuno',
     packages=find_packages(exclude=("tests", )),
     data_files=[
+        ("share/jupyter/nbextensions", [
+            "yuuno_ipython/static/extension/yuuno-platform.js"
+        ]),
+
         ("share/jupyter/nbextensions/yuuno-platform", [
-            "yuuno_ipython/static/extension/index.js",
-            "yuuno_ipython/static/extension/index.js.map",
+            "yuuno_ipython/static/extension/yuuno-platform/index.js"
         ]),
 
         ("etc/jupyter/nbconfig/notebook.d", [

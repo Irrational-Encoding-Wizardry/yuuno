@@ -1,7 +1,10 @@
 module.exports = {
-    entry: "./src/index.ts",
+    entry: {
+        "yuuno-platform": "./src/index.ts",
+        "yuuno-platform/index": "./src/index.ts"
+    },
     output: {
-        filename: "../../../yuuno_ipython/static/extension/index.js",
+        filename: "../../../yuuno_ipython/static/extension/[name].js",
         library: {
             type: "amd"
         }

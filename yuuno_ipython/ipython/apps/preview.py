@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import base64
+import traceback
 import typing as t
 from typing import Any as TAny
 
@@ -86,6 +87,7 @@ class Preview(DOMWidget):
         # self.on_msg(self._handle_request_frame)
         self.on_msg(self._handle_any_msg)
 
+    @future_yield_coro
     def _handle_any_msg(self, _, content, buffers):
         if 'type' not in content:
             return
@@ -96,29 +98,34 @@ class Preview(DOMWidget):
         else:
             func = self._handle_request_frame
 
-    def _handle_request_length(self, _, content, buffers):
-        if content.get('type', '') != 'length':
+        rqid = content.get('id', None)
+        if rqid is None:
             return
 
-        rqid = content.get('id', None)
+        try:
+            payload, buffers = yield func(_, content, buffers)
+        except Exception as e:
+            self.send({
+                "type": "error",
+                "id": rqid,
+                "payload": traceback.format_exception(type(e), e, e.__traceback__)
+            })
+        else:
+            self.send({
+                "type": "response",
+                "id": rqid,
+                "payload": payload
+            }, buffers)
+
+    @future_yield_coro
+    def _handle_request_length(self, _, content, buffers):
+        if False: yield
+
         target = self._target_for(content)
         if target is None:
-            self.send({
-                'type': 'response',
-                'id': rqid,
-                'payload': {
-                    'length': 0
-                }
-            })
-            return
-
-        self.send({
-            'type': 'response',
-            'id': rqid,
-            'payload': {
-                'length': len(target)
-            },
-        })
+            return { "length": 0 }, []
+        else:
+            return { "length": len(target) }, []
 
     def _target_for(self, content):
         if content.get('payload', {}).get('image', 'clip') == "diff":
@@ -138,46 +145,19 @@ class Preview(DOMWidget):
 
     @future_yield_coro
     def _handle_request_frame(self, _, content, buffers):
-        if content.get('type', '') != 'frame':
-            return
-
-        rqid = content.get('id', None)
         wrapped = self._target_for(content)
 
         if wrapped is None:
-            self.send({
-                'type': 'response',
-                'id': rqid,
-                'payload': {
-                    'size': [0, 0],
-                    'props': {}
-                }
-            }, [EMPTY_IMAGE])
-            return
+            return {"size": [0, 0], "props": {}}, [EMPTY_IMAGE]
 
         frameno = content.get('payload', {}).get('frame', self.frame)
         if frameno >= len(wrapped):
             frameno = len(wrapped) - 1
 
-        try:
-            frame = yield wrapped[frameno]
-        except Exception as e:
-            import traceback
-            self.send({
-                'type': 'failure',
-                'id': rqid,
-                'payload': {
-                    'message': ''.join(traceback.format_exception(type(e), e, e.__traceback__))
-                }
-            })
-            raise
+        frame = yield wrapped[frameno]
         data = Yuuno.instance().output.bytes_of(frame.to_pil())
-        self.send({
-            'type': 'response',
-            'id': rqid,
-            'payload': {
-                'size': frame.size(),
-                'props': frame.properties()
-            }
-        }, [data])
+        return {
+            "size": frame.size(),
+            "props": frame.properties()
+        }, [data]
 

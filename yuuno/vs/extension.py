@@ -136,7 +136,7 @@ Settings to a value less than one makes it default to the number of hardware thr
 
     @classmethod
     def is_supported(cls):
-        if not Features.NOT_SUPPORTED:
+        if Features.current == Features.NOT_SUPPORTED:
             return False
 
         import vapoursynth

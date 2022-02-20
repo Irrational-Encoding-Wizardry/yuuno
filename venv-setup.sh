@@ -10,19 +10,11 @@ fi
 python3 -m venv venv
 venv/bin/pip install jupyter jupyterlab jupyter_packaging git+https://github.com/vapoursynth/vapoursynth
 
+. venv/bin/activate
+
 if [ "$1" == "dev" ]; then
   venv/bin/pip install -e .
-  . venv/bin/activate
-
-  lerna bootstrap
-  pushd packages/widgets
-  yarn run build
-  popd
-  pushd packages/jupyterlab
-  yarn run build
-  popd
-
-  jupyter labextension develop --overwrite .
+  ./build.sh dev
   deactivate
 else
   OLD_PATH=$PATH
