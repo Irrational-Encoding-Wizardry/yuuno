@@ -136,7 +136,26 @@ Settings to a value less than one makes it default to the number of hardware thr
 
     @classmethod
     def is_supported(cls):
-        return not Features.NOT_SUPPORTED
+        if not Features.NOT_SUPPORTED:
+            return False
+
+        import vapoursynth
+        if hasattr(vapoursynth.VideoFrame, "close") and hasattr(vapoursynth, "get_core"):
+            import os
+            logging.getLogger("Yuuno").warn("You are using an unsupported fork of VapourSynth. VapourSynth has been disabled.")
+            if os.environ.get("I_WILL_UPDATE_MY_SCRIPTS_FOR_APIV4_NEXT_TIME", "0") == "0":
+                import logging
+                return False
+            else:
+                print("You are using an unsupported fork of VapourSynth, probably VapourSynth Classic.")
+                print("This version is not supported. And bugs related to this version of vapoursynth will be closed.")
+                print()
+                print("If one of your scripts' dependencies still require get_core() or similar function, consider")
+                print("Updating them yourself so the community can make the switch to APIv4 as fast as possible.")
+                print()
+                print("In the mean-time, Yuuno will continue support with older APIv3 versions of VapourSynth")
+
+        return True
 
     @property
     def resize_filter(self) -> TCallable[['vs.VideoNode', 'int'], 'vs.VideoNode']:

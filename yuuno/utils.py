@@ -77,6 +77,17 @@ def auto_join(func: Callable[..., Future[T]]) -> Callable[..., T]:
     return _wrapped
 
 
+def wrap_future(func: Callable[..., T]) -> Callable[..., Future[T]]:
+    @functools.wraps(func)
+    def _wrapped(*args, **kwargs) -> Future[T]:
+        fut = Future()
+        try:
+            fut.set_result(func(*args, **kwargs))
+        except Exception as e:
+            fut.set_exception(e)
+        return fut
+    return _wrapped
+
 def future_yield_coro(func: Callable[..., Generator[Future[T], T, R]]) -> Callable[..., Future[R]]:
     @functools.wraps(func)
     def _wrapper(*args, **kwargs) -> Future:

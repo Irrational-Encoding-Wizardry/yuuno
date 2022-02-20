@@ -82,8 +82,19 @@ class Preview(DOMWidget):
     def __init__(self, clip, **kwargs):
         super(Preview, self).__init__(**kwargs, clip=clip)
 
-        self.on_msg(self._handle_request_length)
-        self.on_msg(self._handle_request_frame)
+        # self.on_msg(self._handle_request_length)
+        # self.on_msg(self._handle_request_frame)
+        self.on_msg(self._handle_any_msg)
+
+    def _handle_any_msg(self, _, content, buffers):
+        if 'type' not in content:
+            return
+
+        op = content['type']
+        if op == 'length':
+            func = self._handle_request_length
+        else:
+            func = self._handle_request_frame
 
     def _handle_request_length(self, _, content, buffers):
         if content.get('type', '') != 'length':
@@ -114,8 +125,6 @@ class Preview(DOMWidget):
             target = self.clips.get(self.diff, None)
         else:
             target = self.clips.get(self.clip, None)
-
-        print(f"WTF {self.clips!r} ({self.clip!r} / {self.diff!r})")
 
         return self._wrap_for(target)
 
