@@ -13,9 +13,13 @@
         {:else}
             <div>
                 {#if !$_w32}
-                    <button class="toolbar" on:click={() => { rpc.interrupt(); }} bind:this={interruptBtn} />
+                    <button class="toolbar" on:click={() => { rpc.interrupt(); }}>
+                        <JupyterIcon icon="close" />
+                    </button>
                 {/if}
-                <button class="toolbar" on:click={() => { rpc.kill(); }} bind:this={stopBtn} />
+                <button class="toolbar" on:click={() => { rpc.kill(); }}>
+                    <JupyterIcon icon="stop" />
+                </button>
             </div>
         {/if}
     </div>
@@ -68,11 +72,13 @@
     export let component;
     export let channel;
 
-    let interruptBtn, stopBtn;
+    import JupyterIcon from "../../components/JupyterIcon.svelte";
 
     import Progress from "./Progress.svelte";
     import Clock from "./Clock.svelte";
     
+    import { onMount, onDestroy } from "svelte";
+
     import { closeIcon, stopIcon } from "@jupyterlab/ui-components";
 
     import { model_attribute } from "../../utils"; 
@@ -89,13 +95,7 @@
 
     import { getRPCForModel } from "./rpc";
 
-    $: rpc = getRPCForModel(channel);
-
-    $: [interruptBtn].forEach(e => {
-            if (!!e) closeIcon.element({ container: e, width: '16px', height: '16px', marginLeft: '2px' });
-        });
-    $: [stopBtn].forEach(e => {
-            if (!!e) stopIcon.element({ container: e, width: '16px', height: '16px', marginLeft: '2px' });
-        });
+    const rpc = getRPCForModel(channel);
+    onMount(() => rpc.open());
 </script>
 

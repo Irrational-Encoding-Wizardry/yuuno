@@ -7,11 +7,17 @@
     </div>
     <div class="">
         {#if playing}
-            <button class="toolbar" on:click={() => { player.pause(); }} bind:this={pauseBtn} />
+            <button class="toolbar" on:click={() => { player.pause(); }}>
+                <JupyterIcon icon="stop" />
+            </button>
         {:else}
-            <button class="toolbar" on:click={() => { player.play(playhead); }} bind:this={playBtn} />
+            <button class="toolbar" on:click={() => { player.play(playhead); }}>
+                <JupyterIcon icon="run" />
+            </button>
         {/if}
-        <button class="toolbar" on:click={() => { player.pause(); playhead = 0; }} bind:this={stopBtn} />
+        <button class="toolbar" on:click={() => { player.pause(); playhead = 0; }}>
+            <JupyterIcon icon="refresh" />
+        </button>
     </div>
 </div>
 
@@ -61,6 +67,7 @@
     export let channel;
 
     import BufferSlider from "./BufferSlider.svelte";
+    import JupyterIcon from "../../components/JupyterIcon.svelte";
 
     import { AudioSource } from "./rpc";
     import { AudioPlayer } from "./player";
@@ -128,13 +135,5 @@
 
     $: displayTimeMinutes = `${(minutes+"").padStart(2, "0")}:${(seconds+"").padStart(2, "0")}`;
     $: displayTime = (hours < 1) ? displayTimeMinutes : `${hours}:${displayTimeMinutes}`;
-
-    let playBtn, pauseBtn, stopBtn;
-
-    import { refreshIcon, runIcon, stopIcon } from "@jupyterlab/ui-components";
-
-    $: if (!!stopBtn) refreshIcon.element({ container: stopBtn, width: '16px', height: '16px', marginLeft: '2px' });
-    $: if (!!playBtn) runIcon.element({ container: playBtn, width: '16px', height: '16px', marginLeft: '2px' });
-    $: if (!!pauseBtn) stopIcon.element({ container: pauseBtn, width: '16px', height: '16px', marginLeft: '2px' });
 </script>
 

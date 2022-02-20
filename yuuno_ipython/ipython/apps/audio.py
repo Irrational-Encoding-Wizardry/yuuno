@@ -22,7 +22,7 @@ from yuuno.audio import Audio
 
 class AudioWidget(DOMWidget):
     _view_name = Unicode('AudioPlaybackWidget').tag(sync=True)
-    _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
+    _view_module = Unicode('yuuno-platform').tag(sync=True)
     _view_module_version = Unicode('1.2').tag(sync=True)
 
     clip: Audio = Any().tag(sync=True, to_json=(lambda v,w: id(v) if v is not None else None), from_json=(lambda v, w: w.clip))

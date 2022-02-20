@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Yuuno - IPython + VapourSynth
-# Copyright (C) 2017,2018 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
+# Copyright (C) 2017,2018, 2022 cid-chan (Sarah <cid+yuuno@cid-chan.moe>)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +26,9 @@ __version__ = '1.5dev1'
 def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
-        'src': 'build',
-        'dest': '@yuuno',
-        'require': '@yuuno/jupyter'
+        'src': 'static/extension',
+        'dest': 'yuuno-platform',
+        'require': 'yuuno-platform/index'
     }]
 
 if sys.version_info < (3, 8):

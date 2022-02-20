@@ -57,7 +57,7 @@ _running = {}
 
 class EncodeWidget(DOMWidget):
     _view_name = Unicode('EncodeWindowWidget').tag(sync=True)
-    _view_module = Unicode('@yuuno/jupyter').tag(sync=True)
+    _view_module = Unicode('yuuno-platform').tag(sync=True)
     _view_module_version = Unicode('1.2').tag(sync=True)
 
     current = Integer(0).tag(sync=True)

@@ -137,6 +137,22 @@ else:
     extract_plane = extract_plane_r36compat
 
 
+def _simplify_props(props):
+    if isinstance(props, list):
+        return [_simplify_props(p) for p in props]
+    elif not isinstance(props, str):
+        return repr(props)
+    else:
+        return props
+
+
+def simplify_props(props):
+    res = _simplify_props(props)
+    if not isinstance(props, list):
+        res = [res]
+    return res
+
+
 class VapourSynthFrameWrapper(HasTraits, Frame):
 
     pil_cache: Image.Image = Instance(Image.Image, allow_none=True)
@@ -188,6 +204,12 @@ class VapourSynthFrameWrapper(HasTraits, Frame):
             subsampling_h=ff.subsampling_h,
             bits_per_sample=ff.bits_per_sample
         )
+
+    def properties(self):
+        return {
+            str(k): simplify_props(v)
+            for k, v in self.frame.props.items()
+        }
 
     def to_raw(self):
         if self.extension.raw_force_compat:

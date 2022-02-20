@@ -69,6 +69,7 @@ class WrappedFrame(WrappedMixin[Frame], Frame):
     to_raw = WrappedMixin.wrap('to_raw')
     size = WrappedMixin.wrap('size')
     format = WrappedMixin.wrap('format')
+    properties = WrappedMixin.wrap("properties")
     get_raw_data_async = WrappedMixin.wrap_future('get_raw_data_async')
 
 

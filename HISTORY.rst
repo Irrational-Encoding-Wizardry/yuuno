@@ -4,7 +4,7 @@ History
 
 1.5.0 (Johannesburg)
 --------------------
-* Removed support for Jupyter Notebook. We only support JupyterLab now.
+* Added support for VSCode. Audio does not work for some reason.
 
 1.4.0 (Moscow)
 --------------

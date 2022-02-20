@@ -8,20 +8,24 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "build": "yarn run build:svelte-copy && yarn run build:js-copy && yarn run build:lib",
+    "build": "yarn run clean && yarn run build:svelte-copy && yarn run build:js-copy && yarn run build:lib",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "build:lib": "tsc",
-    "build:svelte-copy": "copyfiles -u 1 src/**/*.svelte lib",
-    "build:js-copy": "copyfiles -u 1 src/**/*.js lib"
+    "build:svelte-copy": "copyfiles -u 1 'src/**/*.svelte' lib",
+    "build:js-copy": "copyfiles -u 1 'src/**/*.js' lib"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^4.0.0",
+    "@popperjs/core": "^2.11.2",
+    "svelte-popperjs": "^1.2.8",
     "xterm": "^4.16.0",
     "xterm-addon-fit": "^0.5.0"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^3.0.0",
-    "svelte": "^3.44.3",
     "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "svelte": "^3.44.3",
     "typescript": "^4.5.4"
   }
 }

@@ -25,9 +25,18 @@ export interface RequestPacket extends Packet {
     type: string;
 }
 
-export interface ResponsePacket extends Packet {
-    type: "failure"|"response";
+export interface ResultPacket extends Packet {
+    type: "response";
+    payload: any;
 }
+
+export interface FailurePacket extends Packet {
+    type: "failure";
+    payload: string;
+}
+
+export type ResponsePacket = ResultPacket|FailurePacket;
+
 
 export interface Channel<Receive extends Packet, Send extends Packet> {
     /**
