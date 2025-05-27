@@ -22,12 +22,18 @@ import functools
 from pathlib import Path
 
 try:
-    from pkg_resources import resource_filename
+    import importlib.resources as importlib_resources
 except ImportError:
-    def resource_filename(_: str, name: str):
-        this_dir, this_filename = os.path.split(__file__)
-        path = os.path.join(this_dir, '..', name)
-        return path
+    import importlib_resources
+def resource_filename(package: str, name: str):
+    """
+    Return the file system path to a resource inside a package.
+    """
+    try:
+        return str(importlib_resources.files(package).joinpath(name))
+    except AttributeError:
+        with importlib_resources.path(package, name) as resource_path:
+            return str(resource_path)
 
 
 def get_data_file(name) -> Path:

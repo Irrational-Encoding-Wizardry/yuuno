@@ -15,15 +15,18 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import pkg_resources
-
+try:
+    import importlib.metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
 
 def discover_environments(module_dict):
     all_exts = []
-    for ep in pkg_resources.iter_entry_points('yuuno.environments'):
+    entry_points = importlib_metadata.entry_points()
+    for ep in entry_points.select(group='yuuno.environments'):
         module_dict[ep.name] = ep.load()
         all_exts.append(ep.name)
-
+    
     # This makes yuuno_ipython work easier in development environments.
     if "load_ipython_extension" not in module_dict:
         import yuuno_ipython.ipython.environment as ipy_env
@@ -34,18 +37,19 @@ def discover_environments(module_dict):
 
     return all_exts
 
-
 def discover_extensions():
-    for ep in pkg_resources.iter_entry_points('yuuno.extensions'):
+    entry_points = importlib_metadata.entry_points()
+    for ep in entry_points.select(group='yuuno.extensions'):
         extension = ep.load()
         if not hasattr(extension, '_name'):
             extension._name = ep.name
         yield extension
 
-
 def discover_commands():
     commands = {}
-    for ep in pkg_resources.iter_entry_points('yuuno.commands'):
+    entry_points = importlib_metadata.entry_points()
+    for ep in entry_points.select(group='yuuno.commands'):
         command = ep.load()
         commands[ep.name] = command
     return commands
+

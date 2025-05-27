@@ -58,7 +58,7 @@
     "codemirror": "^5.65.0"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.1.0",
+    "@jupyterlab/builder": "^4.4.3",
     "@tsconfig/svelte": "^3.0.0",
     "@types/codemirror": "^5.60.5",
     "@types/node": "^17.0.7",
