@@ -135,7 +135,8 @@ requirements = [
     "jinja2",
     "ipywidgets",
     "pillow",
-    "psutil"
+    "psutil",
+    "audioop-lts"
 ]
 
 test_requirements = []
