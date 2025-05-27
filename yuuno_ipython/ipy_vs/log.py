@@ -58,6 +58,13 @@ class LogMessage(object):
 class LogWriterFeature(VSFeature):
 
     def _push_log_msg(self, level: MessageLevel, msg: str) -> None:
+        if not isinstance(level, MessageLevel):
+            try:
+                level = MessageLevel(level)
+            except ValueError:
+                # Handle unknown level, e.g. default or raise
+                level = MessageLevel.mtInfo
+
         level = level.value
 
         if level == MessageLevel.mtDebug:
